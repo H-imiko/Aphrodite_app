@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+{% endblock %}
+
+{% block content %}
+<h1>Modifier mon profil</h1>
+<p class="muted">Aperçu en direct 👇</p>
+{% include "partials/carte_profil.html" with m=user %}
+
+<form method="post" enctype="multipart/form-data" class="card" style="margin-top:16px">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <p class="muted">Quand tu choisis une photo ou une bannière, une fenêtre s'ouvre pour la recadrer.</p>
+  <button type="submit" class="btn">Enregistrer</button>
+</form>
+<p><a href="{% url 'membre' user.pk %}">← Retour à mon profil</a></p>
+
+<div class="crop-modal" id="crop-modal" hidden>
+  <div class="crop-boite">
+    <h2 id="crop-titre">Recadrer</h2>
+    <p class="muted">Déplace et zoome l'image (pince ou molette).</p>
+    <div class="crop-zone"><img id="crop-image" alt=""></div>
+    <div class="crop-actions">
+      <button type="button" class="petit" id="crop-annuler">Annuler</button>
+      <button type="button" class="btn" id="crop-valider">Valider</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script>
+(function () {
+  var REGLAGES = {
+    avatar:   { ratio: 1, maxL: 600,  maxH: 600, nom: "avatar.jpg",
+                titre: "Recadrer la photo de profil", rond: true },
+    banniere: { ratio: 3, maxL: 1500, maxH: 500, nom: "banniere.jpg",
+                titre: "Recadrer la bannière", rond: false }
+  };
+  var modal = document.getElementById("crop-modal");
+  var zone = modal.querySelector(".crop-zone");
+  var imageCrop = document.getElementById("crop-image");
+  var titreCrop = document.getElementById("crop-titre");
+  var cropper = null;
+  var champ = null;
+
+  var pvAvatar = document.getElementById("pv-avatar");
+  var pvInitiale = document.getElementById("pv-initiale");
+  var pvBanniere = document.getElementById("pv-banniere");
+  var pvPseudo = document.getElementById("pv-pseudo");
+  var pvBulle = document.getElementById("pv-bulle");
+  var pvBulleTexte = document.getElementById("pv-bulle-texte");
+
+  function previsualiser(nom, fichier) {
+    var url = URL.createObjectURL(fichier);
+    if (nom === "avatar") {
+      pvAvatar.src = url;
+      pvAvatar.hidden = false;
+      pvInitiale.hidden = true;
+    } else {
+      pvBanniere.style.backgroundImage = 'url("' + url + '")';
+    }
+  }
+
+  function fermer() {
+    modal.hidden = true;
+    if (cropper) { cropper.destroy(); cropper = null; }
+    imageCrop.removeAttribute("src");
+  }
+
+  function ouvrir(nom, fichier) {
+    var r = REGLAGES[nom];
+    champ = nom;
+    titreCrop.textContent = r.titre;
+    zone.classList.toggle("rond", r.rond);
+    modal.hidden = false;
+    imageCrop.onload = function () {
+      if (cropper) { cropper.destroy(); }
+      cropper = new Cropper(imageCrop, {
+        aspectRatio: r.ratio, viewMode: 1, dragMode: "move",
+        autoCropArea: 1, background: false,
+        cropBoxMovable: false, cropBoxResizable: false,
+        toggleDragModeOnDblclick: false
+      });
+    };
+    imageCrop.src = URL.createObjectURL(fichier);
+  }
+
+  ["avatar", "banniere"].forEach(function (nom) {
+    var input = document.getElementById("id_" + nom);
+    if (!input) { return; }
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      if (!f) { return; }
+      if (typeof Cropper === "undefined") { previsualiser(nom, f); return; }
+      ouvrir(nom, f);
+    });
+  });
+
+  document.getElementById("crop-valider").addEventListener("click", function () {
+    if (!cropper) { return; }
+    var r = REGLAGES[champ];
+    var canvas = cropper.getCroppedCanvas({
+      maxWidth: r.maxL, maxHeight: r.maxH,
+      fillColor: "#1c0b2e", imageSmoothingQuality: "high"
+    });
+    canvas.toBlob(function (blob) {
+      if (blob) {
+        var fichier = new File([blob], r.nom, { type: "image/jpeg" });
+        try {
+          var dt = new DataTransfer();
+          dt.items.add(fichier);
+          document.getElementById("id_" + champ).files = dt.files;
+          previsualiser(champ, fichier);
+        } catch (e) { /* le navigateur refuse : l'image d'origine sera envoyée */ }
+      }
+      fermer();
+    }, "image/jpeg", 0.9);
+  });
+
+  document.getElementById("crop-annuler").addEventListener("click", function () {
+    var input = document.getElementById("id_" + champ);
+    if (input) { input.value = ""; }
+    fermer();
+  });
+
+  var pseudo = document.getElementById("id_pseudo_whatsapp");
+  if (pseudo) {
+    pseudo.addEventListener("input", function () {
+      var v = pseudo.value.trim();
+      pvPseudo.textContent = v || " ";
+      pvInitiale.textContent = (v.charAt(0) || "?").toUpperCase();
+    });
+  }
+  var titre = document.getElementById("id_titre");
+  if (titre) {
+    titre.addEventListener("input", function () {
+      var v = titre.value.trim();
+      pvBulleTexte.textContent = v;
+      pvBulle.hidden = !v;
+    });
+  }
+})();
+</script>
+{% endblock %}

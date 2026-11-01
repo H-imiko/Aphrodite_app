@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>base</title>
+</head>
+<body>
+
+</body>
+</html>
+{% load static %}
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aphrodite</title>
+  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% if user.is_authenticated %}avec-nav{% endif %}">
+<header class="nav">
+  <a class="logo" href="{% if user.is_authenticated %}{% url 'boutique' %}{% else %}{% url 'accueil' %}{% endif %}">Aphrodite</a>
+  <nav>
+    {% if user.is_authenticated %}
+      {% if user.est_divinite %}<a class="icone-nav" href="{% url 'panel' %}" title="Panel des Divinités">⚙️</a>{% endif %}
+      <a class="solde-nav" href="{% url 'portefeuille' %}"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</a>
+      <a class="nav-avatar" href="{% url 'profil' %}" title="Mon profil">
+        {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">{% else %}<span>{{ user.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
+      </a>
+    {% else %}
+      <a href="{% url 'connexion' %}">Connexion</a>
+      <a href="{% url 'inscription' %}">Inscription</a>
+    {% endif %}
+  </nav>
+</header>
+
+<main>
+  {% for m in messages %}<div class="msg">{{ m }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+
+{% if user.is_authenticated %}
+{% with n=request.resolver_match.url_name %}
+<nav class="barre">
+  <a href="{% url 'boutique' %}" class="{% if n == 'boutique' or n == 'article' %}actif{% endif %}"><span class="ic">🛍️</span>Boutique</a>
+  <a href="{% url 'inventaire' %}" class="{% if n == 'inventaire' %}actif{% endif %}"><span class="ic">🎒</span>Inventaire</a>
+  <a href="{% url 'portefeuille' %}" class="{% if n == 'portefeuille' or n == 'transactions' %}actif{% endif %}"><span class="ic"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"></span>Cubis</a>
+  {% if user.peut_publier %}
+  <a href="{% url 'mes_articles' %}" class="{% if n == 'mes_articles' or n == 'nouvel_article' %}actif{% endif %}"><span class="ic">🎨</span>Créations</a>
+  {% endif %}
+  <a href="{% url 'profil' %}" class="{% if n == 'membre' or n == 'modifier_profil' %}actif{% endif %}"><span class="ic">👤</span>Profil</a>
+</nav>
+{% endwith %}
+{% endif %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

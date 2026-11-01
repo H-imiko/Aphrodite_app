@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>economie</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<h1>Économie 📈</h1>
+
+{% if alerte %}
+  <div class="alerte">⚠️ Les Cubis en circulation ont augmenté de {{ croissance }} % en 30 jours. Pense à ajuster les récompenses ou à lancer un article officiel (puits).</div>
+{% endif %}
+
+<div class="stats">
+  <div class="stat"><span class="muted">En circulation</span><strong><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ circulation }}</strong></div>
+  <div class="stat"><span class="muted">Croissance 30 jours</span><strong>{% if croissance is None %}—{% else %}{{ croissance }} %{% endif %}</strong></div>
+  <div class="stat"><span class="muted">Émis (total)</span><strong>{{ emis }}</strong></div>
+  <div class="stat"><span class="muted">Détruits (total)</span><strong>{{ detruits }}</strong></div>
+</div>
+
+<section class="card">
+  <h2>Par période</h2>
+  {% for p in periodes %}
+    <div class="ligne">
+      <div><strong>{{ p.jours }} derniers jours</strong></div>
+      <div><span class="plus">+{{ p.emis }}</span> émis · <span class="moins">−{{ p.detruits }}</span> détruits</div>
+    </div>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Mouvements des 30 derniers jours</h2>
+  {% for m in mouvements %}
+    <div class="ligne">
+      <div>{{ m.nom }}<br><span class="muted">{{ m.nb }} opération(s)</span></div>
+      <div><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ m.total }}</div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun mouvement.</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Plus gros portefeuilles</h2>
+  <p class="muted">Utile pour repérer les comptes qui accumulent anormalement.</p>
+  {% for u in top %}
+    <div class="ligne">
+      <div>{% include "partials/pseudo.html" with u=u %}</div>
+      <div><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ u.solde_cubis }}</div>
+    </div>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Contrôle</h2>
+  {% if ecart %}
+    <p>⚠️ Écart de {{ ecart }} Cubis entre les soldes et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>
+  {% else %}
+    <p>✅ Les soldes correspondent exactement à l'historique des transactions.</p>
+  {% endif %}
+</section>
+{% endblock %}
+</body>
+</html>

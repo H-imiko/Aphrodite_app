@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>postuler</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Devenir Créateur </h1>
+  {% if en_attente %}
+    <div class="attente">
+      ⏳ Ta candidature est en cours d'examen par une Divinité.<br>
+      <span class="muted">Envoyée le {{ derniere.date_creation|date:"d/m/Y" }}. Tu seras Créateur dès qu'elle sera validée, avec +500 Cubis de bienvenue.</span>
+    </div>
+  {% else %}
+    {% if derniere and derniere.statut == "refusee" %}
+      <div class="refus">
+        Ta précédente candidature a été refusée{% if derniere.motif_refus %} : {{ derniere.motif_refus }}{% endif %}.<br>
+        Tu peux en envoyer une nouvelle.
+      </div>
+    {% endif %}
+    <p class="muted">Choisis ce que tu crées et montre-nous 1 à 3 exemples. Ces captures ne sont visibles que par les Divinités.</p>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn">Envoyer ma candidature</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

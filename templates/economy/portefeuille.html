@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="card center">
+  <p class="muted">Ton solde</p>
+  <h1 class="solde"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %} Cubis</h1>
+  <p class="muted">Série de connexion : {{ user.serie_connexion }} jour(s)</p>
+  <a class="petit" href="{% url 'transactions' %}">🧾 Voir mes transactions</a>
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Offrir des Cubis</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Envoyer</button>
+  </form>
+</section>
+{% endblock %}

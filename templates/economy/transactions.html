@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Mes transactions 🧾</h1>
+  <p class="muted">Tes 100 derniers mouvements.</p>
+  {% for t in historique %}
+    <div class="ligne">
+      <div>
+        <strong>{{ t.get_type_display }}</strong><br>
+        <span class="muted">{{ t.date|date:"d/m/Y H:i" }}{% if t.description %} · {{ t.description }}{% endif %}</span>
+      </div>
+      <div class="{% if t.destinataire_id == user.id %}plus{% else %}moins{% endif %}">
+        {% if t.destinataire_id == user.id %}+{% else %}−{% endif %}{{ t.montant }}
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun mouvement pour l'instant.</p>
+  {% endfor %}
+  <p><a href="{% url 'portefeuille' %}">← Retour au portefeuille</a></p>
+</section>
+{% endblock %}

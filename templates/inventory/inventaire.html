@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventaire</title>
+</head>
+<body>
+
+</body>
+</html>
+
+{% extends "base.html" %}
+{% block content %}
+<h1>Mon inventaire</h1>
+<div class="grille">
+   {% for o in objets %}
+    <div class="article">
+      <a href="{% url 'article' o.item.pk %}">{% if o.item.apercu %}<img src="{{ o.item.apercu.url }}" alt="">{% endif %}</a>
+      <div class="info">
+        <a href="{% url 'article' o.item.pk %}"><strong>{{ o.item.titre }}</strong></a>
+        {% if o.est_relique %}<span class="tag">Relique</span>{% endif %}
+        <div class="vendeur">{% include "partials/pseudo.html" with u=o.item.createur %}</div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Ton inventaire est vide. Visite la <a href="{% url 'boutique' %}">boutique</a> !</p>
+  {% endfor %}
+</div>
+{% endblock %}

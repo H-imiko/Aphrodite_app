@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>candidatures</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Candidatures Créateurs</h1>
+  <h2>En attente ({{ en_attente|length }})</h2>
+  {% for c in en_attente %}
+    <div class="ligne">
+      <div>
+        <strong>{{ c.user.pseudo_whatsapp }}</strong><br>
+        <span class="muted">{{ c.types_affiches }} · {{ c.date_creation|date:"d/m/Y" }}</span>
+      </div>
+      <a class="petit" href="{% url 'candidature' c.pk %}">Examiner</a>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune candidature en attente 🎉</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Dernières décisions</h2>
+  {% for c in traitees %}
+    <div class="ligne">
+      <div>
+        <strong>{{ c.user.pseudo_whatsapp }}</strong> · {{ c.get_statut_display }}<br>
+        <span class="muted">par {{ c.traitee_par.pseudo_whatsapp|default:"?" }} · {{ c.date_traitement|date:"d/m/Y H:i" }}</span>
+      </div>
+      <a class="petit" href="{% url 'candidature' c.pk %}">Voir</a>
+    </div>
+  {% empty %}
+    <p class="muted">Rien pour l'instant.</p>
+  {% endfor %}
+</section>
+{% endblock %}

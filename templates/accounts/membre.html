@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+{% include "partials/carte_profil.html" with m=membre %}
+
+{% if est_moi %}
+<div class="actions-profil">
+  <a class="petit" href="{% url 'modifier_profil' %}">✏️ Modifier</a>
+  <a class="petit" href="{% url 'transactions' %}">🧾 Transactions</a>
+  {% if not membre.createur_valide %}
+    {% if candidature_en_cours %}
+      <span class="petit inactif">⏳ Candidature en attente</span>
+    {% else %}
+      <a class="petit" href="{% url 'postuler' %}">🎨 Devenir Créateur</a>
+    {% endif %}
+  {% endif %}
+  <form method="post" action="{% url 'deconnexion' %}" class="inline">
+    {% csrf_token %}<button type="submit" class="petit">🚪 Déconnexion</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="infos">
+  <div class="card"><div class="muted">Membre depuis</div><strong>{{ membre.date_inscription|date:"d/m/Y" }}</strong></div>
+  <div class="card"><div class="muted">Articles</div><strong>{{ articles|length }}</strong></div>
+</div>
+
+<section class="card">
+  <h2>Biographie</h2>
+  {% if membre.bio_rp %}<p>{{ membre.bio_rp|linebreaksbr }}</p>{% else %}<p class="muted">Pas encore de biographie.</p>{% endif %}
+</section>
+
+{% if articles %}
+<h2 style="margin-top:20px">Vitrine</h2>
+<div class="grille">
+  {% for a in articles %}
+    <div class="article">
+      <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
+      <div class="info">
+        <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
+        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

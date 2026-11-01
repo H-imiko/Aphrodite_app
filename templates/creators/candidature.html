@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>candidature</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Candidature de {{ c.user.pseudo_whatsapp }}</h1>
+  <p class="muted">{{ c.user.get_espece_display }} · inscrit le {{ c.user.date_inscription|date:"d/m/Y" }}</p>
+  <p><strong>Types :</strong> {{ c.types_affiches }}</p>
+  {% if c.message %}<p><strong>Message :</strong><br>{{ c.message|linebreaksbr }}</p>{% endif %}
+  {% for e in c.exemples.all %}
+    <img class="grand" src="{% url 'exemple_image' e.pk %}" alt="Exemple {{ forloop.counter }}">
+  {% endfor %}
+
+  {% if c.statut == "en_attente" %}
+    <form method="post" action="{% url 'candidature_valider' c.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">✅ Valider (+500 Cubis)</button>
+    </form>
+    <form method="post" action="{% url 'candidature_refuser' c.pk %}" style="margin-top:14px">
+      {% csrf_token %}
+      <input type="text" name="motif" placeholder="Motif du refus (facultatif)" maxlength="300">
+      <button type="submit" class="btn danger">❌ Refuser</button>
+    </form>
+  {% else %}
+    <p><strong>Décision :</strong> {{ c.get_statut_display }} par {{ c.traitee_par.pseudo_whatsapp|default:"?" }}</p>
+    {% if c.motif_refus %}<p class="muted">Motif : {{ c.motif_refus }}</p>{% endif %}
+  {% endif %}
+  <p><a href="{% url 'candidatures' %}">← Retour à la liste</a></p>
+</section>
+{% endblock %}

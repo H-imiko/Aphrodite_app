@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>journal</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Journal des actions 📜</h1>
+  <p class="muted">Les 200 dernières actions des Divinités.</p>
+  {% for l in logs %}
+    <div class="ligne">
+      <div>
+        <strong>{{ l.get_action_display }}</strong>{% if l.cible %} → {{ l.cible.pseudo_whatsapp }}{% endif %}<br>
+        <span class="muted">par {{ l.auteur.pseudo_whatsapp|default:"?" }} · {{ l.date|date:"d/m/Y H:i" }}{% if l.details %} · {{ l.details }}{% endif %}</span>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune action pour l'instant.</p>
+  {% endfor %}
+  <p><a href="{% url 'panel' %}">← Retour au panel</a></p>
+</section>
+{% endblock %}
+</body>
+</html>

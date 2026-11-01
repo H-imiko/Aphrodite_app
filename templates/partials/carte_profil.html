@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% load static %}
+<section class="profil-pub">
+  <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{{ m.banniere.url }}')"{% endif %}></div>
+  <div class="ligne-avatar">
+    <img class="avatar" id="pv-avatar" alt=""{% if m.avatar %} src="{{ m.avatar.url }}"{% else %} hidden{% endif %}>
+    <div class="avatar vide" id="pv-initiale"{% if m.avatar %} hidden{% endif %}>{{ m.pseudo_whatsapp|slice:":1"|upper }}</div>
+    <div class="bulle" id="pv-bulle"{% if not m.titre %} hidden{% endif %}><span id="pv-bulle-texte">{{ m.titre }}</span></div>
+  </div>
+  <div class="identite">
+    <h1><span id="pv-pseudo">{{ m.pseudo_whatsapp }}</span>{% if m.createur_valide %}<img class="badge-inline grand-badge" src="{% static 'images/badge_createur_mini.png' %}" alt="Créateur validé" title="Créateur validé">{% endif %}</h1>
+    <p class="espece">{{ m.get_espece_display }}{% if m.est_divinite %} · Divinité{% endif %}</p>
+  </div>
+</section>
+</body>
+</html>

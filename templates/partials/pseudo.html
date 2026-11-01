@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+
+{% load static %}
+<a class="pseudo" href="{% url 'membre' u.pk %}">
+  {% if u.avatar %}<img class="mini-avatar" src="{{ u.avatar.url }}" alt="">{% else %}<span class="mini-avatar">{{ u.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
+  <span>{{ u.pseudo_whatsapp }}</span>
+</a>{% if u.createur_valide %}<img class="badge-inline" src="{% static 'images/badge_createur_mini.png' %}" alt="Créateur validé" title="Créateur validé">{% endif %}{% if u.est_divinite %}<span class="tag">Divinité</span>{% endif %}

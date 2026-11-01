@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>boutique</title>
+</head>
+<body>
+
+</body>
+</html>
+{% extends "base.html" %}
+{% block content %}
+<h1>Boutique</h1>
+<div class="filtres">
+  <a href="{% url 'boutique' %}">Tout</a>
+  {% for val, nom in categories %}<a href="?categorie={{ val }}">{{ nom }}</a>{% endfor %}
+</div>
+<div class="grille">
+   {% for a in articles %}
+    <div class="article">
+      <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
+      <div class="info">
+        <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
+        {% if a.est_officiel %}<span class="tag">Officiel</span>{% endif %}
+        <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
+        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }}</div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun article pour l'instant.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>panel</title>
+</head>
+<body>
+
+</body>
+</html>
+
+{% extends "base.html" %}
+{% block content %}
+<h1>Panel des Divinités ✨</h1>
+<div class="stats">
+  <div class="stat"><span class="muted">Membres</span><strong>{{ nb_membres }}</strong><span class="muted">+{{ nb_nouveaux }} cette semaine</span></div>
+  <div class="stat"><span class="muted">Créateurs</span><strong>{{ nb_createurs }}</strong></div>
+  <div class="stat"><span class="muted">Articles en vente</span><strong>{{ nb_articles }}</strong></div>
+  <div class="stat"><span class="muted">Candidatures</span><strong>{{ nb_candidatures }}</strong><span class="muted">en attente</span></div>
+</div>
+<section class="card liens-panel">
+  <a class="btn lien" href="{% url 'candidatures' %}">🎨 Candidatures Créateurs{% if nb_candidatures %} ({{ nb_candidatures }}){% endif %}</a>
+  <a class="btn lien" href="{% url 'tresor' %}"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> Trésor : envoyer des récompenses</a>
+  <a class="btn lien" href="{% url 'economie' %}">📈 Économie</a>
+  <a class="btn lien" href="{% url 'journal' %}">📜 Journal des actions</a>
+</section>
+{% endblock %}

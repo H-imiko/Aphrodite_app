@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+</head>
+<body>
+
+</body>
+</html>
+
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  {% if acces %}
+    <img class="grand" src="{% url 'telecharger' article.pk %}?voir=1" alt="">
+    <a class="btn lien" href="{% url 'telecharger' article.pk %}">Télécharger l'original</a>
+  {% else %}
+    {% if article.apercu %}<img class="grand" src="{{ article.apercu.url }}" alt="">{% endif %}
+    <p class="muted">Aperçu flouté : l'original se débloque après l'achat.</p>
+  {% endif %}
+  <h1>{{ article.titre }} {% if article.est_officiel %}<span class="tag">Officiel</span>{% endif %}</h1>
+    <p class="muted">{% include "partials/pseudo.html" with u=article.createur %} · {{ article.get_categorie_display }}</p>
+  <p>{{ article.description|linebreaksbr }}</p>
+  {% if not acces %}
+    <form method="post" action="{% url 'acheter' article.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">Acheter pour <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ article.prix_cubis }}</button>
+    </form>
+  {% endif %}
+</section>
+  {% if user.est_divinite and article.createur_id != user.id %}
+    <form method="post" action="{% url 'basculer_article' article.pk %}" style="margin-top:12px">
+      {% csrf_token %}
+      <button type="submit" class="btn danger">{% if article.est_actif %}🚫 Masquer cet article (Divinité){% else %}✅ Réafficher cet article{% endif %}</button>
+    </form>
+  {% endif %}
+{% endblock %}
