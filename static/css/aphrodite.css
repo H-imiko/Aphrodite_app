@@ -276,3 +276,12 @@ input[type=file] { padding: 9px; }
 .bulle-msg p { margin: 4px 0; }
 .msg-systeme { text-align: center; font-size: .8rem; color: var(--muted);
   padding: 4px 8px; }
+
+/* ===== Icones de la barre du bas ===== */
+.barre .ic-img { width: 32px; height: 32px; object-fit: contain; opacity: .72;
+  transition: opacity .2s, filter .2s; }
+.barre a.actif .ic-img { opacity: 1;
+  filter: drop-shadow(0 0 7px rgba(255, 46, 147, .9)); }
+.barre .ic-cube { opacity: .85; }
+.barre a.actif .ic-cube { opacity: 1; }
+.barre a { gap: 2px; }
