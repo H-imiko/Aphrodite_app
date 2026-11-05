@@ -33,6 +33,7 @@ class Item(models.Model):
     est_officiel = models.BooleanField(default=False)
     est_mis_en_avant = models.BooleanField(default=False)
     est_actif = models.BooleanField(default=True)
+    masque_moderation = models.BooleanField(default=False)
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:

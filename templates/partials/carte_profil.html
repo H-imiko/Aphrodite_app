@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% load static %}
-<section class="profil-pub">
+<section class="profil-pub{% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %} flou-mature{% endif %}">
+  {% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %}<button type="button" class="voile-mature" onclick="this.closest('.profil-pub').classList.remove('flou-mature')">🔞 Contenu mature : touche pour afficher</button>{% endif %}
   <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{{ m.banniere.url }}')"{% endif %}></div>
   <div class="ligne-avatar">
     <img class="avatar" id="pv-avatar" alt=""{% if m.avatar %} src="{{ m.avatar.url }}"{% else %} hidden{% endif %}>
@@ -18,5 +12,3 @@
     <p class="espece">{{ m.get_espece_display }}{% if m.est_divinite %} · Divinité{% endif %}</p>
   </div>
 </section>
-</body>
-</html>

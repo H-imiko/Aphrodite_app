@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Signalements 🚩</h1>
+  <h2>Ouverts ({{ ouverts|length }})</h2>
+  {% for r in ouverts %}
+    <div class="ligne">
+      <div>
+        <strong>{{ r.get_motif_display }}</strong><br>
+        <span class="muted">{% if r.article %}Article « {{ r.article.titre }} »{% else %}Membre {{ r.membre.pseudo_whatsapp }}{% endif %} · par {{ r.auteur.pseudo_whatsapp }} · {{ r.date|date:"d/m/Y H:i" }}</span>
+      </div>
+      <a class="petit" href="{% url 'signalement' r.pk %}">Examiner</a>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun signalement ouvert 🎉</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Derniers traités</h2>
+  {% for r in traites %}
+    <div class="ligne">
+      <div>
+        <strong>{{ r.get_motif_display }}</strong> · {{ r.get_statut_display }}<br>
+        <span class="muted">{% if r.article %}Article « {{ r.article.titre }} »{% else %}Membre {{ r.membre.pseudo_whatsapp }}{% endif %} · par {{ r.traite_par.pseudo_whatsapp|default:"?" }} · {{ r.date_traitement|date:"d/m/Y H:i" }}</span>
+      </div>
+      <a class="petit" href="{% url 'signalement' r.pk %}">Voir</a>
+    </div>
+  {% empty %}
+    <p class="muted">Rien pour l'instant.</p>
+  {% endfor %}
+  <p><a href="{% url 'panel' %}">← Retour au panel</a></p>
+</section>
+{% endblock %}

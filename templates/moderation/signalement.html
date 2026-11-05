@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Signalement #{{ r.pk }}</h1>
+  <p><strong>Motif :</strong> {{ r.get_motif_display }}</p>
+  {% if r.details %}<p>{{ r.details|linebreaksbr }}</p>{% endif %}
+  <p class="muted">Signalé par {{ r.auteur.pseudo_whatsapp }} le {{ r.date|date:"d/m/Y H:i" }}</p>
+  <p><strong>Statut :</strong> {{ r.get_statut_display }}{% if r.traite_par %} par {{ r.traite_par.pseudo_whatsapp }}{% endif %}</p>
+
+  {% if r.article %}
+    <h2>Article signalé</h2>
+    <img class="grand" src="{% url 'telecharger' r.article.pk %}?voir=1" alt="">
+    <p><a href="{% url 'article' r.article.pk %}">{{ r.article.titre }}</a> · {% include "partials/pseudo.html" with u=r.article.createur %} · {% if r.article.est_actif %}visible{% else %}masqué{% endif %}</p>
+  {% else %}
+    <h2>Membre signalé</h2>
+    <p>{% include "partials/pseudo.html" with u=r.membre %}</p>
+  {% endif %}
+
+  {% if r.statut == "ouvert" %}
+    <a class="btn lien" href="{% url 'membre_moderation' cible.pk %}?signalement={{ r.pk }}">🛡️ Modérer {{ cible.pseudo_whatsapp }}</a>
+    {% if r.article and r.article.est_actif %}
+      <form method="post" action="{% url 'signalement_action' r.pk %}" style="margin-top:10px">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="masquer">
+        <button type="submit" class="btn danger">🚫 Masquer l'article et clore</button>
+      </form>
+    {% endif %}
+    <form method="post" action="{% url 'signalement_action' r.pk %}" style="margin-top:10px">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="classer">
+      <button type="submit" class="petit">Classer sans suite</button>
+    </form>
+  {% endif %}
+  <p><a href="{% url 'signalements' %}">← Retour aux signalements</a></p>
+</section>
+{% endblock %}

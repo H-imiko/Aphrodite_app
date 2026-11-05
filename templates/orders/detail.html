@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>{{ c.titre }}</h1>
+  <p><span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span></p>
+  <p class="muted">
+    Acheteur : {{ c.acheteur.pseudo_whatsapp }} · Créateur : {{ c.vendeur.pseudo_whatsapp }}<br>
+    Prix : <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }} · demandée le {{ c.date_creation|date:"d/m/Y" }}
+  </p>
+  <p>{{ c.description|linebreaksbr }}</p>
+
+  {% if fonds_bloques %}
+    <div class="attente">🔒 {{ c.prix_cubis }} Cubis sont bloqués jusqu'à la confirmation de la réception.{% if c.statut == "livree" and c.date_auto_confirmation %} Confirmation automatique le {{ c.date_auto_confirmation|date:"d/m/Y à H:i" }} si l'acheteur ne répond pas.{% endif %}</div>
+  {% endif %}
+
+  {% if est_vendeur and c.statut == "en_cours" or est_vendeur and c.statut == "livree" or est_vendeur and c.statut == "litige" %}
+    <p style="margin-top:12px">
+      {% if numero %}📱 Numéro WhatsApp de l'acheteur : <strong>{{ numero }}</strong><br><span class="muted">Visible seulement par toi, pour cette commande.</span>
+      {% else %}<span class="muted">L'acheteur n'a pas renseigné de numéro WhatsApp : utilise la messagerie ci-dessous.</span>{% endif %}
+    </p>
+  {% endif %}
+
+  {% if c.statut == "litige" %}
+    <div class="alerte">⚖️ Litige ouvert par {{ c.litige_par.pseudo_whatsapp }} : {{ c.raison_litige }}</div>
+  {% endif %}
+
+  {% if peut_accepter %}
+    <form method="post" action="{% url 'commande_action' c.pk %}">
+      {% csrf_token %}<input type="hidden" name="action" value="accepter">
+      <button type="submit" class="btn">✅ Accepter (bloque {{ c.prix_cubis }} Cubis de l'acheteur)</button>
+    </form>
+    <form method="post" action="{% url 'commande_action' c.pk %}" style="margin-top:8px">
+      {% csrf_token %}<input type="hidden" name="action" value="refuser">
+      <button type="submit" class="petit">Refuser la demande</button>
+    </form>
+  {% endif %}
+
+  {% if peut_annuler_demande %}
+    <form method="post" action="{% url 'commande_action' c.pk %}">
+      {% csrf_token %}<input type="hidden" name="action" value="annuler_demande">
+      <button type="submit" class="petit">Annuler ma demande</button>
+    </form>
+  {% endif %}
+
+  {% if peut_livrer %}
+    <form method="post" action="{% url 'commande_action' c.pk %}">
+      {% csrf_token %}<input type="hidden" name="action" value="livrer">
+      <input type="text" name="message" maxlength="1000" placeholder="Message de livraison (facultatif)">
+      <button type="submit" class="btn">📬 J'ai livré la commande</button>
+    </form>
+  {% endif %}
+
+  {% if peut_confirmer %}
+    <form method="post" action="{% url 'commande_action' c.pk %}">
+      {% csrf_token %}<input type="hidden" name="action" value="confirmer">
+      <button type="submit" class="btn">✅ Je confirme avoir reçu ma commande (payer le Créateur)</button>
+    </form>
+  {% endif %}
+
+  {% if peut_annuler_vendeur %}
+    <form method="post" action="{% url 'commande_action' c.pk %}" style="margin-top:8px">
+      {% csrf_token %}<input type="hidden" name="action" value="annuler_vendeur">
+      <button type="submit" class="petit">Annuler et rembourser l'acheteur</button>
+    </form>
+  {% endif %}
+
+  {% if peut_litige %}
+    <h2>Un problème ?</h2>
+    <form method="post" action="{% url 'commande_action' c.pk %}">
+      {% csrf_token %}<input type="hidden" name="action" value="litige">
+      <input type="text" name="raison" minlength="10" maxlength="500" placeholder="Explique le problème (10 caractères minimum)" required>
+      <button type="submit" class="btn danger">⚖️ Ouvrir un litige</button>
+    </form>
+  {% endif %}
+
+  {% if peut_trancher %}
+    <h2>⚖️ Décision de la Divinité</h2>
+    <p class="muted">Lis le fil ci-dessous, puis décide. La décision est définitive et enregistrée dans le journal.</p>
+    <form method="post" action="{% url 'commande_trancher' c.pk %}">
+      {% csrf_token %}
+      <select name="decision">
+        <option value="rembourser">Rembourser l'acheteur</option>
+        <option value="payer">Payer le Créateur</option>
+      </select>
+      <input type="text" name="note" maxlength="250" placeholder="Explique ta décision (obligatoire)" required>
+      <button type="submit" class="btn danger">Appliquer la décision</button>
+    </form>
+  {% endif %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Messagerie privée</h2>
+  <p class="muted">Seuls l'acheteur et le Créateur voient ces messages. Une Divinité n'y a accès qu'en cas de litige.</p>
+  <div class="fil">
+    {% for m in fil %}
+      {% if m.systeme %}
+        <div class="msg-systeme">{{ m.texte }} · {{ m.date|date:"d/m H:i" }}</div>
+      {% else %}
+        <div class="bulle-msg{% if m.auteur_id == user.id %} moi{% endif %}">
+          <strong>{{ m.auteur.pseudo_whatsapp }}</strong>{% if m.auteur.est_divinite %} <span class="tag">Divinité</span>{% endif %}
+          <p>{{ m.texte|linebreaksbr }}</p>
+          <span class="muted">{{ m.date|date:"d/m H:i" }}</span>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if peut_ecrire %}
+    <form method="post" action="{% url 'commande_message' c.pk %}">
+      {% csrf_token %}
+      <textarea name="texte" rows="3" maxlength="1000" placeholder="Écrire un message…" required></textarea>
+      <button type="submit" class="btn">Envoyer</button>
+    </form>
+  {% else %}
+    <p class="muted">La messagerie est fermée pour cette commande.</p>
+  {% endif %}
+  <p><a href="{% url 'commandes' %}">← Mes commandes</a></p>
+</section>
+{% endblock %}

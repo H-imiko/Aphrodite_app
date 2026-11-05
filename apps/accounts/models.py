@@ -1,6 +1,3 @@
-from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
@@ -58,13 +55,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     banniere = models.ImageField(upload_to="bannieres/", blank=True, null=True)
     titre = models.CharField(max_length=60, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
+
     solde_cubis = models.PositiveIntegerField(default=0)
     serie_connexion = models.PositiveIntegerField(default=0)
     derniere_connexion_bonus = models.DateField(null=True, blank=True)
 
+    profil_mature = models.BooleanField(default=False)
+    afficher_mature = models.BooleanField(default=False)
+
     est_divinite = models.BooleanField(default=False)
-    est_suspendu = models.BooleanField(default=False)
     createur_valide = models.BooleanField(default=False)
+    est_suspendu = models.BooleanField(default=False)
     date_fin_suspension = models.DateTimeField(null=True, blank=True)
 
     date_inscription = models.DateTimeField(default=timezone.now)

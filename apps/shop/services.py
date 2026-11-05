@@ -6,13 +6,16 @@ from apps.inventory.models import InventoryItem
 from .models import Item
 
 
-def acheter(acheteur, item_id):
+def acheter(acheteur, item_id, prix_attendu=None):
     with transaction.atomic():
         try:
             item = Item.objects.select_related("createur").get(
                 pk=item_id, est_actif=True)
         except Item.DoesNotExist:
             raise ErreurEconomie("Cet article n'est plus disponible.")
+        if prix_attendu is not None and prix_attendu != item.prix_cubis:
+            raise ErreurEconomie(
+                "Le prix de cet article a changé. Vérifie le nouveau prix.")
         if item.createur_id == acheteur.pk:
             raise ErreurEconomie("C'est ton propre article.")
         if acheteur.est_suspendu:

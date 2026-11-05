@@ -1,33 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>boutique</title>
-</head>
-<body>
-
-</body>
-</html>
 {% extends "base.html" %}
 {% block content %}
 <h1>Boutique</h1>
-<div class="filtres">
-  <a href="{% url 'boutique' %}">Tout</a>
-  {% for val, nom in categories %}<a href="?categorie={{ val }}">{{ nom }}</a>{% endfor %}
-</div>
+
+<form method="get" class="recherche card">
+  <input type="search" name="q" value="{{ q }}" maxlength="60" placeholder="Rechercher un article ou un créateur…">
+  <div class="recherche-ligne">
+    <select name="categorie">
+      <option value="">Toutes les catégories</option>
+      {% for val, nom in categories %}<option value="{{ val }}"{% if val == cat %} selected{% endif %}>{{ nom }}</option>{% endfor %}
+    </select>
+    <select name="tri">
+      {% for cle, nom in tris %}<option value="{{ cle }}"{% if cle == tri %} selected{% endif %}>{{ nom }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="recherche-ligne">
+    <button type="submit" class="btn">Rechercher</button>
+    {% if q or cat or tri != "recent" %}<a class="petit" href="{% url 'boutique' %}">Réinitialiser</a>{% endif %}
+  </div>
+</form>
+
+<p class="muted">{{ total }} article{{ total|pluralize }}</p>
+
 <div class="grille">
-   {% for a in articles %}
+  {% for a in page %}
     <div class="article">
       <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
       <div class="info">
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
         {% if a.est_officiel %}<span class="tag">Officiel</span>{% endif %}
+        {% if a.pk in possedes %}<span class="tag possede">Possédé</span>{% endif %}
         <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
         <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }}</div>
       </div>
     </div>
   {% empty %}
-    <p class="muted">Aucun article pour l'instant.</p>
+    <p class="muted">Aucun article ne correspond à ta recherche.</p>
   {% endfor %}
 </div>
+
+{% if page.has_other_pages %}
+<div class="pagination">
+  {% if page.has_previous %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">← Précédent</a>{% endif %}
+  <span class="muted">Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Suivant →</a>{% endif %}
+</div>
+{% endif %}
 {% endblock %}

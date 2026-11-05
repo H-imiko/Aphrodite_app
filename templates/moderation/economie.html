@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>economie</title>
-</head>
-<body>
 {% extends "base.html" %}
 {% block content %}
 <h1>Économie 📈</h1>
@@ -14,10 +7,10 @@
 {% endif %}
 
 <div class="stats">
-  <div class="stat"><span class="muted">En circulation</span><strong><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ circulation }}</strong></div>
+  <div class="stat"><span class="muted">Chez les membres</span><strong>{{ circulation }}</strong></div>
+  <div class="stat"><span class="muted">Bloqués (commandes)</span><strong>{{ bloques }}</strong></div>
   <div class="stat"><span class="muted">Croissance 30 jours</span><strong>{% if croissance is None %}—{% else %}{{ croissance }} %{% endif %}</strong></div>
-  <div class="stat"><span class="muted">Émis (total)</span><strong>{{ emis }}</strong></div>
-  <div class="stat"><span class="muted">Détruits (total)</span><strong>{{ detruits }}</strong></div>
+  <div class="stat"><span class="muted">Émis / Détruits</span><strong>{{ emis }} / {{ detruits }}</strong></div>
 </div>
 
 <section class="card">
@@ -35,7 +28,7 @@
   {% for m in mouvements %}
     <div class="ligne">
       <div>{{ m.nom }}<br><span class="muted">{{ m.nb }} opération(s)</span></div>
-      <div><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ m.total }}</div>
+      <div>{{ m.total }}</div>
     </div>
   {% empty %}
     <p class="muted">Aucun mouvement.</p>
@@ -48,7 +41,7 @@
   {% for u in top %}
     <div class="ligne">
       <div>{% include "partials/pseudo.html" with u=u %}</div>
-      <div><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ u.solde_cubis }}</div>
+      <div>{{ u.solde_cubis }}</div>
     </div>
   {% endfor %}
 </section>
@@ -56,11 +49,9 @@
 <section class="card" style="margin-top:16px">
   <h2>Contrôle</h2>
   {% if ecart %}
-    <p>⚠️ Écart de {{ ecart }} Cubis entre les soldes et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>
+    <p>⚠️ Écart de {{ ecart }} Cubis entre les soldes (plus les Cubis bloqués) et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>
   {% else %}
     <p>✅ Les soldes correspondent exactement à l'historique des transactions.</p>
   {% endif %}
 </section>
 {% endblock %}
-</body>
-</html>

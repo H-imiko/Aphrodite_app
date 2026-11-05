@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Supprimer « {{ article.titre }} » ?</h1>
+  {% if nb_achats %}
+    <div class="alerte">Cet article a été acheté {{ nb_achats }} fois. Les acheteurs doivent pouvoir le garder : tu ne peux pas le supprimer, seulement le masquer.</div>
+  {% elif signale %}
+    <div class="alerte">Cet article a fait l'objet d'un signalement : il ne peut pas être supprimé. Tu peux le masquer.</div>
+  {% else %}
+    <p>La suppression est définitive et l'image sera effacée.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn danger">Supprimer définitivement</button>
+    </form>
+  {% endif %}
+  <p><a href="{% url 'mes_articles' %}">← Retour à mes articles</a></p>
+</section>
+{% endblock %}

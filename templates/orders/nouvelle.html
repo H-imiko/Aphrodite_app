@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Commander à {{ vendeur.pseudo_whatsapp }} 📦</h1>
+  <p>{% include "partials/pseudo.html" with u=vendeur %}</p>
+  <div class="attente">
+    <strong>Comment ça marche</strong><br>
+    1. Tu décris ta demande et proposes un prix.<br>
+    2. Si le Créateur accepte, tes Cubis sont <strong>bloqués</strong> (il ne les reçoit pas encore).<br>
+    3. Il te livre (messagerie, WhatsApp…). Tu confirmes la réception : il est payé. Sans réponse de ta part, la confirmation est automatique après quelques jours.<br>
+    4. En cas de problème, tu ouvres un <strong>litige</strong> : une Divinité tranche.
+  </div>
+  <form method="post" style="margin-top:14px">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Envoyer la demande</button>
+  </form>
+  <p><a href="{% url 'membre' vendeur.pk %}">← Annuler</a></p>
+</section>
+{% endblock %}

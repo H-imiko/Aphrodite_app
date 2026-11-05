@@ -33,7 +33,8 @@ class ProfilForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("avatar", "banniere", "pseudo_whatsapp", "titre",
-                  "bio_rp", "numero_whatsapp")
+                  "bio_rp", "numero_whatsapp",
+                  "profil_mature", "afficher_mature")
         labels = {
             "avatar": "Photo de profil",
             "banniere": "Bannière",
@@ -42,6 +43,10 @@ class ProfilForm(forms.ModelForm):
             "bio_rp": "Biographie RP",
             "numero_whatsapp": "Numéro WhatsApp (jamais public, visible "
                                "seulement lors d'une commande)",
+            "profil_mature": "Ma photo ou ma bannière contient du contenu "
+                             "suggestif (sera floutée pour les autres)",
+            "afficher_mature": "Afficher le contenu mature des autres "
+                               "sans flou",
         }
         widgets = {
             "avatar": forms.FileInput(attrs={"accept": "image/*"}),

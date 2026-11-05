@@ -11,5 +11,5 @@ def donner_bonus(sender, request, user, **kwargs):
     if montant and request is not None:
         messages.success(
             request,
-            f"Bonus quotidien : +{montant} Cubis <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> "
+            f"Bonus quotidien : +{montant} Cubis 💎 "
             f"(série : {user.serie_connexion} jour(s))")

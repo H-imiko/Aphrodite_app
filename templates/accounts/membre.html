@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
 {% extends "base.html" %}
 {% block content %}
 {% include "partials/carte_profil.html" with m=membre %}
@@ -16,6 +6,7 @@
 <div class="actions-profil">
   <a class="petit" href="{% url 'modifier_profil' %}">✏️ Modifier</a>
   <a class="petit" href="{% url 'transactions' %}">🧾 Transactions</a>
+  <a class="petit" href="{% url 'commandes' %}">📦 Mes commandes</a>
   {% if not membre.createur_valide %}
     {% if candidature_en_cours %}
       <span class="petit inactif">⏳ Candidature en attente</span>
@@ -26,6 +17,12 @@
   <form method="post" action="{% url 'deconnexion' %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit">🚪 Déconnexion</button>
   </form>
+</div>
+{% else %}
+<div class="actions-profil">
+  {% if membre.peut_publier and not user.est_divinite %}<a class="petit" href="{% url 'commande_nouvelle' membre.pk %}">📦 Commander une création</a>{% endif %}
+  <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}">🚩 Signaler</a>
+  {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">🛡️ Modérer</a>{% endif %}
 </div>
 {% endif %}
 

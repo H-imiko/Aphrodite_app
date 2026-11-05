@@ -1,12 +1,8 @@
 from django.contrib import admin
-from .models import AuditLog
+from .models import AuditLog, Report, Sanction
 
 
-@admin.register(AuditLog)
-class AuditLogAdmin(admin.ModelAdmin):
-    list_display = ("date", "action", "auteur", "cible", "details")
-    list_filter = ("action",)
-
+class LectureSeule(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
@@ -15,3 +11,21 @@ class AuditLogAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(AuditLog)
+class AuditLogAdmin(LectureSeule):
+    list_display = ("date", "action", "auteur", "cible", "details")
+    list_filter = ("action",)
+
+
+@admin.register(Report)
+class ReportAdmin(LectureSeule):
+    list_display = ("date", "motif", "statut", "auteur", "traite_par")
+    list_filter = ("statut", "motif")
+
+
+@admin.register(Sanction)
+class SanctionAdmin(LectureSeule):
+    list_display = ("date", "type", "user", "par", "raison")
+    list_filter = ("type",)

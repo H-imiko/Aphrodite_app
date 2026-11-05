@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Signaler 🚩</h1>
+  <p class="muted">Tu signales : <strong>{% if article %}l'article « {{ article.titre }} »{% else %}le membre {{ membre.pseudo_whatsapp }}{% endif %}</strong></p>
+  <p class="muted">Ton signalement est lu par les Divinités. Les faux signalements répétés peuvent être sanctionnés.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Envoyer le signalement</button>
+  </form>
+</section>
+{% endblock %}

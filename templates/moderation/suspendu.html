@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compte suspendu · Aphrodite</title>
+  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}">
+</head>
+<body>
+<main>
+  <section class="card center">
+    <h1>Compte suspendu ⏸️</h1>
+    <p>Ton compte est suspendu jusqu'au <strong>{{ user.date_fin_suspension|date:"d/m/Y à H:i" }}</strong>.</p>
+    {% if derniere %}<p class="muted">Motif : {{ derniere.raison }}</p>{% endif %}
+    <p class="muted">Ensuite, tout redevient normal automatiquement. Merci de relire le règlement de la communauté.</p>
+    <form method="post" action="{% url 'deconnexion' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">Se déconnecter</button>
+    </form>
+  </section>
+</main>
+</body>
+</html>

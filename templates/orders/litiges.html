@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Litiges de commandes ⚖️</h1>
+  <h2>À trancher ({{ ouverts|length }})</h2>
+  {% for c in ouverts %}
+    <div class="ligne">
+      <div>
+        <strong>{{ c.titre }}</strong> · <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }}<br>
+        <span class="muted">{{ c.acheteur.pseudo_whatsapp }} → {{ c.vendeur.pseudo_whatsapp }} · ouvert par {{ c.litige_par.pseudo_whatsapp }}</span>
+      </div>
+      <a class="petit" href="{% url 'commande' c.pk %}">Examiner</a>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun litige en attente 🎉</p>
+  {% endfor %}
+</section>
+<section class="card" style="margin-top:16px">
+  <h2>Derniers tranchés</h2>
+  {% for c in tranches %}
+    <div class="ligne">
+      <div>
+        <strong>{{ c.titre }}</strong> · {{ c.get_statut_display }}<br>
+        <span class="muted">par {{ c.tranche_par.pseudo_whatsapp }} · {{ c.date_fin|date:"d/m/Y H:i" }}</span>
+      </div>
+      <a class="petit" href="{% url 'commande' c.pk %}">Voir</a>
+    </div>
+  {% empty %}
+    <p class="muted">Rien pour l'instant.</p>
+  {% endfor %}
+  <p><a href="{% url 'panel' %}">← Retour au panel</a></p>
+</section>
+{% endblock %}

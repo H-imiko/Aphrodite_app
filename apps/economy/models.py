@@ -12,12 +12,15 @@ class Transaction(models.Model):
         BONUS_CREATEUR = "bonus_createur", "Bonus Créateur"
         REMBOURSEMENT = "remboursement", "Remboursement"
         DESTRUCTION = "destruction", "Cubis détruits (achat officiel)"
+        SANCTION = "sanction", "Réduction de Cubis (sanction)"
+        SEQUESTRE = "sequestre", "Cubis bloqués (commande)"
+        LIBERATION = "liberation", "Paiement d'une commande"
 
     # expediteur vide = Trésor (système)
     expediteur = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True,
         on_delete=models.SET_NULL, related_name="transactions_envoyees")
-    # destinataire vide = Cubis détruits
+    # destinataire vide = Cubis détruits ou bloqués
     destinataire = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True,
         on_delete=models.CASCADE, related_name="transactions_recues")

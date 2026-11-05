@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Modération 🛡️</h1>
+  <p>{% include "partials/pseudo.html" with u=cible %}</p>
+  <p class="muted">{{ cible.get_espece_display }} · inscrit le {{ cible.date_inscription|date:"d/m/Y" }} · {{ cible.solde_cubis }} Cubis</p>
+  {% if nb_signalements %}<p>🚩 {{ nb_signalements }} signalement(s) ouvert(s) · <a href="{% url 'signalements' %}">voir</a></p>{% endif %}
+  {% if signalement %}<p class="muted">Lié au signalement #{{ signalement.pk }} ({{ signalement.get_motif_display }}). Il sera clos après ta décision.</p>{% endif %}
+  {% if cible.est_suspendu %}
+    <div class="alerte">⏸️ Suspendu jusqu'au {{ cible.date_fin_suspension|date:"d/m/Y H:i" }}</div>
+    {% if not protege %}
+      <form method="post" action="{% url 'sanction_action' cible.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="lever">
+        <button type="submit" class="petit">Lever la suspension</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</section>
+
+{% if protege %}
+  <section class="card" style="margin-top:16px">
+    <p class="muted">Tu ne peux pas sanctionner ce compte (toi-même, la propriétaire, ou une Divinité si tu n'es pas Safir).</p>
+  </section>
+{% else %}
+  <section class="card" style="margin-top:16px">
+    <h2>⚠️ Avertir</h2>
+    <form method="post" action="{% url 'sanction_action' cible.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="avertir">
+      <input type="hidden" name="signalement" value="{{ signalement.pk|default:'' }}">
+      <input type="text" name="raison" maxlength="300" placeholder="Raison (obligatoire)" required>
+      <button type="submit" class="btn">Envoyer l'avertissement</button>
+    </form>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <h2>⏸️ Suspendre</h2>
+    <form method="post" action="{% url 'sanction_action' cible.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="suspendre">
+      <input type="hidden" name="signalement" value="{{ signalement.pk|default:'' }}">
+      <select name="jours">
+        {% for j in durees %}<option value="{{ j }}">{{ j }} jours</option>{% endfor %}
+      </select>
+      <input type="text" name="raison" maxlength="300" placeholder="Raison (obligatoire)" required>
+      <button type="submit" class="btn danger">Suspendre le compte</button>
+    </form>
+  </section>
+
+  {% if peut_decider %}
+  <section class="card" style="margin-top:16px">
+    <h2>🎨 Retirer le statut Créateur</h2>
+    <p class="muted">Ses articles seront masqués. Réservé à Safir.</p>
+    <form method="post" action="{% url 'sanction_action' cible.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="retirer_createur">
+      <input type="hidden" name="signalement" value="{{ signalement.pk|default:'' }}">
+      <input type="text" name="raison" maxlength="300" placeholder="Raison (obligatoire)" required>
+      <button type="submit" class="btn danger">Retirer le statut</button>
+    </form>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Réduire les Cubis</h2>
+    <p class="muted">Abus grave seulement. Les Cubis retirés sont détruits. Réservé à Safir.</p>
+    <form method="post" action="{% url 'sanction_action' cible.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="reduire">
+      <input type="hidden" name="signalement" value="{{ signalement.pk|default:'' }}">
+      <input type="number" name="montant" min="1" placeholder="Montant à retirer" required>
+      <input type="text" name="raison" maxlength="300" placeholder="Raison (obligatoire)" required>
+      <button type="submit" class="btn danger">Retirer les Cubis</button>
+    </form>
+  </section>
+  {% else %}
+  <section class="card" style="margin-top:16px">
+    <p class="muted">Le retrait du statut Créateur et la réduction de Cubis sont des décisions de Safir. Signale-lui le cas.</p>
+  </section>
+  {% endif %}
+{% endif %}
+
+<section class="card" style="margin-top:16px">
+  <h2>Historique des sanctions</h2>
+  {% for s in sanctions %}
+    <div class="ligne">
+      <div>
+        <strong>{{ s.get_type_display }}</strong>{% if s.duree_jours %} · {{ s.duree_jours }} jours{% endif %}{% if s.montant %} · {{ s.montant }} Cubis{% endif %}<br>
+        <span class="muted">{{ s.raison }} · par {{ s.par.pseudo_whatsapp|default:"?" }} · {{ s.date|date:"d/m/Y H:i" }}</span>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune sanction.</p>
+  {% endfor %}
+  <p><a href="{% url 'membre' cible.pk %}">← Voir son profil</a></p>
+</section>
+{% endblock %}

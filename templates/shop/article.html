@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Article</title>
-</head>
-<body>
-
-</body>
-</html>
-
 {% extends "base.html" %}
 {% block content %}
 <section class="card">
@@ -19,20 +8,38 @@
     {% if article.apercu %}<img class="grand" src="{{ article.apercu.url }}" alt="">{% endif %}
     <p class="muted">Aperçu flouté : l'original se débloque après l'achat.</p>
   {% endif %}
+
   <h1>{{ article.titre }} {% if article.est_officiel %}<span class="tag">Officiel</span>{% endif %}</h1>
-    <p class="muted">{% include "partials/pseudo.html" with u=article.createur %} · {{ article.get_categorie_display }}</p>
+  <p class="muted">{% include "partials/pseudo.html" with u=article.createur %} · {{ article.get_categorie_display }}</p>
   <p>{{ article.description|linebreaksbr }}</p>
+
+  {% if not article.est_actif %}
+    <div class="alerte">Cet article est masqué{% if article.masque_moderation %} par la modération{% endif %}.</div>
+  {% endif %}
+
   {% if not acces %}
-    <form method="post" action="{% url 'acheter' article.pk %}">
-      {% csrf_token %}
-      <button type="submit" class="btn">Acheter pour <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ article.prix_cubis }}</button>
-    </form>
+    <p class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ article.prix_cubis }}</p>
+    <a class="btn lien" href="{% url 'acheter' article.pk %}">Acheter</a>
+  {% elif possede %}
+    <p class="muted">✅ Cet article est dans ton inventaire.</p>
+  {% endif %}
+
+  {% if est_proprietaire %}
+    <p class="muted">{{ nb_achats }} achat{{ nb_achats|pluralize }}</p>
+    {% if user.peut_publier %}
+    <div class="actions-article">
+      <a class="petit" href="{% url 'modifier_article' article.pk %}">✏️ Modifier</a>
+      <a class="petit" href="{% url 'supprimer_article' article.pk %}">🗑️ Supprimer</a>
+    </div>
+    {% endif %}
+  {% else %}
+    <p><a class="petit" href="{% url 'signaler' 'article' article.pk %}">🚩 Signaler cet article</a></p>
+    {% if user.est_divinite %}
+      <form method="post" action="{% url 'basculer_article' article.pk %}" style="margin-top:12px">
+        {% csrf_token %}
+        <button type="submit" class="btn danger">{% if article.est_actif %}🚫 Masquer cet article (Divinité){% else %}✅ Réafficher cet article{% endif %}</button>
+      </form>
+    {% endif %}
   {% endif %}
 </section>
-  {% if user.est_divinite and article.createur_id != user.id %}
-    <form method="post" action="{% url 'basculer_article' article.pk %}" style="margin-top:12px">
-      {% csrf_token %}
-      <button type="submit" class="btn danger">{% if article.est_actif %}🚫 Masquer cet article (Divinité){% else %}✅ Réafficher cet article{% endif %}</button>
-    </form>
-  {% endif %}
 {% endblock %}
