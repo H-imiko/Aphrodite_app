@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Catalogue des offrandes 🌹</h1>
+<section class="card">
+  {% for o in offrandes %}
+    <div class="ligne">
+      <div class="don">
+        <img class="don-image" src="{{ o.image.url }}" alt="">
+        <div><strong>{{ o.nom }}</strong>{% if not o.est_actif %} <span class="tag">retirée</span>{% endif %}<br><span class="muted"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ o.prix_cubis }} · ordre {{ o.ordre }}</span></div>
+      </div>
+      <div class="actions-article">
+        <a class="petit" href="{% url 'offrande_admin_modifier' o.pk %}">✏️</a>
+        <form method="post" action="{% url 'offrande_admin_basculer' o.pk %}" class="inline">{% csrf_token %}<button type="submit" class="petit">{% if o.est_actif %}Retirer{% else %}Remettre{% endif %}</button></form>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Le catalogue est vide. Ajoute une offrande ci-dessous, ou lance la commande <code>python manage.py charger_offrandes_exemple</code> pour un catalogue de départ.</p>
+  {% endfor %}
+</section>
+<section class="card" style="margin-top:16px">
+  <h2>Ajouter une offrande</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Ajouter</button>
+  </form>
+  <p><a href="{% url 'panel' %}">← Retour au panel</a></p>
+</section>
+{% endblock %}

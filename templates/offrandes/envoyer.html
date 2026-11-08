@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Envoyer une offrande 🌹</h1>
+  <p class="muted">À {% include "partials/pseudo.html" with u=dest %}</p>
+  <p class="muted">Les Cubis dépensés sont détruits : l'offrande ne peut ni être revendue ni être transformée en Cubis. Le membre peut la masquer et bloquer l'expéditeur.</p>
+  {% if erreur %}<div class="alerte">{{ erreur }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="choix-offrandes">
+      {% for o in offrandes %}
+      <label class="choix">
+        <input type="radio" name="offrande" value="{{ o.pk }}"{% if choix == o.pk|stringformat:"s" %} checked{% endif %} required>
+        <span class="carte-offrande"><img src="{{ o.image.url }}" alt=""><strong>{{ o.nom }}</strong><span class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ o.prix_cubis }}</span></span>
+      </label>
+      {% empty %}
+      <p class="muted">Le catalogue est vide pour l'instant.</p>
+      {% endfor %}
+    </div>
+    <p><label>Petit message (facultatif)<input type="text" name="message" maxlength="150"></label></p>
+    <p><label><input type="checkbox" name="anonyme" value="1"> Envoyer anonymement</label></p>
+    <button type="submit" class="btn">Envoyer l'offrande</button>
+  </form>
+  <p class="muted">Ton solde : <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</p>
+  <p><a href="{% url 'membre' dest.pk %}">← Annuler</a></p>
+</section>
+{% endblock %}

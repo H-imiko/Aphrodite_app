@@ -30,7 +30,7 @@ CONDITION_EMIS = (
     | Q(expediteur__est_divinite=True, type=T.ACHAT)
 )
 # Cubis "détruits" : achats officiels + sanctions.
-CONDITION_DETRUITS = Q(type__in=[T.DESTRUCTION, T.SANCTION])
+CONDITION_DETRUITS = Q(type__in=[T.DESTRUCTION, T.SANCTION, T.OFFRANDE])
 
 
 def divinite_requise(vue):
@@ -192,6 +192,8 @@ def membre_moderation(request, pk):
         "signalement": signalement_lie,
         "nb_signalements": cible.signalements_recus.filter(
             statut=Report.Statut.OUVERT).count(),
+        "offrandes_recues": cible.offrandes_recues.select_related(
+            "expediteur", "offrande")[:20],
         "peut_decider": request.user.is_superuser,
         "protege": protege,
         "durees": sanctions.DUREES,

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Offrandes de {{ membre.pseudo_whatsapp }} 🌹</h1>
+  {% for d in dons %}
+    <div class="ligne{% if d.masque %} masquee{% endif %}">
+      <div class="don">
+        <img class="don-image" src="{{ d.offrande.image.url }}" alt="">
+        <div>
+          <strong>{{ d.offrande.nom }}</strong>{% if d.masque %} <span class="tag">masquée</span>{% endif %}<br>
+          <span class="muted">{% if d.anonyme %}Anonyme{% else %}de <a href="{% url 'membre' d.expediteur.pk %}">{{ d.expediteur.pseudo_whatsapp }}</a>{% endif %} · {{ d.date|date:"d/m/Y" }}</span>
+          {% if d.message %}<div>« {{ d.message }} »</div>{% endif %}
+        </div>
+      </div>
+      {% if est_moi %}
+      <div class="actions-article">
+        <form method="post" action="{% url 'offrande_masquer' d.pk %}" class="inline">
+          {% csrf_token %}<button type="submit" class="petit">{% if d.masque %}Réafficher{% else %}Masquer{% endif %}</button>
+        </form>
+        <form method="post" action="{% url 'offrande_bloquer' d.pk %}" class="inline" onsubmit="return confirm('Bloquer cet expéditeur ? Il ne pourra plus t\'envoyer d\'offrande.');">
+          {% csrf_token %}<button type="submit" class="petit">🚫 Bloquer</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  {% empty %}
+    <p class="muted">Aucune offrande pour l'instant.</p>
+  {% endfor %}
+  {% if est_moi %}<p><a class="petit" href="{% url 'blocages' %}">🚫 Membres bloqués</a></p>{% endif %}
+  <p><a href="{% url 'membre' membre.pk %}">← Retour au profil</a></p>
+</section>
+{% endblock %}

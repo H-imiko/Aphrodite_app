@@ -51,6 +51,23 @@
   {% if membre.bio_rp %}<p>{{ membre.bio_rp|linebreaksbr }}</p>{% else %}<p class="muted">Pas encore de biographie.</p>{% endif %}
 </section>
 
+<section class="card" style="margin-top:12px">
+  <h2>🌹 Offrandes reçues{% if nb_offrandes %} ({{ nb_offrandes }}){% endif %}</h2>
+  {% if offrandes %}
+    <div class="vitrine-offrandes">
+      {% for o in offrandes %}
+        <div class="offrande-icone" title="{{ o.nom }}"><img src="{{ o.image.url }}" alt="{{ o.nom }}">{% if o.n > 1 %}<span class="compte">×{{ o.n }}</span>{% endif %}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">Aucune offrande pour l'instant.</p>
+  {% endif %}
+  <div class="actions-article">
+    <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">Voir tout</a>
+    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}">🌹 Envoyer une offrande</a>{% endif %}
+  </div>
+</section>
+
 {% if articles %}
 <h2 style="margin-top:20px">Vitrine</h2>
 <div class="grille">

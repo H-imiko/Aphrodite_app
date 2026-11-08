@@ -321,3 +321,31 @@ input[type=file] { padding: 9px; }
 .notif { padding: 12px 0; border-bottom: 1px solid rgba(255, 107, 193, .14); }
 .notif.non-lue { border-left: 3px solid var(--neon); padding-left: 10px; }
 .petit-texte { font-size: .75rem; }
+
+/* ===== Offrandes ===== */
+.vitrine-offrandes { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 12px; }
+.offrande-icone { position: relative; width: 52px; height: 52px; }
+.offrande-icone img { width: 100%; height: 100%; object-fit: contain; }
+.offrande-icone .compte { position: absolute; right: -6px; bottom: -4px;
+  background: var(--neon); color: #fff; font-size: .65rem; border-radius: 9px;
+  padding: 0 5px; }
+.choix-offrandes { display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin: 12px 0; }
+.choix { position: relative; display: block; cursor: pointer; }
+.choix input { position: absolute; opacity: 0; pointer-events: none; }
+.carte-offrande { display: flex; flex-direction: column; align-items: center;
+  gap: 4px; text-align: center; padding: 10px 6px;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: rgba(255, 255, 255, .04); }
+.carte-offrande img { width: 56px; height: 56px; object-fit: contain; }
+.carte-offrande strong { font-size: .78rem; font-family: var(--titre); }
+.choix input:checked + .carte-offrande { border-color: var(--rose);
+  box-shadow: 0 0 14px rgba(255, 46, 147, .5);
+  background: rgba(255, 46, 147, .12); }
+.choix input:focus-visible + .carte-offrande { outline: 2px solid var(--rose); }
+.don { display: flex; gap: 10px; align-items: center; }
+.don-image { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+.ligne.masquee { opacity: .55; }
+@media (max-width: 420px) {
+  .choix-offrandes { grid-template-columns: repeat(2, 1fr); }
+}

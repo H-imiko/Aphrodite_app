@@ -81,6 +81,22 @@
 {% endif %}
 
 <section class="card" style="margin-top:16px">
+  <h2>Offrandes reçues (vue Divinités)</h2>
+  <p class="muted">Les Divinités voient l'expéditeur réel, même quand l'offrande est anonyme.</p>
+  {% for d in offrandes_recues %}
+    <div class="ligne">
+      <div>
+        <strong>{{ d.offrande.nom }}</strong>{% if d.masque %} <span class="tag">masquée</span>{% endif %}<br>
+        <span class="muted">de {{ d.expediteur.pseudo_whatsapp }}{% if d.anonyme %} (anonyme){% endif %} · {{ d.date|date:"d/m/Y H:i" }}</span>
+        {% if d.message %}<div>« {{ d.message }} »</div>{% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune.</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
   <h2>Historique des sanctions</h2>
   {% for s in sanctions %}
     <div class="ligne">

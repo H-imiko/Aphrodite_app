@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.db.models import Count
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from apps.creators.models import Candidature
 from apps.inventory.models import Equipement
+from apps.offrandes.models import Offrande, OffrandeEnvoyee
 from apps.shop.models import Item
 from apps.social.models import Abonnement
 from .forms import InscriptionForm, ProfilForm
@@ -64,6 +66,11 @@ def membre(request, pk):
     return render(request, "accounts/membre.html", {
         "membre": m, "articles": articles, "est_moi": est_moi,
         "equip": _equipement(m),
+        "offrandes": list(Offrande.objects.filter(
+            dons__destinataire=m, dons__masque=False
+        ).annotate(n=Count("dons")).order_by("-n")[:12]),
+        "nb_offrandes": OffrandeEnvoyee.objects.filter(
+            destinataire=m, masque=False).count(),
         "nb_abonnes": m.abonnes.count(),
         "nb_abonnements": m.abonnements.count(),
         "suis": (not est_moi and Abonnement.objects.filter(

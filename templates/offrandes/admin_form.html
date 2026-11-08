@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Modifier « {{ offrande.nom }} »</h1>
+  <img class="don-image" src="{{ offrande.image.url }}" alt="">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Enregistrer</button>
+  </form>
+  <p><a href="{% url 'offrandes_admin' %}">← Retour au catalogue</a></p>
+</section>
+{% endblock %}
