@@ -1,19 +1,14 @@
-MISE A JOUR APHRODITE (etapes 5 + 6 + commandes)
+MISE A JOUR APHRODITE : cadeaux d'objets, abonnements, likes
+(+ tout le contenu des zips precedents : fichiers communs)
 
 1. Dezippe ce dossier A LA RACINE du projet (la ou se trouve manage.py).
    Accepte de REMPLACER les fichiers existants.
-2. Cree le dossier vide s'il n'existe pas : templates/orders
-   (il est deja dans le zip).
-3. Modifie config/settings.py :
-   - INSTALLED_APPS : ajouter  'apps.orders',  (et verifier 'apps.moderation', 'apps.creators')
-   - MIDDLEWARE : ajouter apres MessageMiddleware :
-         'apps.moderation.middleware.ModerationMiddleware',
-   - TEMPLATES > OPTIONS > context_processors : ajouter :
-         'apps.orders.context.commandes_a_traiter',
-4. config/urls.py : ajouter dans urlpatterns :
-       path('', include('apps.orders.urls')),
-5. Terminal :
-       python manage.py makemigrations accounts economy shop moderation orders
+2. config/settings.py : dans INSTALLED_APPS, ajouter :
+       'apps.social',
+3. config/urls.py : ajouter dans urlpatterns :
+       path('', include('apps.social.urls')),
+4. Terminal (une commande a la fois) :
+       python manage.py makemigrations inventory social
        python manage.py migrate
        python manage.py runserver
-6. Ctrl+F5 dans le navigateur.
+5. Ctrl+F5 dans le navigateur.

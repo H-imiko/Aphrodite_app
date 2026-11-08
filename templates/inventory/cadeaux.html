@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mes cadeaux 🎁</h1>
+
+<section class="card">
+  <h2>Cadeaux reçus ({{ recus|length }})</h2>
+  {% for t in recus %}
+    <div class="ligne">
+      <div>
+        <strong>{{ t.item.titre }}</strong><br>
+        <span class="muted">de {{ t.expediteur.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
+        {% if t.message %}<div>« {{ t.message }} »</div>{% endif %}
+      </div>
+      <div class="actions-article">
+        <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="accepter"><button type="submit" class="petit">✅ Accepter</button></form>
+        <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="refuser"><button type="submit" class="petit">Refuser</button></form>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun cadeau en attente.</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Cadeaux envoyés en attente ({{ envoyes|length }})</h2>
+  {% for t in envoyes %}
+    <div class="ligne">
+      <div>
+        <strong>{{ t.item.titre }}</strong><br>
+        <span class="muted">pour {{ t.destinataire.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
+      </div>
+      <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="annuler"><button type="submit" class="petit">Annuler</button></form>
+    </div>
+  {% empty %}
+    <p class="muted">Aucun cadeau en attente.</p>
+  {% endfor %}
+</section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Historique</h2>
+  {% for t in historique %}
+    <div class="ligne">
+      <div>
+        <strong>{{ t.item.titre }}</strong> · {{ t.get_statut_display }}<br>
+        <span class="muted">{{ t.expediteur.pseudo_whatsapp }} → {{ t.destinataire.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Rien pour l'instant.</p>
+  {% endfor %}
+  <p><a href="{% url 'inventaire' %}">← Retour à l'inventaire</a></p>
+</section>
+{% endblock %}

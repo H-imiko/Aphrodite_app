@@ -1,8 +1,10 @@
 from django.db import transaction
+from django.urls import reverse
 
 from apps.economy.models import Transaction
 from apps.economy.services import ErreurEconomie, _verrouiller
 from apps.inventory.models import InventoryItem
+from apps.notifications.services import notifier
 from .models import Item
 
 
@@ -50,3 +52,7 @@ def acheter(acheteur, item_id, prix_attendu=None):
                 type=Transaction.Type.ACHAT, description=item.titre)
 
         InventoryItem.objects.create(proprietaire=ach, item=item)
+        notifier(item.createur, "Nouvel achat",
+                 f"{ach.pseudo_whatsapp} a acheté « {item.titre} »"
+                 + ("" if item.est_officiel else f" (+{prix} Cubis)"),
+                 reverse("article", args=[item.pk]), "vente")

@@ -4,10 +4,12 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.moderation.models import AuditLog
 from apps.moderation.services import journaliser
+from apps.notifications.services import notifier
 from .models import Transaction
 
 
@@ -70,6 +72,11 @@ def envoyer_par_divinite(divinite, destinataire, montant, description=""):
         if description:
             details += f" · {description}"
         journaliser(divinite, AuditLog.Action.ENVOI_CUBIS, d, details)
+        message = f"{montant} Cubis offerts par les Divinités"
+        if description:
+            message += f" : {description}"
+        notifier(d, "Tu as reçu des Cubis", message,
+                 reverse("transactions"), "cubis")
 
 
 def transferer(expediteur, destinataire, montant, description=""):
@@ -93,3 +100,6 @@ def transferer(expediteur, destinataire, montant, description=""):
         Transaction.objects.create(
             expediteur=exp, destinataire=dest, montant=montant,
             type=Transaction.Type.TRANSFERT, description=description)
+        notifier(dest, "Cubis reçus",
+                 f"{exp.pseudo_whatsapp} t'a envoyé {montant} Cubis",
+                 reverse("transactions"), "cubis")

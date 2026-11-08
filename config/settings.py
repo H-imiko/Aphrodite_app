@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'apps.creators',
     'apps.moderation',
     'apps.orders',
+    'apps.notifications',
+    'apps.social',
+
 
 ]
 

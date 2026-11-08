@@ -1,7 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="card">
-  {% if acces %}
+  {% if est_media %}
+    {% if article.apercu %}<img class="grand" src="{{ article.apercu.url }}" alt="">{% endif %}
+    {% if article.categorie == "audio" %}
+      {% if acces %}
+        <p class="muted">🎧 Version complète</p>
+        <audio class="lecteur" controls controlsList="nodownload" preload="none" src="{% url 'lire' article.pk %}"></audio>
+      {% elif article.extrait %}
+        <p class="muted">🎧 Extrait gratuit : la version complète se débloque après l'achat.</p>
+        <audio class="lecteur" controls controlsList="nodownload" preload="none" src="{% url 'extrait' article.pk %}"></audio>
+      {% endif %}
+    {% else %}
+      {% if acces or article.extrait %}
+      <div class="lecteur-video">
+        <video controls controlsList="nodownload noremoteplayback" disablePictureInPicture playsinline preload="metadata"{% if article.apercu %} poster="{{ article.apercu.url }}"{% endif %} src="{% if acces %}{% url 'lire' article.pk %}{% else %}{% url 'extrait' article.pk %}{% endif %}"></video>
+        <div class="filigrane">{{ user.pseudo_whatsapp }}</div>
+      </div>
+      {% if not acces %}<p class="muted">🎬 Extrait gratuit : la vidéo complète se débloque après l'achat.</p>{% endif %}
+      {% endif %}
+    {% endif %}
+    {% if acces %}<a class="btn lien" href="{% url 'telecharger' article.pk %}">Télécharger le fichier</a>{% endif %}
+  {% elif est_cosmetique %}
+    {% if article.apercu %}<div class="apercu-cosmetique"><img src="{{ article.apercu.url }}" alt=""></div>{% endif %}
+    <p class="muted">✨ Article officiel à équiper sur ton profil{% if possede %} : va dans ton <a href="{% url 'inventaire' %}">inventaire</a> pour l'équiper.{% else %}, après l'achat.{% endif %}</p>
+  {% elif acces %}
     <img class="grand" src="{% url 'telecharger' article.pk %}?voir=1" alt="">
     <a class="btn lien" href="{% url 'telecharger' article.pk %}">Télécharger l'original</a>
   {% else %}
@@ -12,6 +35,13 @@
   <h1>{{ article.titre }} {% if article.est_officiel %}<span class="tag">Officiel</span>{% endif %}</h1>
   <p class="muted">{% include "partials/pseudo.html" with u=article.createur %} · {{ article.get_categorie_display }}</p>
   <p>{{ article.description|linebreaksbr }}</p>
+  {% if not est_proprietaire %}
+  <form method="post" action="{% url 'aimer' article.pk %}" class="inline">
+    {% csrf_token %}<button type="submit" class="petit">{% if a_like %}♥ Aimé{% else %}♡ J'aime{% endif %} · {{ nb_likes }}</button>
+  </form>
+  {% else %}
+  <span class="muted">♥ {{ nb_likes }}</span>
+  {% endif %}
 
   {% if not article.est_actif %}
     <div class="alerte">Cet article est masqué{% if article.masque_moderation %} par la modération{% endif %}.</div>
@@ -30,6 +60,11 @@
     <div class="actions-article">
       <a class="petit" href="{% url 'modifier_article' article.pk %}">✏️ Modifier</a>
       <a class="petit" href="{% url 'supprimer_article' article.pk %}">🗑️ Supprimer</a>
+      {% if article.categorie == "audio" and article.est_actif %}
+      <form method="post" action="{% url 'musique_profil' article.pk %}" class="inline">
+        {% csrf_token %}<button type="submit" class="petit">🎵 Mettre sur mon profil</button>
+      </form>
+      {% endif %}
     </div>
     {% endif %}
   {% else %}

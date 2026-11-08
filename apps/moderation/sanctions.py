@@ -1,10 +1,12 @@
 from datetime import timedelta
 
 from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
 from apps.economy.services import _verrouiller
+from apps.notifications.services import notifier
 from apps.shop.models import Item
 from .models import AuditLog, Report, Sanction
 from .services import journaliser
@@ -59,6 +61,8 @@ def avertir(acteur, cible, raison, signalement_id=None):
             user=cible, type=Sanction.Type.AVERTISSEMENT, raison=raison,
             par=acteur, signalement_id=signalement_id)
         journaliser(acteur, AuditLog.Action.AVERTISSEMENT, cible, raison)
+        notifier(cible, "Avertissement", raison,
+                 reverse("membre", args=[cible.pk]), "moderation")
         _clore(signalement_id, acteur)
 
 
@@ -106,6 +110,8 @@ def retirer_createur(acteur, cible, raison, signalement_id=None):
             par=acteur, signalement_id=signalement_id)
         journaliser(acteur, AuditLog.Action.RETRAIT_CREATEUR, cible,
                     f"{nb} article(s) masqué(s) · {raison}")
+        notifier(cible, "Statut Créateur retiré", raison,
+                 reverse("membre", args=[cible.pk]), "moderation")
         _clore(signalement_id, acteur)
 
 
@@ -130,6 +136,8 @@ def reduire_cubis(acteur, cible, montant, raison, signalement_id=None):
             montant=montant, par=acteur, signalement_id=signalement_id)
         journaliser(acteur, AuditLog.Action.REDUCTION_CUBIS, u,
                     f"-{montant} Cubis · {raison}")
+        notifier(u, "Réduction de Cubis", f"-{montant} Cubis : {raison}",
+                 reverse("transactions"), "moderation")
         _clore(signalement_id, acteur)
 
 
@@ -154,6 +162,9 @@ def masquer_article(acteur, signalement_id):
         r.save()
         journaliser(acteur, AuditLog.Action.ARTICLE_MASQUE, article.createur,
                     f"{article.titre} (signalement #{r.pk})")
+        notifier(article.createur, "Article masqué",
+                 f"« {article.titre} » a été masqué par la modération.",
+                 reverse("mes_articles"), "moderation")
 
 
 def classer(acteur, signalement_id):

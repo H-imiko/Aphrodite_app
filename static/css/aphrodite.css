@@ -285,3 +285,39 @@ input[type=file] { padding: 9px; }
 .barre .ic-cube { opacity: .85; }
 .barre a.actif .ic-cube { opacity: 1; }
 .barre a { gap: 2px; }
+
+/* ===== Profil : cadres, décors, musique ===== */
+.avatar-wrap { position: relative; width: 92px; height: 92px; flex-shrink: 0;
+  margin-left: 14px; }
+.avatar-wrap .avatar { width: 100%; height: 100%; }
+.avatar-cadre { position: absolute; top: -22%; left: -22%; width: 144%;
+  height: 144%; max-width: none; object-fit: contain; pointer-events: none; }
+.decor-profil { position: absolute; top: -8px; left: -4px;
+  width: calc(100% + 8px); max-width: none; pointer-events: none; z-index: 3; }
+.musique-profil { display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; padding: 0 18px 16px; }
+.musique-profil audio { flex: 1; min-width: 200px; height: 36px; }
+
+/* ===== Lecteurs audio et vidéo ===== */
+.lecteur { width: 100%; margin: 6px 0 12px; }
+.article audio { width: 100%; height: 32px; margin: 6px 0; }
+.lecteur-video { position: relative; overflow: hidden; border-radius: 14px;
+  background: #000; margin-bottom: 10px; }
+.lecteur-video video { width: 100%; display: block; max-height: 70vh; }
+.filigrane { position: absolute; top: 6%; left: 6%; color: rgba(255, 255, 255, .4);
+  font-size: .8rem; pointer-events: none; text-shadow: 0 0 4px rgba(0, 0, 0, .8);
+  animation: derive 14s linear infinite; }
+@keyframes derive {
+  0% { top: 6%; left: 6%; } 25% { top: 6%; left: 62%; }
+  50% { top: 82%; left: 62%; } 75% { top: 82%; left: 6%; }
+  100% { top: 6%; left: 6%; }
+}
+.apercu-cosmetique { background: rgba(255, 255, 255, .05); border-radius: 14px;
+  padding: 14px; text-align: center; margin-bottom: 10px; }
+.apercu-cosmetique img { max-width: 100%; max-height: 260px; }
+.tag.type { background: transparent; border: 1px solid var(--line-fort); }
+
+/* ===== Notifications ===== */
+.notif { padding: 12px 0; border-bottom: 1px solid rgba(255, 107, 193, .14); }
+.notif.non-lue { border-left: 3px solid var(--neon); padding-left: 10px; }
+.petit-texte { font-size: .75rem; }

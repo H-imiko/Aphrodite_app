@@ -5,8 +5,29 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
+    <p class="muted">Audio : mp3, m4a, ogg ou wav (25 Mo maximum, extrait 3 Mo). Vidéo : mp4 ou webm (100 Mo maximum, extrait 10 Mo). Les envois de gros fichiers peuvent prendre un moment : ne ferme pas la page.</p>
     <button type="submit" class="btn">{% if article %}Enregistrer{% else %}Publier{% endif %}</button>
   </form>
   {% if article %}<p><a href="{% url 'article' article.pk %}">← Annuler</a></p>{% endif %}
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var cat = document.getElementById("id_categorie");
+  if (!cat) { return; }
+  function maj() {
+    var media = (cat.value === "audio" || cat.value === "video");
+    ["id_fichier", "id_extrait"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) { return; }
+      var p = el.closest("p");
+      if (p) { p.hidden = !media; }
+    });
+  }
+  cat.addEventListener("change", maj);
+  maj();
+})();
+</script>
 {% endblock %}

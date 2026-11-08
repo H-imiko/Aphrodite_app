@@ -2,12 +2,14 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
 from apps.economy.services import ErreurEconomie, _verrouiller
 from apps.moderation.models import AuditLog
 from apps.moderation.services import journaliser
+from apps.notifications.services import notifier, notifier_divinites
 from .models import Order, OrderMessage
 
 S = Order.Statut
@@ -22,6 +24,10 @@ def _delai_confirmation():
 
 def _delai_demande():
     return getattr(settings, "DELAI_DEMANDE_JOURS", 7)
+
+
+def _lien(c):
+    return reverse("commande", args=[c.pk])
 
 
 def _systeme(commande, texte):
@@ -48,6 +54,9 @@ def _liberer(c, texte):
     c.date_fin = timezone.now()
     c.save()
     _systeme(c, texte)
+    notifier(vend, "Paiement reçu",
+             f"+{c.prix_cubis} Cubis pour la commande « {c.titre} »",
+             _lien(c), "commande")
 
 
 def _rembourser(c, statut, texte):
@@ -62,6 +71,9 @@ def _rembourser(c, statut, texte):
     c.date_fin = timezone.now()
     c.save()
     _systeme(c, texte)
+    notifier(ach, "Commande remboursée",
+             f"+{c.prix_cubis} Cubis rendus pour « {c.titre} »",
+             _lien(c), "commande")
 
 
 def creer_demande(acheteur, vendeur, titre, description, prix):
@@ -104,6 +116,9 @@ def creer_demande(acheteur, vendeur, titre, description, prix):
             description=description, prix_cubis=prix)
         _systeme(c, f"Demande envoyée à {vendeur.pseudo_whatsapp} "
                     f"pour {prix} Cubis.")
+        notifier(vendeur, "Nouvelle demande de commande",
+                 f"{acheteur.pseudo_whatsapp} te demande « {titre} » "
+                 f"pour {prix} Cubis", _lien(c), "commande")
     return c
 
 
@@ -133,6 +148,9 @@ def accepter(user, order_id):
         c.save()
         _systeme(c, f"Commande acceptée. {c.prix_cubis} Cubis sont bloqués "
                     "jusqu'à la livraison.")
+        notifier(c.acheteur, "Commande acceptée",
+                 f"« {c.titre} » est acceptée : {c.prix_cubis} Cubis "
+                 "sont bloqués jusqu'à la livraison.", _lien(c), "commande")
 
 
 def refuser(user, order_id):
@@ -146,6 +164,8 @@ def refuser(user, order_id):
         c.date_fin = timezone.now()
         c.save()
         _systeme(c, "Demande refusée par le Créateur.")
+        notifier(c.acheteur, "Demande refusée",
+                 f"Le Créateur a refusé « {c.titre} ».", _lien(c), "commande")
 
 
 def annuler_demande(user, order_id):
@@ -160,6 +180,9 @@ def annuler_demande(user, order_id):
         c.date_fin = timezone.now()
         c.save()
         _systeme(c, "Demande annulée par l'acheteur.")
+        notifier(c.vendeur, "Demande annulée",
+                 f"{c.acheteur.pseudo_whatsapp} a annulé « {c.titre} ».",
+                 _lien(c), "commande")
 
 
 def livrer(user, order_id, message=""):
@@ -182,6 +205,9 @@ def livrer(user, order_id, message=""):
         if message:
             OrderMessage.objects.create(
                 commande=c, auteur=user, texte=message)
+        notifier(c.acheteur, "Commande livrée",
+                 f"« {c.titre} » est livrée : confirme la réception.",
+                 _lien(c), "commande")
 
 
 def confirmer(user, order_id):
@@ -224,6 +250,13 @@ def ouvrir_litige(user, order_id, raison):
         c.save()
         _systeme(c, f"Litige ouvert par {user.pseudo_whatsapp} : {raison} "
                     "Une Divinité va examiner la commande.")
+        autre = c.vendeur if user.pk == c.acheteur_id else c.acheteur
+        notifier(autre, "Litige ouvert",
+                 f"Un litige a été ouvert sur « {c.titre} ».",
+                 _lien(c), "commande")
+        notifier_divinites("Litige à trancher", f"Commande « {c.titre} »",
+                           _lien(c), "commande",
+                           exclure=[c.acheteur_id, c.vendeur_id])
 
 
 def trancher(divinite, order_id, decision, note):
@@ -252,6 +285,11 @@ def trancher(divinite, order_id, decision, note):
             _liberer(c, f"Décision de la Divinité : le Créateur est payé. "
                         f"{note}")
             gagnant = c.vendeur
+        autre_partie = c.vendeur if decision == "rembourser" else c.acheteur
+        notifier(autre_partie, "Litige tranché",
+                 f"Décision sur « {c.titre} » : "
+                 + ("l'acheteur est remboursé." if decision == "rembourser"
+                    else "le Créateur est payé."), _lien(c), "commande")
         journaliser(divinite, AuditLog.Action.LITIGE_RESOLU, gagnant,
                     f"Commande #{c.pk} : {decision} · {note}")
 
@@ -270,6 +308,16 @@ def poster_message(user, order_id, texte):
             raise ErreurEconomie("Cette commande est terminée : la messagerie "
                                  "est fermée.")
         OrderMessage.objects.create(commande=c, auteur=user, texte=texte)
+        if user.pk == c.acheteur_id:
+            destinataires = [c.vendeur]
+        elif user.pk == c.vendeur_id:
+            destinataires = [c.acheteur]
+        else:
+            destinataires = [c.acheteur, c.vendeur]
+        for d in destinataires:
+            notifier(d, "Nouveau message",
+                     f"{user.pseudo_whatsapp} : {texte[:80]}",
+                     _lien(c), "message", regrouper=True)
 
 
 def traiter_echeances():
@@ -285,6 +333,9 @@ def traiter_echeances():
             if c.statut == S.LIVREE:
                 _liberer(c, "Confirmation automatique : l'acheteur n'a pas "
                             "répondu. Le Créateur a été payé.")
+                notifier(c.acheteur, "Commande confirmée automatiquement",
+                         f"« {c.titre} » a été confirmée sans réponse de ta part.",
+                         _lien(c), "commande")
                 n_auto += 1
     limite = maintenant - timedelta(days=_delai_demande())
     ids = list(Order.objects.filter(
@@ -298,5 +349,7 @@ def traiter_echeances():
                 c.date_fin = timezone.now()
                 c.save()
                 _systeme(c, "Demande expirée : le Créateur n'a pas répondu.")
+                notifier(c.acheteur, "Demande expirée",
+                         f"« {c.titre} » n'a pas reçu de réponse.", _lien(c), "commande")
                 n_exp += 1
     return n_auto, n_exp

@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
 from apps.economy.services import ErreurEconomie, _verrouiller
 from apps.moderation.models import AuditLog
 from apps.moderation.services import journaliser
+from apps.notifications.services import notifier
 from .models import Candidature
 
 
@@ -36,6 +38,11 @@ def valider(candidature_id, divinite):
         details = ("Bonus déjà versé auparavant" if deja_paye
                    else f"+{settings.BONUS_CREATEUR} Cubis")
         journaliser(divinite, AuditLog.Action.CANDIDATURE_VALIDEE, u, details)
+        notifier(u, "Candidature validée 🎉",
+                 "Tu es maintenant Créateur : tu peux publier des articles."
+                 + ("" if deja_paye
+                    else f" +{settings.BONUS_CREATEUR} Cubis de bienvenue !"),
+                 reverse("mes_articles"), "createur")
 
 
 def refuser(candidature_id, divinite, motif=""):
@@ -52,3 +59,6 @@ def refuser(candidature_id, divinite, motif=""):
         c.save()
         journaliser(divinite, AuditLog.Action.CANDIDATURE_REFUSEE,
                     c.user, motif)
+        notifier(c.user, "Candidature refusée",
+                 motif or "Tu peux en envoyer une nouvelle.",
+                 reverse("postuler"), "createur")

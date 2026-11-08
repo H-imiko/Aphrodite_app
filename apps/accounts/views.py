@@ -4,10 +4,23 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from apps.creators.models import Candidature
+from apps.inventory.models import Equipement
 from apps.shop.models import Item
+from apps.social.models import Abonnement
 from .forms import InscriptionForm, ProfilForm
 
 User = get_user_model()
+
+
+def _equipement(membre):
+    """Cadre, décor et musique affichés sur le profil (None si absents)."""
+    equip = (Equipement.objects.filter(user=membre)
+             .select_related("cadre", "decor", "musique").first())
+    if equip is None:
+        return None
+    if equip.musique and not equip.musique.est_actif:
+        equip.musique = None
+    return equip
 
 
 def accueil(request):
@@ -43,13 +56,18 @@ def profil(request):
 def membre(request, pk):
     m = get_object_or_404(User, pk=pk, is_active=True)
     articles = []
-    if m:
+    if m.peut_publier:
         articles = Item.objects.filter(createur=m, est_actif=True)
     est_moi = m.pk == request.user.pk
     candidature_en_cours = est_moi and Candidature.objects.filter(
         user=m, statut=Candidature.Statut.EN_ATTENTE).exists()
     return render(request, "accounts/membre.html", {
         "membre": m, "articles": articles, "est_moi": est_moi,
+        "equip": _equipement(m),
+        "nb_abonnes": m.abonnes.count(),
+        "nb_abonnements": m.abonnements.count(),
+        "suis": (not est_moi and Abonnement.objects.filter(
+            abonne=request.user, createur=m).exists()),
         "candidature_en_cours": candidature_en_cours})
 
 
@@ -61,4 +79,5 @@ def modifier_profil(request):
         form.save()
         messages.success(request, "Profil mis à jour ✨")
         return redirect("membre", pk=request.user.pk)
-    return render(request, "accounts/modifier_profil.html", {"form": form})
+    return render(request, "accounts/modifier_profil.html", {
+        "form": form, "equip": _equipement(request.user)})

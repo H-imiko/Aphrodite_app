@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Notifications 🔔</h1>
+  {% for n in notifs %}
+    <div class="notif{% if not n.lu %} non-lue{% endif %}">
+      {% if n.lien %}<a href="{{ n.lien }}"><strong>{{ n.titre }}</strong></a>{% else %}<strong>{{ n.titre }}</strong>{% endif %}
+      {% if n.message %}<div class="muted">{{ n.message }}</div>{% endif %}
+      <div class="muted petit-texte">{{ n.date|date:"d/m/Y H:i" }}</div>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune notification pour l'instant.</p>
+  {% endfor %}
+</section>
+{% endblock %}

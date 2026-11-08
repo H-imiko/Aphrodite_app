@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mes favoris ♥</h1>
+<div class="grille">
+  {% for l in likes %}
+    <div class="article">
+      <a href="{% url 'article' l.item.pk %}">{% if l.item.apercu %}<img src="{{ l.item.apercu.url }}" alt="">{% endif %}</a>
+      <div class="info">
+        <a href="{% url 'article' l.item.pk %}"><strong>{{ l.item.titre }}</strong></a>
+        <div class="vendeur">{% include "partials/pseudo.html" with u=l.item.createur %}</div>
+        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ l.item.prix_cubis }}</div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Tu n'as encore rien aimé. Touche « ♡ J'aime » sur un article.</p>
+  {% endfor %}
+</div>
+{% endblock %}
