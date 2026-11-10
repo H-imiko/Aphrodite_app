@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,9 +12,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_bw6$apk2^tpm*gg#$%@^e-s8gnync2#a0ogr6f7g8k$qi@vv+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# En local, rien a configurer : DEBUG=True autorise deja localhost.
+# Pour tester depuis un autre appareil ou un nom de domaine :
+#   DJANGO_ALLOWED_HOSTS=".style.dev,192.168.1.20" python manage.py runserver 0.0.0.0:3000
+DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h.strip() for h in
+                 os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
+                 if h.strip()]
+
+# Domaines autorises a envoyer des formulaires (obligatoire hors localhost).
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in
+                        os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+                        if o.strip()]
 
 
 # Application definition

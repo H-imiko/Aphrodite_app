@@ -1,18 +1,3 @@
-MISE A JOUR APHRODITE : offrandes (cadeaux visibles sur le profil)
-(+ tout le contenu des zips precedents : fichiers communs)
+Ce fichier est l'ancienne notice de la periode des zips : elle n'est plus a jour.
 
-1. Dezippe ce dossier A LA RACINE du projet (la ou se trouve manage.py).
-   Accepte de REMPLACER les fichiers existants.
-2. config/settings.py : dans INSTALLED_APPS, ajouter :
-       'apps.offrandes',
-3. config/urls.py : ajouter dans urlpatterns :
-       path('', include('apps.offrandes.urls')),
-4. Terminal (une commande a la fois) :
-       python manage.py makemigrations economy offrandes
-       python manage.py migrate
-       python manage.py charger_offrandes_exemple
-       python manage.py runserver
-   (la 3e commande cree 6 offrandes de depart : rose, coeur, ourson,
-    etoile, couronne, cube. Tu peux la sauter si tu prefere creer les
-    tiennes depuis Panel > Catalogue des offrandes.)
-5. Ctrl+F5 dans le navigateur.
+La procedure d'installation et de lancement se trouve dans README.md.
