@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aphrodite — maquette des écrans de formulaire</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#0a0710; --bg2:#140a1e; --card:rgba(26,13,38,.82);
+  --line:rgba(255,107,193,.28); --line-fort:rgba(255,107,193,.55);
+  --neon:#ff2e93; --rose:#ff6bc1; --soft:#ffb6e1; --violet:#7c3aed;
+  --emerald:#00b894; --gold:#e8c468; --text:#f7ecf8; --muted:#b99ac4;
+  --titre:'Cinzel',Georgia,serif; --corps:'Montserrat',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{min-width:900px}
+body{margin:0;background:#06040a;color:var(--text);font-family:var(--corps);
+  background-image:radial-gradient(ellipse 60% 40% at 85% 0%,rgba(255,46,147,.12),transparent 60%),
+                   radial-gradient(ellipse 60% 40% at 10% 30%,rgba(124,58,237,.12),transparent 60%);
+  padding:34px 20px 46px;}
+.entete{text-align:center;margin-bottom:26px}
+.entete .logo{font-family:var(--titre);font-size:1.35rem;letter-spacing:.22em;
+  text-transform:uppercase;background:linear-gradient(90deg,var(--soft),var(--rose));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.entete p{margin:8px 0 0;color:var(--muted);font-size:.82rem;letter-spacing:.06em}
+.plateau{display:flex;gap:64px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+.colonne{width:392px}
+.legende{display:flex;flex-direction:column;gap:9px;margin-top:20px;font-size:.74rem;
+  color:var(--muted);line-height:1.45}
+.legende div{display:flex;gap:9px;align-items:flex-start}
+.legende b{color:var(--soft);font-weight:600}
+.pastille-num{flex:0 0 18px;height:18px;border-radius:50%;background:var(--neon);
+  color:#fff;font-size:.66rem;font-weight:700;display:flex;align-items:center;
+  justify-content:center;box-shadow:0 0 10px rgba(255,46,147,.7)}
+
+/* ---- châssis téléphone ---- */
+.telephone{position:relative;width:392px;border-radius:36px;overflow:hidden;
+  border:1px solid rgba(255,107,193,.35);background:var(--bg);
+  box-shadow:0 0 0 8px #120a1b,0 0 0 9px rgba(255,107,193,.18),0 26px 70px rgba(0,0,0,.75)}
+.statut{display:flex;justify-content:space-between;align-items:center;padding:9px 20px 4px;
+  font-size:.68rem;color:var(--muted);letter-spacing:.06em}
+.ecran{padding:0 0 78px;position:relative;min-height:1035px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:8px 16px 10px;
+  border-bottom:1px solid var(--line);background:rgba(10,7,16,.9)}
+.nav .logo{font-family:var(--titre);font-size:1rem;letter-spacing:.18em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--soft),var(--rose));-webkit-background-clip:text;
+  background-clip:text;color:transparent}
+.solde{display:inline-flex;align-items:center;gap:4px;background:rgba(0,184,148,.10);
+  border:1px solid rgba(0,184,148,.45);padding:3px 10px;border-radius:20px;
+  font-size:.76rem;font-weight:600}
+.cube{width:13px;height:13px;display:inline-block;border-radius:3px;
+  background:linear-gradient(135deg,#7dffd0,#00b894);box-shadow:0 0 8px rgba(0,184,148,.8)}
+main{padding:14px 16px 0}
+h1{font-family:var(--titre);font-size:1.18rem;letter-spacing:.06em;margin:2px 0 12px;color:var(--soft)}
+h2{font-family:var(--titre);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--rose);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-fort),transparent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;
+  margin-bottom:12px;box-shadow:0 0 22px rgba(255,46,147,.14),inset 0 1px 0 rgba(255,255,255,.04)}
+label{display:block;font-size:.76rem;color:var(--soft);letter-spacing:.03em;margin-bottom:5px}
+.aide{font-size:.68rem;color:var(--muted);margin:5px 0 0;display:flex;justify-content:space-between;gap:8px}
+input,textarea,select{width:100%;padding:10px 12px;background:rgba(10,7,16,.75);color:var(--text);
+  font-family:inherit;font-size:.88rem;border:1px solid var(--line);border-radius:11px}
+input::placeholder,textarea::placeholder{color:#7a6187}
+.saisie{position:relative;margin-bottom:12px}
+.saisie:last-child{margin-bottom:0}
+.saisie .dans{padding-right:64px}
+.saisie .unite{position:absolute;right:11px;bottom:11px;font-size:.7rem;color:var(--muted)}
+textarea{min-height:74px;resize:none;line-height:1.45}
+
+/* ---- aperçu ---- */
+.apercu{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+  margin-bottom:14px;background:var(--card)}
+.banniere{height:92px;background:linear-gradient(135deg,#3b1670,#b0226f 70%,#ff2e93);
+  background-size:cover;position:relative}
+.banniere .btn-mini{position:absolute;right:9px;top:9px;background:rgba(10,7,16,.72);
+  border:1px solid var(--line-fort);color:var(--soft);font-size:.64rem;padding:4px 10px;
+  border-radius:20px;font-family:inherit;letter-spacing:.04em}
+.ligne-avatar{display:flex;align-items:flex-end;gap:14px;padding:0 14px;margin-top:-40px;
+  position:relative;z-index:2}
+.avatar-wrap{position:relative;width:92px;height:92px;flex-shrink:0}
+.avatar{width:92px;height:92px;border-radius:50%;border:4px solid var(--bg2);
+  outline:2px solid var(--rose);box-shadow:0 0 20px rgba(255,46,147,.5);
+  background:linear-gradient(140deg,#8b5cf6,#ff2e93);display:flex;align-items:center;
+  justify-content:center;font-family:var(--titre);font-size:2rem;color:#fff}
+.cadre-ring{position:absolute;inset:-10px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 210deg,#e8c468,#ff6bc1,#7c3aed,#e8c468,#ffb6e1,#e8c468);
+  -webkit-mask:radial-gradient(circle,transparent 63%,#000 64%);
+  mask:radial-gradient(circle,transparent 63%,#000 64%);
+  filter:drop-shadow(0 0 6px rgba(232,196,104,.6))}
+.crayon{position:absolute;right:-6px;bottom:-2px;width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--violet),var(--neon));border:2px solid var(--bg2);
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;z-index:4}
+.ligne-avatar > div:last-child{background:rgba(10,7,16,.78);padding:6px 11px;
+  border-radius:12px;backdrop-filter:blur(4px)}
+.identite{padding:10px 14px 13px}
+.pseudo{font-family:var(--titre);font-size:1rem;letter-spacing:.05em}
+.badge{display:inline-block;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:9px;background:linear-gradient(90deg,var(--violet),var(--neon));
+  color:#fff;vertical-align:middle;margin-left:5px}
+.bulle{display:inline-block;position:relative;background:#fff;color:#3a1259;font-size:.74rem;
+  padding:5px 12px;border-radius:16px;margin-top:8px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.espece{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-top:6px}
+
+/* ---- sélecteurs visuels ---- */
+.grille-cadres{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.mini-cadre{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;
+  background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;
+  position:relative}
+.mini-cadre.choisi{border-color:var(--rose);background:rgba(255,46,147,.12);
+  box-shadow:0 0 14px rgba(255,46,147,.5)}
+.mini-cadre.choisi::after{content:"✓";position:absolute;top:3px;right:5px;font-size:.6rem;color:var(--soft)}
+.mini-cadre .rond{width:26px;height:26px;border-radius:50%;
+  background:conic-gradient(from 210deg,#e8c468,#ff6bc1,#7c3aed,#e8c468);position:relative}
+.mini-cadre .rond::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#140a1e}
+.mini-cadre .rond.v2{background:conic-gradient(from 0deg,#7dffd0,#00b894,#0ea5e9,#7dffd0)}
+.mini-cadre .rond.v3{background:conic-gradient(from 90deg,#ff7a9c,#be123c,#ffb6e1,#ff7a9c)}
+.mini-cadre .rond.v4{background:conic-gradient(from 40deg,#e2e8f0,#94a3b8,#fff,#e2e8f0)}
+.mini-cadre .texte{font-size:.56rem;color:var(--muted);letter-spacing:.04em}
+.mini-cadre.aucun{font-size:.58rem;color:var(--muted)}
+
+/* ---- bascule ---- */
+.bascule{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.bascule .txt{font-size:.78rem;color:var(--text)}
+.bascule .txt small{display:block;color:var(--muted);font-size:.66rem;margin-top:3px}
+.inter{width:44px;height:24px;border-radius:14px;background:rgba(255,255,255,.10);
+  border:1px solid var(--line);position:relative;flex-shrink:0}
+.inter.on{background:linear-gradient(90deg,var(--violet),var(--neon));border-color:transparent;
+  box-shadow:0 0 14px rgba(255,46,147,.55)}
+.inter::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;
+  border-radius:50%;background:#fff}
+.inter.on::after{left:auto;right:2px}
+
+/* ---- barre d'action collante ---- */
+.barre-action{position:absolute;bottom:0;left:0;right:0;display:flex;gap:10px;
+  padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(10,7,16,.4),rgba(10,7,16,.97) 40%);
+  border-top:1px solid var(--line);backdrop-filter:blur(10px)}
+.btn{flex:1;padding:12px;border:none;border-radius:13px;color:#fff;font-family:var(--titre);
+  font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--violet),var(--neon));
+  box-shadow:0 0 20px rgba(255,46,147,.35)}
+.btn.ghost{flex:0 0 96px;background:transparent;border:1px solid var(--line-fort);
+  color:var(--soft);box-shadow:none}
+.danger{display:flex;justify-content:center;font-size:.7rem;color:#ff7a9c;
+  padding:4px 0 18px;text-decoration:underline}
+
+/* ---- écran publication ---- */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.chip{font-size:.7rem;padding:6px 12px;border-radius:20px;border:1px solid var(--line);
+  color:var(--soft);background:rgba(255,46,147,.08)}
+.chip.on{background:linear-gradient(90deg,var(--violet),var(--neon));border-color:transparent;
+  color:#fff;box-shadow:0 0 14px rgba(255,46,147,.45)}
+.depot{border:1.5px dashed var(--line-fort);border-radius:14px;padding:18px 14px;
+  text-align:center;background:rgba(255,46,147,.05)}
+.depot .icone{font-size:1.5rem}
+.depot b{display:block;font-size:.8rem;margin-top:6px;color:var(--soft)}
+.depot span{font-size:.66rem;color:var(--muted);display:block;margin-top:4px;line-height:1.5}
+.verif{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.68rem;
+  color:#7dffd0;background:rgba(0,184,148,.10);border:1px solid rgba(0,184,148,.4);
+  border-radius:11px;padding:8px 11px}
+.verif b{font-weight:600}
+.mini-apercu{display:flex;gap:11px;align-items:center;margin-top:12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.mini-apercu .vignette{width:40px;height:40px;border-radius:9px;flex-shrink:0;
+  background:radial-gradient(circle at 50% 45%,rgba(255,107,193,.9),rgba(124,58,237,.85));
+  position:relative}
+.mini-apercu .vignette::after{content:"";position:absolute;inset:9px;border-radius:50%;
+  background:#140a1e}
+.mini-apercu .meta{font-size:.68rem;color:var(--muted);line-height:1.4}
+.mini-apercu .meta b{color:var(--text);font-size:.74rem;display:block}
+.note{font-size:.66rem;color:var(--muted);margin:10px 0 0;line-height:1.5}
+.note a{color:var(--rose);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div class="logo">Aphrodite</div>
+  <p>Proposition d'écrans — mêmes couleurs, même univers, même logique</p>
+</div>
+
+<div class="plateau">
+
+  <!-- ============ ÉCRAN 1 : MODIFIER MON PROFIL ============ -->
+  <div class="colonne">
+    <div class="telephone">
+      <div class="statut"><span>22:14</span><span>▮▮▮ ⌁ 84 %</span></div>
+      <div class="ecran">
+        <div class="nav">
+          <div class="logo">Aphrodite</div>
+          <div class="solde"><span class="cube"></span> 1 240</div>
+        </div>
+
+        <main>
+          <h1>Mon profil</h1>
+
+          <!-- aperçu en direct -->
+          <div class="apercu">
+            <div class="banniere"><span class="btn-mini">Changer</span></div>
+            <div class="ligne-avatar">
+              <div class="avatar-wrap">
+                <div class="avatar">L</div>
+                <div class="cadre-ring"></div>
+                <div class="crayon">✎</div>
+              </div>
+              <div style="padding-bottom:6px">
+                <div class="pseudo">Lune_de_Sang<span class="badge">Créatrice</span></div>
+                <div class="espece">Succube · Saison II</div>
+              </div>
+            </div>
+            <div class="identite">
+              <span class="bulle">« Le silence est une offrande. »</span>
+            </div>
+          </div>
+
+          <!-- 1 -->
+          <div class="card">
+            <h2>Identité</h2>
+            <div class="saisie">
+              <label for="m1">Pseudo WhatsApp <span style="color:#ff7a9c">*</span></label>
+              <input id="m1" value="Lune_de_Sang">
+              <p class="aide"><span>Tel qu'il apparaît dans le groupe</span></p>
+            </div>
+            <div class="saisie">
+              <label for="m2">Titre affiché</label>
+              <input id="m2" class="dans" value="Le silence est une offrande.">
+              <span class="unite">29/40</span>
+            </div>
+            <div class="saisie">
+              <label for="m3">Ta bio</label>
+              <textarea id="m3" class="dans" style="padding-bottom:22px">Amoureuse des nuits sans lune. J'écris pour ceux qui n'osent pas. Mes cadres sont faits main.</textarea>
+              <span class="unite" style="bottom:9px">118/300</span>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="card">
+            <h2>Apparence</h2>
+            <label style="margin-bottom:7px">Cadre de profil</label>
+            <div class="grille-cadres">
+              <div class="mini-cadre choisi"><div class="rond"></div></div>
+              <div class="mini-cadre"><div class="rond v2"></div></div>
+              <div class="mini-cadre"><div class="rond v3"></div></div>
+              <div class="mini-cadre"><div class="rond v4"></div></div>
+              <div class="mini-cadre aucun">Aucun</div>
+              <div class="mini-cadre" style="grid-column:span 3">
+                <span class="texte">＋ Mes 12 cadres</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="card">
+            <h2>Confidentialité</h2>
+            <div class="bascule">
+              <div class="txt">Afficher mon profil mature
+                <small>Masque ton profil derrière un voile jusqu'à confirmation.</small>
+              </div>
+              <div class="inter on"></div>
+            </div>
+          </div>
+
+          <div class="danger">Supprimer mon compte</div>
+        </main>
+
+        <div class="barre-action">
+          <button class="btn ghost">Annuler</button>
+          <button class="btn">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="legende">
+      <div><span class="pastille-num">1</span><span><b>Aperçu vivant, cadre compris.</b> Le membre voit exactement ce que les autres voient, y compris le cadre et le décor qu'il choisit.</span></div>
+      <div><span class="pastille-num">2</span><span><b>Trois blocs nommés</b> au lieu d'un formulaire à plat : Identité, Apparence, Confidentialité.</span></div>
+      <div><span class="pastille-num">3</span><span><b>Cadres en vignettes</b> qu'on touche, plus une liste déroulante illisible. Un ✓ marque le choix.</span></div>
+      <div><span class="pastille-num">4</span><span><b>Barre « Enregistrer » toujours visible.</b> Plus besoin de faire défiler 6 champs pour sauver.</span></div>
+      <div><span class="pastille-num">5</span><span><b>Compteurs de caractères</b> et aide sous chaque champ : plus de refus incompréhensible à la validation.</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ÉCRAN 2 : PUBLIER UN ARTICLE ============ -->
+  <div class="colonne">
+    <div class="telephone">
+      <div class="statut"><span>22:20</span><span>▮▮▮ ⌁ 83 %</span></div>
+      <div class="ecran">
+        <div class="nav">
+          <div class="logo">Aphrodite</div>
+          <div class="solde"><span class="cube"></span> 1 240</div>
+        </div>
+
+        <main>
+          <h1>Nouvelle publication</h1>
+
+          <div class="chips">
+            <span class="chip on">Cadre</span>
+            <span class="chip">Décor</span>
+            <span class="chip">Musique</span>
+            <span class="chip">Sticker</span>
+            <span class="chip">Écrit</span>
+          </div>
+
+          <!-- 1 -->
+          <div class="card">
+            <h2>L'image</h2>
+            <div class="depot">
+              <div class="icone">🖼️</div>
+              <b>Déposer ton PNG transparent</b>
+              <span>800 × 800 px conseillé · 2 Mo max<br>Le centre doit rester vide (le trou du cadre)</span>
+            </div>
+            <div class="verif"><span>✓</span><span><b>Vérifié :</b> fond transparent, canevas carré, trou central de 64 %</span></div>
+            <div class="mini-apercu">
+              <div class="vignette"></div>
+              <div class="meta"><b>cadre_lunaire.png</b>800 × 800 · 96 Ko</div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="card">
+            <h2>La fiche</h2>
+            <div class="saisie">
+              <label for="p1">Titre de l'article <span style="color:#ff7a9c">*</span></label>
+              <input id="p1" value="Cadre Lunaire">
+            </div>
+            <div class="saisie">
+              <label for="p2">Prix</label>
+              <input id="p2" class="dans" value="120">
+              <span class="unite">Cubis</span>
+            </div>
+            <div class="saisie">
+              <label for="p3">Description</label>
+              <textarea id="p3" class="dans" style="padding-bottom:22px">Un croissant de lune en cristal rose. Édition Saison II.</textarea>
+              <span class="unite" style="bottom:9px">64/200</span>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="card">
+            <h2>Publication</h2>
+            <div class="bascule">
+              <div class="txt">Mettre en vente immédiatement
+                <small>Sinon l'article reste en brouillon, visible par toi seule.</small>
+              </div>
+              <div class="inter on"></div>
+            </div>
+            <p class="note">En publiant, tu acceptes le <a href="#">règlement créateur</a> : contenu original, pas de contenu illégal, retrait possible sous 48 h en cas de litige.</p>
+          </div>
+        </main>
+
+        <div class="barre-action">
+          <button class="btn ghost">Brouillon</button>
+          <button class="btn">Publier</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="legende">
+      <div><span class="pastille-num">1</span><span><b>Le type d'abord.</b> Chips en haut : les champs changent selon le type au lieu d'afficher tout à tout le monde.</span></div>
+      <div><span class="pastille-num">2</span><span><b>Zone de dépôt</b> avec les contraintes écrites <i>avant</i> l'envoi, pas en message d'erreur après.</span></div>
+      <div><span class="pastille-num">3</span><span><b>Contrôle visuel immédiat</b> : transparence, canevas carré, trou à 64 %. C'est ta règle de cadre transformée en garde-fou.</span></div>
+      <div><span class="pastille-num">4</span><span><b>Prix et description</b> côte à côte avec compteurs : le créateur sait ce qu'il peut écrire.</span></div>
+      <div><span class="pastille-num">5</span><span><b>Brouillon / Publier</b> séparés : on ne perd plus un travail commencé.</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
