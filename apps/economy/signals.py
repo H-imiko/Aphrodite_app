@@ -8,7 +8,9 @@ from .services import bonus_quotidien
 @receiver(user_logged_in)
 def donner_bonus(sender, request, user, **kwargs):
     montant = bonus_quotidien(user)
-    if montant and request is not None:
+    # request peut ne pas passer par le middleware messages (tests,
+    # connexion programmatique) : on n'affiche le message que si possible.
+    if montant and request is not None and hasattr(request, "_messages"):
         messages.success(
             request,
             f"Bonus quotidien : +{montant} Cubis 💎 "
