@@ -18,11 +18,11 @@
       <div>
         <strong>{{ c.user.pseudo_whatsapp }}</strong><br>
         <span class="muted">{{ c.types_affiches }} · {{ c.date_creation|date:"d/m/Y" }}</span>
-      </div>
+</div>
       <a class="petit" href="{% url 'candidature' c.pk %}">Examiner</a>
-    </div>
+</div>
   {% empty %}
-    <p class="muted">Aucune candidature en attente 🎉</p>
+    <p class="muted">Aucune candidature en attente </p>
   {% endfor %}
 </section>
 
@@ -33,9 +33,9 @@
       <div>
         <strong>{{ c.user.pseudo_whatsapp }}</strong> · {{ c.get_statut_display }}<br>
         <span class="muted">par {{ c.traitee_par.pseudo_whatsapp|default:"?" }} · {{ c.date_traitement|date:"d/m/Y H:i" }}</span>
-      </div>
+</div>
       <a class="petit" href="{% url 'candidature' c.pk %}">Voir</a>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Rien pour l'instant.</p>
   {% endfor %}

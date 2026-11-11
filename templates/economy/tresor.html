@@ -25,7 +25,7 @@
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer depuis le Trésor</button>
-  </form>
+</form>
 </section>
 
 <section class="card mt-16" >
@@ -35,9 +35,9 @@
       <div>
         <strong>{{ t.destinataire.pseudo_whatsapp }}</strong><br>
         <span class="muted">par {{ t.auteur.pseudo_whatsapp|default:"?" }} · {{ t.date|date:"d/m/Y H:i" }}{% if t.description %} · {{ t.description }}{% endif %}</span>
-      </div>
+</div>
       <div class="plus">+{{ t.montant }}</div>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucun envoi pour l'instant.</p>
   {% endfor %}

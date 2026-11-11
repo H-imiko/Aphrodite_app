@@ -14,7 +14,7 @@
   {% if equip and equip.musique %}
   <form method="post" action="{% url 'musique_retirer' %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit"> Retirer ma musique</button>
-  </form>
+</form>
   {% endif %}
   {% if not membre.createur_valide %}
     {% if candidature_en_cours %}
@@ -25,7 +25,7 @@
   {% endif %}
   <form method="post" action="{% url 'deconnexion' %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit"> Déconnexion</button>
-  </form>
+</form>
 </div>
 {% else %}
 <div class="actions-profil">
@@ -33,7 +33,7 @@
   {% if membre.peut_publier %}
   <form method="post" action="{% url 'abonner' membre.pk %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit">{% if suis %} Abonné{% else %} S'abonner{% endif %}</button>
-  </form>
+</form>
   {% endif %}
   <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}"> Signaler</a>
   {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">️ Modérer</a>{% endif %}
@@ -59,18 +59,18 @@
       {% for o in offrandes %}
         <div class="offrande-icone" title="{{ o.nom }}"><img src="{{ o.image.url }}" alt="{{ o.nom }}">{% if o.n > 1 %}<span class="compte">×{{ o.n }}</span>{% endif %}</div>
       {% endfor %}
-    </div>
+</div>
   {% else %}
     <p class="muted">Aucune offrande pour l'instant.</p>
   {% endif %}
   <div class="actions-article">
     <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">Voir tout</a>
     {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}"> Envoyer une offrande</a>{% endif %}
-  </div>
+</div>
 </section>
 
 {% if articles %}
-<h2 style="margin-top:20px">Vitrine</h2>
+<h2 class="mt-20">Vitrine</h2>
 <div class="grille">
   {% for a in articles %}
     <div class="article">
@@ -78,8 +78,8 @@
       <div class="info">
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
         <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-      </div>
-    </div>
+</div>
+</div>
   {% endfor %}
 </div>
 {% endif %}

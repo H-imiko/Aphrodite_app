@@ -15,8 +15,8 @@
       <div>
         <strong>{{ l.get_action_display }}</strong>{% if l.cible %} → {{ l.cible.pseudo_whatsapp }}{% endif %}<br>
         <span class="muted">par {{ l.auteur.pseudo_whatsapp|default:"?" }} · {{ l.date|date:"d/m/Y H:i" }}{% if l.details %} · {{ l.details }}{% endif %}</span>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Aucune action pour l'instant.</p>
   {% endfor %}

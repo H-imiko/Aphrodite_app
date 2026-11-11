@@ -10,10 +10,10 @@
         <a href="{% url 'article' l.item.pk %}"><strong>{{ l.item.titre }}</strong></a>
         <div class="vendeur">{% include "partials/pseudo.html" with u=l.item.createur %}</div>
         <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ l.item.prix_cubis }}</div>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
-    <p class="muted">Tu n'as encore rien aimé. Touche « ♡ J'aime » sur un article.</p>
+    <p class="muted">Tu n'as encore rien aimé. Touche «  J'aime » sur un article.</p>
   {% endfor %}
 </div>
 {% endblock %}

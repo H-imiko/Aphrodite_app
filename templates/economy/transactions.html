@@ -18,11 +18,11 @@
       <div>
         <strong>{{ t.get_type_display }}</strong><br>
         <span class="muted">{{ t.date|date:"d/m/Y H:i" }}{% if t.description %} · {{ t.description }}{% endif %}</span>
-      </div>
+</div>
       <div class="{% if t.destinataire_id == user.id %}plus{% else %}moins{% endif %}">
         {% if t.destinataire_id == user.id %}+{% else %}−{% endif %}{{ t.montant }}
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Aucun mouvement pour l'instant.</p>
   {% endfor %}

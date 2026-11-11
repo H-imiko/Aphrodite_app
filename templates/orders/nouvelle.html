@@ -9,12 +9,12 @@
     2. Si le Créateur accepte, tes Cubis sont <strong>bloqués</strong> (il ne les reçoit pas encore).<br>
     3. Il te livre (messagerie, WhatsApp…). Tu confirmes la réception : il est payé. Sans réponse de ta part, la confirmation est automatique après quelques jours.<br>
     4. En cas de problème, tu ouvres un <strong>litige</strong> : une Divinité tranche.
-  </div>
-  <form method="post" style="margin-top:14px">
+</div>
+  <form method="post" class="mt-14">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer la demande</button>
-  </form>
+</form>
   <p><a href="{% url 'membre' vendeur.pk %}">← Annuler</a></p>
 </section>
 {% endblock %}

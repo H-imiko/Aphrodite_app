@@ -7,7 +7,7 @@
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <p class="muted">Audio : mp3, m4a, ogg ou wav (25 Mo maximum, extrait 3 Mo). Vidéo : mp4 ou webm (100 Mo maximum, extrait 10 Mo). Les envois de gros fichiers peuvent prendre un moment : ne ferme pas la page.</p>
     <button type="submit" class="btn">{% if article %}Enregistrer{% else %}Publier{% endif %}</button>
-  </form>
+</form>
   {% if article %}<p><a href="{% url 'article' article.pk %}">← Annuler</a></p>{% endif %}
 </section>
 {% endblock %}

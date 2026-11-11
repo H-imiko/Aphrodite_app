@@ -371,7 +371,9 @@ input[type=file] { padding: 9px; }
 
 /* ===== Utilitaires d'espacement (remplacent les styles en ligne) ===== */
 .mt-8 { margin-top: 8px; }
+.mt-10 { margin-top: 10px; }
 .mt-12 { margin-top: 12px; }
+.mt-14 { margin-top: 14px; }
 .mt-16 { margin-top: 16px; }
 .mt-20 { margin-top: 20px; }
 

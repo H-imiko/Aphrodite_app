@@ -3,7 +3,7 @@
 <h1>Économie 📈</h1>
 
 {% if alerte %}
-  <div class="alerte">⚠️ Les Cubis en circulation ont augmenté de {{ croissance }} % en 30 jours. Pense à ajuster les récompenses ou à lancer un article officiel (puits).</div>
+  <div class="alerte"> Les Cubis en circulation ont augmenté de {{ croissance }} % en 30 jours. Pense à ajuster les récompenses ou à lancer un article officiel (puits).</div>
 {% endif %}
 
 <div class="stats">
@@ -19,7 +19,7 @@
     <div class="ligne">
       <div><strong>{{ p.jours }} derniers jours</strong></div>
       <div><span class="plus">+{{ p.emis }}</span> émis · <span class="moins">−{{ p.detruits }}</span> détruits</div>
-    </div>
+</div>
   {% endfor %}
 </section>
 
@@ -29,7 +29,7 @@
     <div class="ligne">
       <div>{{ m.nom }}<br><span class="muted">{{ m.nb }} opération(s)</span></div>
       <div>{{ m.total }}</div>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucun mouvement.</p>
   {% endfor %}
@@ -42,16 +42,16 @@
     <div class="ligne">
       <div>{% include "partials/pseudo.html" with u=u %}</div>
       <div>{{ u.solde_cubis }}</div>
-    </div>
+</div>
   {% endfor %}
 </section>
 
 <section class="card mt-16" >
   <h2>Contrôle</h2>
   {% if ecart %}
-    <p>⚠️ Écart de {{ ecart }} Cubis entre les soldes (plus les Cubis bloqués) et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>
+    <p> Écart de {{ ecart }} Cubis entre les soldes (plus les Cubis bloqués) et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>
   {% else %}
-    <p>✅ Les soldes correspondent exactement à l'historique des transactions.</p>
+    <p> Les soldes correspondent exactement à l'historique des transactions.</p>
   {% endif %}
 </section>
 {% endblock %}

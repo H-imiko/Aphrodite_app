@@ -7,7 +7,7 @@
     <div class="ligne">
       <div>{% if b.via_anonyme %}Un expéditeur anonyme{% else %}{{ b.bloque.pseudo_whatsapp }}{% endif %}<br><span class="muted">bloqué le {{ b.date|date:"d/m/Y" }}</span></div>
       <form method="post" action="{% url 'debloquer' b.pk %}" class="inline">{% csrf_token %}<button type="submit" class="petit">Débloquer</button></form>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Tu n'as bloqué personne.</p>
   {% endfor %}

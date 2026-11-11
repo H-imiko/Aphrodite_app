@@ -10,19 +10,19 @@
           <strong>{{ d.offrande.nom }}</strong>{% if d.masque %} <span class="tag">masquée</span>{% endif %}<br>
           <span class="muted">{% if d.anonyme %}Anonyme{% else %}de <a href="{% url 'membre' d.expediteur.pk %}">{{ d.expediteur.pseudo_whatsapp }}</a>{% endif %} · {{ d.date|date:"d/m/Y" }}</span>
           {% if d.message %}<div>« {{ d.message }} »</div>{% endif %}
-        </div>
-      </div>
+</div>
+</div>
       {% if est_moi %}
       <div class="actions-article">
         <form method="post" action="{% url 'offrande_masquer' d.pk %}" class="inline">
           {% csrf_token %}<button type="submit" class="petit">{% if d.masque %}Réafficher{% else %}Masquer{% endif %}</button>
-        </form>
+</form>
         <form method="post" action="{% url 'offrande_bloquer' d.pk %}" class="inline" onsubmit="return confirm('Bloquer cet expéditeur ? Il ne pourra plus t\'envoyer d\'offrande.');">
           {% csrf_token %}<button type="submit" class="petit"> Bloquer</button>
-        </form>
-      </div>
+</form>
+</div>
       {% endif %}
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucune offrande pour l'instant.</p>
   {% endfor %}

@@ -12,18 +12,18 @@
       <div>
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a><br>
         <span class="muted"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }} · {{ a.nb_achats }} achat{{ a.nb_achats|pluralize }} · {% if a.est_actif %}visible{% elif a.masque_moderation %}masqué par la modération{% else %}masqué{% endif %}</span>
-      </div>
+</div>
       <div class="actions-article">
         <a class="petit" href="{% url 'modifier_article' a.pk %}">️</a>
         {% if a.est_actif or not a.masque_moderation %}
         <form method="post" action="{% url 'basculer_article' a.pk %}" class="inline">
           {% csrf_token %}
           <button type="submit" class="petit">{% if a.est_actif %}Masquer{% else %}Afficher{% endif %}</button>
-        </form>
+</form>
         {% endif %}
         <a class="petit" href="{% url 'supprimer_article' a.pk %}">️</a>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Tu n'as encore rien publié.</p>
   {% endfor %}

@@ -6,10 +6,10 @@
     {% if article.apercu %}<img class="grand" src="{{ article.apercu.url }}" alt="">{% endif %}
     {% if article.categorie == "audio" %}
       {% if acces %}
-        <p class="muted">🎧 Version complète</p>
+        <p class="muted"> Version complète</p>
         <audio class="lecteur" controls controlsList="nodownload" preload="none" src="{% url 'lire' article.pk %}"></audio>
       {% elif article.extrait %}
-        <p class="muted">🎧 Extrait gratuit : la version complète se débloque après l'achat.</p>
+        <p class="muted"> Extrait gratuit : la version complète se débloque après l'achat.</p>
         <audio class="lecteur" controls controlsList="nodownload" preload="none" src="{% url 'extrait' article.pk %}"></audio>
       {% endif %}
     {% else %}
@@ -17,14 +17,14 @@
       <div class="lecteur-video">
         <video controls controlsList="nodownload noremoteplayback" disablePictureInPicture playsinline preload="metadata"{% if article.apercu %} poster="{{ article.apercu.url }}"{% endif %} src="{% if acces %}{% url 'lire' article.pk %}{% else %}{% url 'extrait' article.pk %}{% endif %}"></video>
         <div class="filigrane">{{ user.pseudo_whatsapp }}</div>
-      </div>
-      {% if not acces %}<p class="muted">🎬 Extrait gratuit : la vidéo complète se débloque après l'achat.</p>{% endif %}
+</div>
+      {% if not acces %}<p class="muted"> Extrait gratuit : la vidéo complète se débloque après l'achat.</p>{% endif %}
       {% endif %}
     {% endif %}
     {% if acces %}<a class="btn lien" href="{% url 'telecharger' article.pk %}">Télécharger le fichier</a>{% endif %}
   {% elif est_cosmetique %}
     {% if article.apercu %}<div class="apercu-cosmetique"><img src="{{ article.apercu.url }}" alt=""></div>{% endif %}
-    <p class="muted">✨ Article officiel à équiper sur ton profil{% if possede %} : va dans ton <a href="{% url 'inventaire' %}">inventaire</a> pour l'équiper.{% else %}, après l'achat.{% endif %}</p>
+    <p class="muted"> Article officiel à équiper sur ton profil{% if possede %} : va dans ton <a href="{% url 'inventaire' %}">inventaire</a> pour l'équiper.{% else %}, après l'achat.{% endif %}</p>
   {% elif acces %}
     <img class="grand" src="{% url 'telecharger' article.pk %}?voir=1" alt="">
     <a class="btn lien" href="{% url 'telecharger' article.pk %}">Télécharger l'original</a>
@@ -39,9 +39,9 @@
   {% if not est_proprietaire %}
   <form method="post" action="{% url 'aimer' article.pk %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit">{% if a_like %} Aimé{% else %} J'aime{% endif %} · {{ nb_likes }}</button>
-  </form>
+</form>
   {% else %}
-  <span class="muted">♥ {{ nb_likes }}</span>
+  <span class="muted"> {{ nb_likes }}</span>
   {% endif %}
 
   {% if not article.est_actif %}
@@ -52,7 +52,7 @@
     <p class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ article.prix_cubis }}</p>
     <a class="btn lien" href="{% url 'acheter' article.pk %}">Acheter</a>
   {% elif possede %}
-    <p class="muted">✅ Cet article est dans ton inventaire.</p>
+    <p class="muted"> Cet article est dans ton inventaire.</p>
   {% endif %}
 
   {% if est_proprietaire %}
@@ -64,17 +64,17 @@
       {% if article.categorie == "audio" and article.est_actif %}
       <form method="post" action="{% url 'musique_profil' article.pk %}" class="inline">
         {% csrf_token %}<button type="submit" class="petit"> Mettre sur mon profil</button>
-      </form>
+</form>
       {% endif %}
-    </div>
+</div>
     {% endif %}
   {% else %}
     <p><a class="petit" href="{% url 'signaler' 'article' article.pk %}"> Signaler cet article</a></p>
     {% if user.est_divinite %}
-      <form method="post" action="{% url 'basculer_article' article.pk %}" style="margin-top:12px">
+      <form method="post" action="{% url 'basculer_article' article.pk %}" class="mt-12">
         {% csrf_token %}
         <button type="submit" class="btn danger">{% if article.est_actif %} Masquer cet article (Divinité){% else %} Réafficher cet article{% endif %}</button>
-      </form>
+</form>
     {% endif %}
   {% endif %}
 </section>

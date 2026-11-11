@@ -16,20 +16,20 @@
     <div class="attente">
       ⏳ Ta candidature est en cours d'examen par une Divinité.<br>
       <span class="muted">Envoyée le {{ derniere.date_creation|date:"d/m/Y" }}. Tu seras Créateur dès qu'elle sera validée, avec +500 Cubis de bienvenue.</span>
-    </div>
+</div>
   {% else %}
     {% if derniere and derniere.statut == "refusee" %}
       <div class="refus">
         Ta précédente candidature a été refusée{% if derniere.motif_refus %} : {{ derniere.motif_refus }}{% endif %}.<br>
         Tu peux en envoyer une nouvelle.
-      </div>
+</div>
     {% endif %}
     <p class="muted">Choisis ce que tu crées et montre-nous 1 à 3 exemples. Ces captures ne sont visibles que par les Divinités.</p>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="formulaire">{% include "partials/champs.html" %}</div>
       <button type="submit" class="btn">Envoyer ma candidature</button>
-    </form>
+</form>
   {% endif %}
 </section>
 {% endblock %}

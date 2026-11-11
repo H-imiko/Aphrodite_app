@@ -18,7 +18,7 @@
       {% csrf_token %}
       <input type="hidden" name="prix" value="{{ article.prix_cubis }}">
       <button type="submit" class="btn">Confirmer l'achat</button>
-    </form>
+</form>
   {% else %}
     <div class="alerte mt-14" >Solde insuffisant. Il te manque {{ manque }} Cubis.</div>
   {% endif %}

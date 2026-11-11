@@ -11,8 +11,8 @@
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
         <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
         <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     {% if nb_suivis %}
       <p class="muted">Tes Créateurs n'ont encore rien publié.</p>

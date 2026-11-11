@@ -11,9 +11,9 @@
       <div>
         <a href="{% url 'commande' c.pk %}"><strong>{{ c.titre }}</strong></a><br>
         <span class="muted">à {{ c.vendeur.pseudo_whatsapp }} · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
-      </div>
+</div>
       <span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucune commande pour l'instant.</p>
   {% endfor %}
@@ -27,9 +27,9 @@
       <div>
         <a href="{% url 'commande' c.pk %}"><strong>{{ c.titre }}</strong></a><br>
         <span class="muted">de {{ c.acheteur.pseudo_whatsapp }} · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
-      </div>
+</div>
       <span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucune commande reçue pour l'instant.</p>
   {% endfor %}

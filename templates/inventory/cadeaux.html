@@ -10,12 +10,12 @@
         <strong>{{ t.item.titre }}</strong><br>
         <span class="muted">de {{ t.expediteur.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
         {% if t.message %}<div>« {{ t.message }} »</div>{% endif %}
-      </div>
+</div>
       <div class="actions-article">
         <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="accepter"><button type="submit" class="petit"> Accepter</button></form>
         <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="refuser"><button type="submit" class="petit">Refuser</button></form>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Aucun cadeau en attente.</p>
   {% endfor %}
@@ -28,9 +28,9 @@
       <div>
         <strong>{{ t.item.titre }}</strong><br>
         <span class="muted">pour {{ t.destinataire.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
-      </div>
+</div>
       <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="annuler"><button type="submit" class="petit">Annuler</button></form>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Aucun cadeau en attente.</p>
   {% endfor %}
@@ -43,8 +43,8 @@
       <div>
         <strong>{{ t.item.titre }}</strong> · {{ t.get_statut_display }}<br>
         <span class="muted">{{ t.expediteur.pseudo_whatsapp }} → {{ t.destinataire.pseudo_whatsapp }} · {{ t.date|date:"d/m/Y" }}</span>
-      </div>
-    </div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Rien pour l'instant.</p>
   {% endfor %}

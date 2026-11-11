@@ -9,7 +9,7 @@
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer le cadeau</button>
-  </form>
+</form>
   <p><a href="{% url 'inventaire' %}">← Retour à l'inventaire</a></p>
 </section>
 {% endblock %}

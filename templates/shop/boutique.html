@@ -13,15 +13,15 @@
     <select name="categorie">
       <option value="">Toutes les catégories</option>
       {% for val, nom in categories %}<option value="{{ val }}"{% if val == cat %} selected{% endif %}>{{ nom }}</option>{% endfor %}
-    </select>
+</select>
     <select name="tri">
       {% for cle, nom in tris %}<option value="{{ cle }}"{% if cle == tri %} selected{% endif %}>{{ nom }}</option>{% endfor %}
-    </select>
-  </div>
+</select>
+</div>
   <div class="recherche-ligne">
     <button type="submit" class="btn">Rechercher</button>
     {% if q or cat or tri != "recent" %}<a class="petit" href="{% url 'boutique' %}">Réinitialiser</a>{% endif %}
-  </div>
+</div>
 </form>
 
 <p class="muted">{{ total }} article{{ total|pluralize }}</p>
@@ -34,12 +34,12 @@
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
         {% if a.est_officiel %}<span class="tag">Officiel</span>{% endif %}
         {% if a.pk in possedes %}<span class="tag possede">Possédé</span>{% endif %}
-        {% if a.categorie == "audio" %}<span class="tag type">🎵</span>{% elif a.categorie == "video" %}<span class="tag type">🎬</span>{% elif a.categorie == "cadre" or a.categorie == "decor" %}<span class="tag type">✨</span>{% endif %}
+        {% if a.categorie == "audio" %}<span class="tag type">Audio</span>{% elif a.categorie == "video" %}<span class="tag type">Vidéo</span>{% elif a.categorie == "cadre" or a.categorie == "decor" %}<span class="tag type"></span>{% endif %}
         <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
         <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-        <div class="muted petit-texte">{% if a.pk in aimes %}♥{% else %}♡{% endif %} {{ a.nb_likes }}</div>
-      </div>
-    </div>
+        <div class="muted petit-texte">{% if a.pk in aimes %}{% else %}{% endif %} {{ a.nb_likes }}</div>
+</div>
+</div>
   {% empty %}
     <p class="muted">Aucun article ne correspond à ta recherche.</p>
   {% endfor %}

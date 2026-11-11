@@ -12,13 +12,13 @@ S'utilise avec un formulaire nommé `form` :
     <label class="champ-case">
       {{ champ }}
       <span>{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</span>
-    </label>
+</label>
   {% else %}
     <div class="champ{% if champ.errors %} champ-invalide{% endif %}">
       <label for="{{ champ.id_for_label }}">{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</label>
       {{ champ }}
       {% if champ.help_text %}<p class="aide">{{ champ.help_text|safe }}</p>{% endif %}
       {% for erreur in champ.errors %}<p class="erreur-champ">{{ erreur }}</p>{% endfor %}
-    </div>
+</div>
   {% endif %}
 {% endfor %}

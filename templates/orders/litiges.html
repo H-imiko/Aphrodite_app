@@ -9,11 +9,11 @@
       <div>
         <strong>{{ c.titre }}</strong> · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }}<br>
         <span class="muted">{{ c.acheteur.pseudo_whatsapp }} → {{ c.vendeur.pseudo_whatsapp }} · ouvert par {{ c.litige_par.pseudo_whatsapp }}</span>
-      </div>
+</div>
       <a class="petit" href="{% url 'commande' c.pk %}">Examiner</a>
-    </div>
+</div>
   {% empty %}
-    <p class="muted">Aucun litige en attente 🎉</p>
+    <p class="muted">Aucun litige en attente </p>
   {% endfor %}
 </section>
 <section class="card mt-16" >
@@ -23,9 +23,9 @@
       <div>
         <strong>{{ c.titre }}</strong> · {{ c.get_statut_display }}<br>
         <span class="muted">par {{ c.tranche_par.pseudo_whatsapp }} · {{ c.date_fin|date:"d/m/Y H:i" }}</span>
-      </div>
+</div>
       <a class="petit" href="{% url 'commande' c.pk %}">Voir</a>
-    </div>
+</div>
   {% empty %}
     <p class="muted">Rien pour l'instant.</p>
   {% endfor %}
