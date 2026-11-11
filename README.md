@@ -50,6 +50,29 @@ DJANGO_CSRF_TRUSTED_ORIGINS="https://aphrodite.exemple.com" \
 python manage.py runserver 0.0.0.0:8000
 ```
 
+## Configuration (`.env`)
+
+Rien n'est obligatoire en local : l'application demarre sans configuration.
+Pour tout regler, copie le modele fourni :
+
+```bash
+cp .env.example .env      # Windows : copy .env.example .env
+```
+
+`.env` n'est jamais envoye sur GitHub. Il contient la cle secrete, les domaines
+acceptes et, si besoin, la base de donnees. Une variable definie dans
+l'environnement du systeme a toujours priorite sur ce fichier.
+
+En ligne, trois reglages sont obligatoires : `DJANGO_DEBUG=0`,
+`DJANGO_SECRET_KEY` et `DJANGO_ALLOWED_HOSTS`. Sans eux, l'application refuse
+de demarrer avec un message explicite plutot que de tourner en mode insouciant.
+
+Generer une cle secrete :
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(64))"
+```
+
 ## Comptes de test
 
 | Email | Mot de passe | Rôle |
@@ -65,7 +88,32 @@ Panel d'administration : http://127.0.0.1:8000/admin/
 python manage.py test
 ```
 
-36 tests, doivent être verts avant chaque envoi sur GitHub.
+38 tests, doivent être verts avant chaque envoi sur GitHub.
+
+## Sauvegardes
+
+```bash
+python manage.py sauvegarder_base
+```
+
+Ecrit `sauvegardes/db-AAAAMMJJ-HHMMSS.sqlite3.gz` sans interrompre le site (la
+copie passe par l'API de sauvegarde de SQLite, elle est donc coherente même si
+quelqu'un écrit au même moment). Les 14 dernières copies sont conservées ;
+`--garder 30` change ce nombre, `--dossier /autre/chemin` change la
+destination.
+
+Sauvegarder une fois par jour ne sert que si c'est automatique. Sous Linux, une
+tache quotidienne à 4 h :
+
+```
+0 4 * * * cd /chemin/aphrodite && .venv/bin/python manage.py sauvegarder_base
+```
+
+Une sauvegarde non testée n'existe pas. Celle du 11 novembre 2026 a été
+restaurée pour vérification : intégrité SQLite `ok`, comptes, articles,
+inventaire et offrandes présents. Refais ce contrôle après chaque changement
+important : décompresse l'archive, vérifie `PRAGMA integrity_check`, ouvre
+l'application dessus.
 
 ## Contenu du dépôt
 
@@ -77,6 +125,8 @@ python manage.py test
 - `maquette/` : maquette HTML des écrans + aperçu PNG
 - `docs/captures/` : captures des écrans réels de l'application
 - `docs/registre-et-plan.md` : liste des défauts à corriger et calendrier
+- `docs/migration-postgres.md` : bascule SQLite → PostgreSQL, étape par étape
+- `.env.example` : modèle de configuration (à copier en `.env`)
 - `LISEZMOI.txt` : historique, obsolète
 
 ## Contrat des cadres
