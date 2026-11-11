@@ -5,14 +5,7 @@
 <p class="muted">Les derniers articles des Créateurs auxquels tu es abonné.</p>
 <div class="grille">
   {% for a in articles %}
-    <div class="article">
-      <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
-      <div class="info">
-        <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
-        <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
-        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-</div>
-</div>
+      {% include "partials/carte_article.html" with a=a %}
   {% empty %}
     {% if nb_suivis %}
       <p class="muted">Tes Créateurs n'ont encore rien publié.</p>

@@ -65,7 +65,7 @@
   {% endif %}
   <div class="actions-article">
     <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">Voir tout</a>
-    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}"> Envoyer une offrande</a>{% endif %}
+    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}">Envoyer une offrande</a>{% endif %}
 </div>
 </section>
 
@@ -73,13 +73,7 @@
 <h2 class="mt-20">Vitrine</h2>
 <div class="grille">
   {% for a in articles %}
-    <div class="article">
-      <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
-      <div class="info">
-        <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
-        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-</div>
-</div>
+      {% include "partials/carte_article.html" with a=a %}
   {% endfor %}
 </div>
 {% endif %}

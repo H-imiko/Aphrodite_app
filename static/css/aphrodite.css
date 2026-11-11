@@ -31,7 +31,7 @@ body {
   background-attachment: fixed;
   min-height: 100vh;
 }
-body.avec-nav { padding-bottom: calc(82px + env(safe-area-inset-bottom)); }
+body.avec-nav { padding-bottom: calc(94px + env(safe-area-inset-bottom)); }
 a { color: var(--rose); text-decoration: none; }
 a:hover { color: var(--soft); }
 :focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
@@ -72,7 +72,7 @@ form.inline { margin: 0; display: inline; }
   -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
   padding: 7px 0 calc(7px + env(safe-area-inset-bottom)); }
 .barre a { display: flex; flex-direction: column; align-items: center; flex: 1;
-  gap: 2px; font-size: .68rem; letter-spacing: .06em; min-height: 46px; text-transform: uppercase;
+  gap: 2px; font-size: .72rem; letter-spacing: .04em; min-height: 52px; text-transform: uppercase;
   color: var(--muted); transition: color .2s; }
 .barre a.actif { color: var(--rose); text-shadow: 0 0 12px rgba(255, 46, 147, .8); }
 .barre .ic { font-size: 1.4rem; line-height: 1; }
@@ -290,7 +290,7 @@ input[type=file] { padding: 9px; }
   padding: 4px 8px; }
 
 /* ===== Icones de la barre du bas ===== */
-.barre .ic-img { width: 32px; height: 32px; object-fit: contain; opacity: .72;
+.barre .ic-img { width: 28px; height: 28px; object-fit: contain; opacity: .72;
   transition: opacity .2s, filter .2s; }
 .barre a.actif .ic-img { opacity: 1;
   filter: drop-shadow(0 0 7px rgba(255, 46, 147, .9)); }
@@ -412,3 +412,7 @@ input[type=file] { padding: 9px; }
   outline-offset: 2px; }
 .btn:focus-visible, .petit:focus-visible, .lien-evitement:focus-visible {
   outline: 2px solid var(--soft); outline-offset: 3px; }
+
+/* ===== Etiquettes des cartes ===== */
+.etiquettes { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.etiquettes .tag { margin-left: 0; }
