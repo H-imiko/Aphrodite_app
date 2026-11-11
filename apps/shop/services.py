@@ -2,7 +2,7 @@ from django.db import transaction
 from django.urls import reverse
 
 from apps.economy.models import Transaction
-from apps.economy.services import ErreurEconomie, _verrouiller
+from apps.economy.services import ErreurEconomie, crediter, debiter
 from apps.inventory.models import InventoryItem
 from apps.notifications.services import notifier
 from .models import Item
@@ -23,19 +23,15 @@ def acheter(acheteur, item_id, prix_attendu=None):
         if acheteur.est_suspendu:
             raise ErreurEconomie("Ton compte est suspendu.")
 
-        verrous = _verrouiller(acheteur, item.createur)
-        ach = verrous[acheteur.pk]
-        vend = verrous[item.createur_id]
+        ach = acheteur
+        vend = item.createur
 
         if InventoryItem.objects.filter(proprietaire=ach, item=item).exists():
             raise ErreurEconomie("Tu possèdes déjà cet article.")
 
         prix = item.prix_cubis
-        if not ach.est_divinite:
-            if ach.solde_cubis < prix:
-                raise ErreurEconomie("Solde insuffisant.")
-            ach.solde_cubis -= prix
-            ach.save(update_fields=["solde_cubis"])
+        if not ach.est_divinite and not debiter(ach.pk, prix):
+            raise ErreurEconomie("Solde insuffisant.")
 
         if item.est_officiel:
             # Article officiel : les Cubis sont détruits (anti-inflation)
@@ -45,8 +41,7 @@ def acheter(acheteur, item_id, prix_attendu=None):
                     type=Transaction.Type.DESTRUCTION,
                     description=item.titre)
         else:
-            vend.solde_cubis += prix
-            vend.save(update_fields=["solde_cubis"])
+            crediter(vend.pk, prix)
             Transaction.objects.create(
                 expediteur=ach, destinataire=vend, montant=prix,
                 type=Transaction.Type.ACHAT, description=item.titre)

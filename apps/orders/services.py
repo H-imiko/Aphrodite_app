@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
-from apps.economy.services import ErreurEconomie, _verrouiller
+from apps.economy.services import ErreurEconomie, crediter, debiter
 from apps.moderation.models import AuditLog
 from apps.moderation.services import journaliser
 from apps.notifications.services import notifier, notifier_divinites
@@ -44,9 +44,8 @@ def _charger(order_id):
 
 def _liberer(c, texte):
     """Verse les Cubis bloqués au Créateur et termine la commande."""
-    vend = _verrouiller(c.vendeur)[c.vendeur_id]
-    vend.solde_cubis += c.prix_cubis
-    vend.save(update_fields=["solde_cubis"])
+    vend = c.vendeur
+    crediter(vend.pk, c.prix_cubis)
     Transaction.objects.create(
         expediteur=None, destinataire=vend, montant=c.prix_cubis,
         type=Transaction.Type.LIBERATION, description=c.titre[:150])
@@ -61,9 +60,8 @@ def _liberer(c, texte):
 
 def _rembourser(c, statut, texte):
     """Rend les Cubis bloqués à l'acheteur."""
-    ach = _verrouiller(c.acheteur)[c.acheteur_id]
-    ach.solde_cubis += c.prix_cubis
-    ach.save(update_fields=["solde_cubis"])
+    ach = c.acheteur
+    crediter(ach.pk, c.prix_cubis)
     Transaction.objects.create(
         expediteur=None, destinataire=ach, montant=c.prix_cubis,
         type=Transaction.Type.REMBOURSEMENT, description=c.titre[:150])
@@ -131,15 +129,13 @@ def accepter(user, order_id):
             raise ErreurEconomie("Cette demande n'est plus en attente.")
         if user.est_suspendu:
             raise ErreurEconomie("Ton compte est suspendu.")
-        ach = _verrouiller(c.acheteur)[c.acheteur_id]
+        ach = c.acheteur
         if ach.est_suspendu:
             raise ErreurEconomie("Le compte de l'acheteur est suspendu.")
-        if ach.solde_cubis < c.prix_cubis:
+        if not debiter(ach.pk, c.prix_cubis):
             raise ErreurEconomie(
                 "L'acheteur n'a plus assez de Cubis. Tu peux refuser la "
                 "demande.")
-        ach.solde_cubis -= c.prix_cubis
-        ach.save(update_fields=["solde_cubis"])
         Transaction.objects.create(
             expediteur=ach, destinataire=None, montant=c.prix_cubis,
             type=Transaction.Type.SEQUESTRE, description=c.titre[:150])

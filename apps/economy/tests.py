@@ -1,6 +1,8 @@
+import threading
 from datetime import timedelta
 
-from django.test import TestCase, override_settings
+from django.db import connections
+from django.test import TestCase, TransactionTestCase, override_settings
 from django.utils import timezone
 
 from apps.accounts.models import User
@@ -145,3 +147,69 @@ class TresorTests(TestCase):
         self.assertEqual((t.auteur, t.destinataire, t.montant),
                          (self.gardienne, self.membre, 50))
         self.assertEqual(self.membre.notifications.count(), 1)
+
+
+class FarmBonusTests(TestCase):
+    """Un appareil ne peut pas ramasser le bonus avec des comptes en serie."""
+
+    def test_bonus_plafonne_par_appareil(self):
+        empreinte = "a" * 64
+        montants = [
+            bonus_quotidien(creer_user(f"farm{rang}@test.cg"),
+                            appareil=empreinte)
+            for rang in range(4)
+        ]
+
+        self.assertEqual(len([m for m in montants if m]), 3)
+        self.assertIsNone(montants[3])
+
+    def test_appareils_differents_servis_normalement(self):
+        for rang in range(3):
+            self.assertIsNotNone(
+                bonus_quotidien(creer_user(f"appareil{rang}@test.cg"),
+                                appareil=f"{rang}" * 64))
+
+    def test_quota_atteint_ne_bloque_pas_le_lendemain(self):
+        empreinte = "b" * 64
+        for rang in range(3):
+            bonus_quotidien(creer_user(f"serie{rang}@test.cg"),
+                            appareil=empreinte)
+        dernier = creer_user("serie-refus@test.cg")
+
+        self.assertIsNone(bonus_quotidien(dernier, appareil=empreinte))
+        dernier.refresh_from_db()
+        # La journee refusee n'a pas ete consommee.
+        self.assertIsNone(dernier.derniere_connexion_bonus)
+
+
+class ConcurrenceTests(TransactionTestCase):
+    """Deux depenses simultanees ne peuvent pas passer avec le meme solde."""
+
+    def test_double_depense_bloquee(self):
+        alice = creer_user("alice-concurrente@test.cg", solde=100)
+        bob = creer_user("bob-concurrent@test.cg")
+        resultats = []
+
+        def depenser():
+            try:
+                transferer(alice, bob, 100)
+                resultats.append("accepte")
+            except ErreurEconomie:
+                resultats.append("refuse")
+            finally:
+                connections.close_all()
+
+        fils = [threading.Thread(target=depenser) for _ in range(2)]
+        for fil in fils:
+            fil.start()
+        for fil in fils:
+            fil.join()
+
+        alice.refresh_from_db()
+        bob.refresh_from_db()
+        self.assertEqual(sorted(resultats), ["accepte", "refuse"])
+        self.assertEqual(alice.solde_cubis, 0)
+        self.assertEqual(bob.solde_cubis, 100)
+        self.assertEqual(
+            Transaction.objects.filter(
+                type=Transaction.Type.TRANSFERT).count(), 1)

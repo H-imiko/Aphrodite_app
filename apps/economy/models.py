@@ -39,3 +39,27 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.get_type_display()} : {self.montant} Cubis"
+
+
+class BonusAppareil(models.Model):
+    """Compteur technique des bonus quotidiens servis a un meme appareil.
+
+    Empeche de multiplier les comptes pour encaisser plusieurs fois le bonus
+    du jour. L'empreinte est un hachage (adresse IP + navigateur), jamais une
+    adresse en clair : la ligne est sans valeur et purgeable.
+    """
+
+    empreinte = models.CharField(max_length=64)
+    jour = models.DateField()
+    nombre = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["empreinte", "jour"], name="unique_bonus_appareil_jour")
+        ]
+        verbose_name = "Bonus par appareil"
+        verbose_name_plural = "Bonus par appareil"
+
+    def __str__(self):
+        return f"{self.jour} · {self.nombre} bonus"

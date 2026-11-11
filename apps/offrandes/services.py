@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
-from apps.economy.services import ErreurEconomie, _verrouiller
+from apps.economy.services import ErreurEconomie, debiter
 from apps.notifications.services import notifier
 from .models import Blocage, Offrande, OffrandeEnvoyee
 
@@ -37,7 +37,7 @@ def envoyer(expediteur, destinataire_id, offrande_id, message="",
 
     depuis = timezone.now() - timedelta(hours=24)
     with transaction.atomic():
-        ach = _verrouiller(expediteur)[expediteur.pk]
+        ach = expediteur
         recents = OffrandeEnvoyee.objects.filter(
             expediteur=ach, date__gte=depuis)
         if recents.count() >= MAX_PAR_JOUR:
@@ -50,10 +50,8 @@ def envoyer(expediteur, destinataire_id, offrande_id, message="",
         prix = offrande.prix_cubis
         paye = 0
         if not ach.est_divinite:
-            if ach.solde_cubis < prix:
+            if not debiter(ach.pk, prix):
                 raise ErreurEconomie("Solde insuffisant.")
-            ach.solde_cubis -= prix
-            ach.save(update_fields=["solde_cubis"])
             Transaction.objects.create(
                 expediteur=ach, destinataire=None, montant=prix,
                 type=Transaction.Type.OFFRANDE,

@@ -33,8 +33,8 @@ Les packs de stickers, eux, sont une nouveauté → version 1 = ZIP + tutoriel.
 | 1 ✅ | Secrets et réglages de prod en dur | `config/settings.py` L11-16 (`SECRET_KEY`, `DEBUG=True`, `ALLOWED_HOSTS=[]`) | variables d'environnement, `SECRET_KEY` générée, `DEBUG=False`, hôtes explicites | `check --deploy` sans avertissement critique |
 | 2 ✅ | Aucune sauvegarde | — | dump quotidien de la base + médias, test de restauration | restaurer une base dans un environnement vide |
 | 3 ✅ | HTTPS et cookies non sécurisés | `check --deploy` (7 avertissements) | redirection SSL, HSTS, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` | `check --deploy` propre |
-| 4 | Double-dépense possible | `economy/services.py:_verrouiller` — `select_for_update` ignoré sur SQLite | PostgreSQL + transaction réelle | test de concurrence (2 threads, 1 solde) |
-| 5 | Farm de Cubis multi-comptes | bonus quotidien + email non vérifié | email vérifié avant bonus, plafond par appareil/IP | test : 3 comptes neufs ne génèrent plus de Cubis |
+| 4 ✅ | Double-dépense possible | `economy/services.py:_verrouiller` — `select_for_update` ignoré sur SQLite | PostgreSQL + transaction réelle | test de concurrence (2 threads, 1 solde) |
+| 5 🟡 | Farm de Cubis multi-comptes | bonus quotidien + email non vérifié | email vérifié avant bonus, plafond par appareil/IP | test : 3 comptes neufs ne génèrent plus de Cubis |
 | 6 | Aucune page de règlement alors que la case 18+ est obligatoire | `accounts/forms.py:InscriptionForm.accepte_cgu` | CGU + confidentialité rédigées et liées | la case pointe vers une page réelle |
 | 7 | Signalement = masquage automatique (griefing) | `views_public.py:58` | masquage seulement après N signalements distincts ou décision d'une Gardienne | test : 1 signalement ne masque plus rien |
 

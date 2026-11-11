@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.economy.models import Transaction
-from apps.economy.services import _verrouiller
+from apps.economy.services import debiter
 from apps.notifications.services import notifier
 from apps.shop.models import Item
 from .models import AuditLog, Report, Sanction
@@ -122,12 +122,11 @@ def reduire_cubis(acteur, cible, montant, raison, signalement_id=None):
     if montant <= 0:
         raise ErreurModeration("Le montant doit être positif.")
     with transaction.atomic():
-        u = _verrouiller(cible)[cible.pk]
-        if montant > u.solde_cubis:
+        u = cible
+        if not debiter(u.pk, montant):
+            u.refresh_from_db(fields=["solde_cubis"])
             raise ErreurModeration(
                 f"Solde insuffisant : {u.solde_cubis} Cubis.")
-        u.solde_cubis -= montant
-        u.save(update_fields=["solde_cubis"])
         Transaction.objects.create(
             expediteur=u, destinataire=None, montant=montant,
             type=Transaction.Type.SANCTION, description=raison[:200])

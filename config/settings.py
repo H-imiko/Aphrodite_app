@@ -222,6 +222,10 @@ PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_media'
 SAUVEGARDES_DIR = Path(os.environ.get("DJANGO_SAUVEGARDES_DIR", "") or BASE_DIR / "sauvegardes")
 LIMITE_ENVOI_GARDIENNE = 999999999999999999
 BONUS_CREATEUR = 500
+# Nombre de bonus quotidiens servis a un meme appareil (IP + navigateur).
+# Empeche de creer des comptes en serie pour ramasser le bonus plusieurs fois.
+# 0 desactive le plafond (deconseille).
+BONUS_PLAFOND_APPAREIL = int(os.environ.get("DJANGO_BONUS_PLAFOND_APPAREIL", "3"))
 PRIX_CONSEILLES = {
     "stickers": (20, 60),
     "fonds": (10, 40),
