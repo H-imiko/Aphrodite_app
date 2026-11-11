@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Boutique</h1>
 <p class="actions-article">
-  <a class="petit" href="{% url 'fil' %}"> Mon fil</a>
+  <a class="petit" href="{% url 'fil' %}">Mon fil</a>
   <a class="petit" href="{% url 'favoris' %}"> Mes favoris</a>
 </p>
 
@@ -29,15 +29,20 @@
 <div class="grille">
   {% for a in page %}
     <div class="article">
-      <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
+      <a href="{% url 'article' a.pk %}" class="visuel">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="{{ a.titre }}" width="400" height="400" loading="lazy">{% endif %}</a>
       <div class="info">
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
         {% if a.est_officiel %}<span class="tag">Officiel</span>{% endif %}
         {% if a.pk in possedes %}<span class="tag possede">Possédé</span>{% endif %}
-        {% if a.categorie == "audio" %}<span class="tag type">Audio</span>{% elif a.categorie == "video" %}<span class="tag type">Vidéo</span>{% elif a.categorie == "cadre" or a.categorie == "decor" %}<span class="tag type"></span>{% endif %}
+        {% if a.categorie == "audio" %}<span class="tag type">Audio</span>{% elif a.categorie == "video" %}<span class="tag type">Vidéo</span>{% elif a.categorie == "cadre" %}<span class="tag type">Cadre</span>{% endif %}
         <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
-        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
-        <div class="muted petit-texte">{% if a.pk in aimes %}{% else %}{% endif %} {{ a.nb_likes }}</div>
+        <div class="article-pied">
+          <span class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</span>
+          <span class="jaime{% if a.pk in aimes %} aime{% endif %}" aria-label="{{ a.nb_likes }} j'aime">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S4.5 15.8 4.5 10.9A4.1 4.1 0 0 1 12 8.6a4.1 4.1 0 0 1 7.5 2.3c0 4.9-7.5 9.6-7.5 9.6Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            {{ a.nb_likes }}
+          </span>
+        </div>
 </div>
 </div>
   {% empty %}
