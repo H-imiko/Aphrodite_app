@@ -1,10 +1,11 @@
 import hashlib
+import logging
 import random
 from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import IntegrityError, transaction
+from django.db import DatabaseError, IntegrityError, transaction
 from django.db.models import F, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -16,6 +17,8 @@ from .models import BonusAppareil, Transaction
 
 # Nombre de bonus quotidiens servis a un meme appareil dans la journee.
 PLAFOND_BONUS_PAR_APPAREIL = 3
+
+logger = logging.getLogger(__name__)
 
 
 class ErreurEconomie(Exception):
@@ -65,12 +68,25 @@ def _reserver_creneau(appareil, jour):
     if plafond <= 0:
         return True
     try:
-        BonusAppareil.objects.get_or_create(empreinte=appareil, jour=jour)
-    except IntegrityError:
-        pass  # deux creations simultanees : la ligne existe deja
-    return BonusAppareil.objects.filter(
-        empreinte=appareil, jour=jour, nombre__lt=plafond
-    ).update(nombre=F("nombre") + 1) == 1
+        # Savepoint : si le compteur est indisponible (table absente parce que
+        # `migrate` n'a pas ete lance, base verrouillee), on peut continuer
+        # sans casser la transaction en cours.
+        with transaction.atomic():
+            try:
+                BonusAppareil.objects.get_or_create(empreinte=appareil,
+                                                    jour=jour)
+            except IntegrityError:
+                pass  # deux creations simultanees : la ligne existe deja
+            return BonusAppareil.objects.filter(
+                empreinte=appareil, jour=jour, nombre__lt=plafond
+            ).update(nombre=F("nombre") + 1) == 1
+    except DatabaseError:
+        # Un compteur anti-farm ne doit jamais empecher un membre de se
+        # connecter : on sert le bonus et on previent l'administrateur.
+        logger.warning(
+            "Compteur de bonus indisponible : plafond par appareil ignore "
+            "(migration manquante ?).", exc_info=True)
+        return True
 
 
 def bonus_quotidien(user, appareil="inconnu"):
