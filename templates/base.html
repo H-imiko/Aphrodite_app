@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Aphrodite</title>
-  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}">
+  {# ?v= : change cette valeur à chaque modification du CSS, sinon les
+     navigateurs gardent l'ancienne feuille en cache. #}
+  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}?v=20261111">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">
