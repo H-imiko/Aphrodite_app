@@ -17,12 +17,12 @@
   {% endif %}
 
   {% if r.statut == "ouvert" %}
-    <a class="btn lien" href="{% url 'membre_moderation' cible.pk %}?signalement={{ r.pk }}">🛡️ Modérer {{ cible.pseudo_whatsapp }}</a>
+    <a class="btn lien" href="{% url 'membre_moderation' cible.pk %}?signalement={{ r.pk }}">️ Modérer {{ cible.pseudo_whatsapp }}</a>
     {% if r.article and r.article.est_actif %}
       <form method="post" action="{% url 'signalement_action' r.pk %}" style="margin-top:10px">
         {% csrf_token %}
         <input type="hidden" name="action" value="masquer">
-        <button type="submit" class="btn danger">🚫 Masquer l'article et clore</button>
+        <button type="submit" class="btn danger"> Masquer l'article et clore</button>
       </form>
     {% endif %}
     <form method="post" action="{% url 'signalement_action' r.pk %}" style="margin-top:10px">

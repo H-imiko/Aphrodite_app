@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   <h1>Envoyer une offrande 🌹</h1>
@@ -15,7 +16,7 @@
         {% for o in offrandes %}
         <label class="choix">
           <input type="radio" name="offrande" value="{{ o.pk }}"{% if choix == o.pk|stringformat:"s" %} checked{% endif %} required>
-          <span class="carte-offrande"><img src="{{ o.image.url }}" alt="{{ o.nom }}"><strong>{{ o.nom }}</strong><span class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ o.prix_cubis }}</span></span>
+          <span class="carte-offrande"><img src="{{ o.image.url }}" alt="{{ o.nom }}"><strong>{{ o.nom }}</strong><span class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ o.prix_cubis }}</span></span>
         </label>
         {% endfor %}
       </div>
@@ -34,7 +35,7 @@
   <div class="vide">Le catalogue est vide pour l'instant : aucune offrande n'est disponible.</div>
   {% endif %}
 
-  <p class="muted">Ton solde : <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</p>
+  <p class="muted">Ton solde : <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</p>
   <p><a href="{% url 'membre' dest.pk %}">← Annuler</a></p>
 </section>
 {% endblock %}

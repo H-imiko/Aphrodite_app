@@ -8,7 +8,7 @@
 <p class="muted">Aperçu en direct</p>
 {% include "partials/carte_profil.html" with m=user %}
 
-<form method="post" enctype="multipart/form-data" class="card" style="margin-top:16px">
+<form method="post" enctype="multipart/form-data" class="card mt-16" >
   {% csrf_token %}
   <div class="formulaire">{% include "partials/champs.html" %}</div>
   <p class="muted">Quand tu choisis une photo ou une bannière, une fenêtre s'ouvre pour la recadrer.</p>

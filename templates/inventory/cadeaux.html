@@ -12,7 +12,7 @@
         {% if t.message %}<div>« {{ t.message }} »</div>{% endif %}
       </div>
       <div class="actions-article">
-        <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="accepter"><button type="submit" class="petit">✅ Accepter</button></form>
+        <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="accepter"><button type="submit" class="petit"> Accepter</button></form>
         <form method="post" action="{% url 'cadeau_action' t.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="action" value="refuser"><button type="submit" class="petit">Refuser</button></form>
       </div>
     </div>
@@ -21,7 +21,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Cadeaux envoyés en attente ({{ envoyes|length }})</h2>
   {% for t in envoyes %}
     <div class="ligne">
@@ -36,7 +36,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Historique</h2>
   {% for t in historique %}
     <div class="ligne">

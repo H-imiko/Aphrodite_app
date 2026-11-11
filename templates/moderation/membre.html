@@ -19,11 +19,11 @@
 </section>
 
 {% if protege %}
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <p class="muted">Tu ne peux pas sanctionner ce compte (toi-même, la propriétaire, ou une Divinité si tu n'es pas Safir).</p>
   </section>
 {% else %}
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <h2>⚠️ Avertir</h2>
     <form method="post" action="{% url 'sanction_action' cible.pk %}">
       {% csrf_token %}
@@ -34,7 +34,7 @@
     </form>
   </section>
 
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <h2>⏸️ Suspendre</h2>
     <form method="post" action="{% url 'sanction_action' cible.pk %}">
       {% csrf_token %}
@@ -49,7 +49,7 @@
   </section>
 
   {% if peut_decider %}
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <h2>🎨 Retirer le statut Créateur</h2>
     <p class="muted">Ses articles seront masqués. Réservé à Safir.</p>
     <form method="post" action="{% url 'sanction_action' cible.pk %}">
@@ -61,7 +61,7 @@
     </form>
   </section>
 
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <h2>Réduire les Cubis</h2>
     <p class="muted">Abus grave seulement. Les Cubis retirés sont détruits. Réservé à Safir.</p>
     <form method="post" action="{% url 'sanction_action' cible.pk %}">
@@ -74,13 +74,13 @@
     </form>
   </section>
   {% else %}
-  <section class="card" style="margin-top:16px">
+  <section class="card mt-16" >
     <p class="muted">Le retrait du statut Créateur et la réduction de Cubis sont des décisions de Safir. Signale-lui le cas.</p>
   </section>
   {% endif %}
 {% endif %}
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Offrandes reçues (vue Divinités)</h2>
   <p class="muted">Les Divinités voient l'expéditeur réel, même quand l'offrande est anonyme.</p>
   {% for d in offrandes_recues %}
@@ -96,7 +96,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Historique des sanctions</h2>
   {% for s in sanctions %}
     <div class="ligne">

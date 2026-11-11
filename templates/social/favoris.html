@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <h1>Mes favoris ♥</h1>
 <div class="grille">
@@ -8,7 +9,7 @@
       <div class="info">
         <a href="{% url 'article' l.item.pk %}"><strong>{{ l.item.titre }}</strong></a>
         <div class="vendeur">{% include "partials/pseudo.html" with u=l.item.createur %}</div>
-        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ l.item.prix_cubis }}</div>
+        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ l.item.prix_cubis }}</div>
       </div>
     </div>
   {% empty %}

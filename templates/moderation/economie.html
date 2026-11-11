@@ -23,7 +23,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Mouvements des 30 derniers jours</h2>
   {% for m in mouvements %}
     <div class="ligne">
@@ -35,7 +35,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Plus gros portefeuilles</h2>
   <p class="muted">Utile pour repérer les comptes qui accumulent anormalement.</p>
   {% for u in top %}
@@ -46,7 +46,7 @@
   {% endfor %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Contrôle</h2>
   {% if ecart %}
     <p>⚠️ Écart de {{ ecart }} Cubis entre les soldes (plus les Cubis bloqués) et l'historique. C'est souvent dû à des données de test ou à une modification faite à la main dans la base.</p>

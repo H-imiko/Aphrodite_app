@@ -1,6 +1,6 @@
 {% load static %}
 <section class="profil-pub{% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %} flou-mature{% endif %}">
-  {% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %}<button type="button" class="voile-mature" onclick="this.closest('.profil-pub').classList.remove('flou-mature')">🔞 Contenu mature : touche pour afficher</button>{% endif %}
+  {% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %}<button type="button" class="voile-mature" onclick="this.closest('.profil-pub').classList.remove('flou-mature')"> Contenu mature : touche pour afficher</button>{% endif %}
   {% if equip and equip.decor %}<img class="decor-profil" src="{% url 'cosmetique_image' equip.decor.pk %}" alt="">{% endif %}
   <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{{ m.banniere.url }}')"{% endif %}></div>
   <div class="ligne-avatar">

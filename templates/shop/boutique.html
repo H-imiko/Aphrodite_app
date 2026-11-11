@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <h1>Boutique</h1>
 <p class="actions-article">
-  <a class="petit" href="{% url 'fil' %}">✨ Mon fil</a>
-  <a class="petit" href="{% url 'favoris' %}">♥ Mes favoris</a>
+  <a class="petit" href="{% url 'fil' %}"> Mon fil</a>
+  <a class="petit" href="{% url 'favoris' %}"> Mes favoris</a>
 </p>
 
 <form method="get" class="recherche card">
@@ -35,7 +36,7 @@
         {% if a.pk in possedes %}<span class="tag possede">Possédé</span>{% endif %}
         {% if a.categorie == "audio" %}<span class="tag type">🎵</span>{% elif a.categorie == "video" %}<span class="tag type">🎬</span>{% elif a.categorie == "cadre" or a.categorie == "decor" %}<span class="tag type">✨</span>{% endif %}
         <div class="vendeur">{% include "partials/pseudo.html" with u=a.createur %}</div>
-        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }}</div>
+        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
         <div class="muted petit-texte">{% if a.pk in aimes %}♥{% else %}♡{% endif %} {{ a.nb_likes }}</div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   <h1>Litiges de commandes ⚖️</h1>
@@ -6,7 +7,7 @@
   {% for c in ouverts %}
     <div class="ligne">
       <div>
-        <strong>{{ c.titre }}</strong> · <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }}<br>
+        <strong>{{ c.titre }}</strong> · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }}<br>
         <span class="muted">{{ c.acheteur.pseudo_whatsapp }} → {{ c.vendeur.pseudo_whatsapp }} · ouvert par {{ c.litige_par.pseudo_whatsapp }}</span>
       </div>
       <a class="petit" href="{% url 'commande' c.pk %}">Examiner</a>
@@ -15,7 +16,7 @@
     <p class="muted">Aucun litige en attente 🎉</p>
   {% endfor %}
 </section>
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Derniers tranchés</h2>
   {% for c in tranches %}
     <div class="ligne">

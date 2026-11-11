@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   <h1>Confirmer l'achat</h1>
@@ -6,10 +7,10 @@
   <h2>{{ article.titre }}</h2>
   <p class="muted">par {{ article.createur.pseudo_whatsapp }}</p>
 
-  <div class="ligne"><span>Prix</span><strong><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ article.prix_cubis }}</strong></div>
+  <div class="ligne"><span>Prix</span><strong><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ article.prix_cubis }}</strong></div>
   {% if not user.est_divinite %}
-    <div class="ligne"><span>Ton solde</span><span><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ user.solde_cubis }}</span></div>
-    <div class="ligne"><span>Solde après l'achat</span><span>{% if peut_payer %}<img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ solde_apres }}{% else %}insuffisant{% endif %}</span></div>
+    <div class="ligne"><span>Ton solde</span><span><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ user.solde_cubis }}</span></div>
+    <div class="ligne"><span>Solde après l'achat</span><span>{% if peut_payer %}<img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ solde_apres }}{% else %}insuffisant{% endif %}</span></div>
   {% endif %}
 
   {% if peut_payer %}
@@ -19,7 +20,7 @@
       <button type="submit" class="btn">Confirmer l'achat</button>
     </form>
   {% else %}
-    <div class="alerte" style="margin-top:14px">Solde insuffisant. Il te manque {{ manque }} Cubis.</div>
+    <div class="alerte mt-14" >Solde insuffisant. Il te manque {{ manque }} Cubis.</div>
   {% endif %}
   <p><a href="{% url 'article' article.pk %}">← Annuler</a></p>
 </section>

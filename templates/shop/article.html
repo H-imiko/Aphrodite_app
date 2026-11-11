@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   {% if est_media %}
@@ -37,7 +38,7 @@
   <p>{{ article.description|linebreaksbr }}</p>
   {% if not est_proprietaire %}
   <form method="post" action="{% url 'aimer' article.pk %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit">{% if a_like %}♥ Aimé{% else %}♡ J'aime{% endif %} · {{ nb_likes }}</button>
+    {% csrf_token %}<button type="submit" class="petit">{% if a_like %} Aimé{% else %} J'aime{% endif %} · {{ nb_likes }}</button>
   </form>
   {% else %}
   <span class="muted">♥ {{ nb_likes }}</span>
@@ -48,7 +49,7 @@
   {% endif %}
 
   {% if not acces %}
-    <p class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ article.prix_cubis }}</p>
+    <p class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ article.prix_cubis }}</p>
     <a class="btn lien" href="{% url 'acheter' article.pk %}">Acheter</a>
   {% elif possede %}
     <p class="muted">✅ Cet article est dans ton inventaire.</p>
@@ -58,21 +59,21 @@
     <p class="muted">{{ nb_achats }} achat{{ nb_achats|pluralize }}</p>
     {% if user.peut_publier %}
     <div class="actions-article">
-      <a class="petit" href="{% url 'modifier_article' article.pk %}">✏️ Modifier</a>
-      <a class="petit" href="{% url 'supprimer_article' article.pk %}">🗑️ Supprimer</a>
+      <a class="petit" href="{% url 'modifier_article' article.pk %}">️ Modifier</a>
+      <a class="petit" href="{% url 'supprimer_article' article.pk %}">️ Supprimer</a>
       {% if article.categorie == "audio" and article.est_actif %}
       <form method="post" action="{% url 'musique_profil' article.pk %}" class="inline">
-        {% csrf_token %}<button type="submit" class="petit">🎵 Mettre sur mon profil</button>
+        {% csrf_token %}<button type="submit" class="petit"> Mettre sur mon profil</button>
       </form>
       {% endif %}
     </div>
     {% endif %}
   {% else %}
-    <p><a class="petit" href="{% url 'signaler' 'article' article.pk %}">🚩 Signaler cet article</a></p>
+    <p><a class="petit" href="{% url 'signaler' 'article' article.pk %}"> Signaler cet article</a></p>
     {% if user.est_divinite %}
       <form method="post" action="{% url 'basculer_article' article.pk %}" style="margin-top:12px">
         {% csrf_token %}
-        <button type="submit" class="btn danger">{% if article.est_actif %}🚫 Masquer cet article (Divinité){% else %}✅ Réafficher cet article{% endif %}</button>
+        <button type="submit" class="btn danger">{% if article.est_actif %} Masquer cet article (Divinité){% else %} Réafficher cet article{% endif %}</button>
       </form>
     {% endif %}
   {% endif %}

@@ -1,26 +1,27 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   <h1>Mes articles</h1>
   <a class="btn lien" href="{% url 'nouvel_article' %}">+ Publier un article</a>
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   {% for a in articles %}
     <div class="ligne">
       <div>
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a><br>
-        <span class="muted"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }} · {{ a.nb_achats }} achat{{ a.nb_achats|pluralize }} · {% if a.est_actif %}visible{% elif a.masque_moderation %}masqué par la modération{% else %}masqué{% endif %}</span>
+        <span class="muted"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }} · {{ a.nb_achats }} achat{{ a.nb_achats|pluralize }} · {% if a.est_actif %}visible{% elif a.masque_moderation %}masqué par la modération{% else %}masqué{% endif %}</span>
       </div>
       <div class="actions-article">
-        <a class="petit" href="{% url 'modifier_article' a.pk %}">✏️</a>
+        <a class="petit" href="{% url 'modifier_article' a.pk %}">️</a>
         {% if a.est_actif or not a.masque_moderation %}
         <form method="post" action="{% url 'basculer_article' a.pk %}" class="inline">
           {% csrf_token %}
           <button type="submit" class="petit">{% if a.est_actif %}Masquer{% else %}Afficher{% endif %}</button>
         </form>
         {% endif %}
-        <a class="petit" href="{% url 'supprimer_article' a.pk %}">🗑️</a>
+        <a class="petit" href="{% url 'supprimer_article' a.pk %}">️</a>
       </div>
     </div>
   {% empty %}

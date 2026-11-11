@@ -9,15 +9,16 @@
 </body>
 </html>
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card center">
   <p class="muted">Ton solde</p>
-  <h1 class="solde"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %} Cubis</h1>
+  <h1 class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %} Cubis</h1>
   <p class="muted">Série de connexion : {{ user.serie_connexion }} jour(s)</p>
-  <a class="petit" href="{% url 'transactions' %}">🧾 Voir mes transactions</a>
+  <a class="petit" href="{% url 'transactions' %}"> Voir mes transactions</a>
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Offrir des Cubis</h2>
   <form method="post">
     {% csrf_token %}

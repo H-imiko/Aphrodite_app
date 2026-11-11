@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card">
   <h1>{{ c.titre }}</h1>
   <p><span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span></p>
   <p class="muted">
     Acheteur : {{ c.acheteur.pseudo_whatsapp }} · Créateur : {{ c.vendeur.pseudo_whatsapp }}<br>
-    Prix : <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }} · demandée le {{ c.date_creation|date:"d/m/Y" }}
+    Prix : <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }} · demandée le {{ c.date_creation|date:"d/m/Y" }}
   </p>
   <p>{{ c.description|linebreaksbr }}</p>
 
@@ -27,7 +28,7 @@
   {% if peut_accepter %}
     <form method="post" action="{% url 'commande_action' c.pk %}">
       {% csrf_token %}<input type="hidden" name="action" value="accepter">
-      <button type="submit" class="btn">✅ Accepter (bloque {{ c.prix_cubis }} Cubis de l'acheteur)</button>
+      <button type="submit" class="btn"> Accepter (bloque {{ c.prix_cubis }} Cubis de l'acheteur)</button>
     </form>
     <form method="post" action="{% url 'commande_action' c.pk %}" style="margin-top:8px">
       {% csrf_token %}<input type="hidden" name="action" value="refuser">
@@ -46,14 +47,14 @@
     <form method="post" action="{% url 'commande_action' c.pk %}">
       {% csrf_token %}<input type="hidden" name="action" value="livrer">
       <input type="text" name="message" maxlength="1000" placeholder="Message de livraison (facultatif)">
-      <button type="submit" class="btn">📬 J'ai livré la commande</button>
+      <button type="submit" class="btn"> J'ai livré la commande</button>
     </form>
   {% endif %}
 
   {% if peut_confirmer %}
     <form method="post" action="{% url 'commande_action' c.pk %}">
       {% csrf_token %}<input type="hidden" name="action" value="confirmer">
-      <button type="submit" class="btn">✅ Je confirme avoir reçu ma commande (payer le Créateur)</button>
+      <button type="submit" class="btn"> Je confirme avoir reçu ma commande (payer le Créateur)</button>
     </form>
   {% endif %}
 
@@ -69,7 +70,7 @@
     <form method="post" action="{% url 'commande_action' c.pk %}">
       {% csrf_token %}<input type="hidden" name="action" value="litige">
       <input type="text" name="raison" minlength="10" maxlength="500" placeholder="Explique le problème (10 caractères minimum)" required>
-      <button type="submit" class="btn danger">⚖️ Ouvrir un litige</button>
+      <button type="submit" class="btn danger">️ Ouvrir un litige</button>
     </form>
   {% endif %}
 
@@ -88,7 +89,7 @@
   {% endif %}
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Messagerie privée</h2>
   <p class="muted">Seuls l'acheteur et le Créateur voient ces messages. Une Divinité n'y a accès qu'en cas de litige.</p>
   <div class="fil">

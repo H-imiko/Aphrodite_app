@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <h1>Mes commandes 📦</h1>
 
@@ -9,7 +10,7 @@
     <div class="ligne">
       <div>
         <a href="{% url 'commande' c.pk %}"><strong>{{ c.titre }}</strong></a><br>
-        <span class="muted">à {{ c.vendeur.pseudo_whatsapp }} · <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
+        <span class="muted">à {{ c.vendeur.pseudo_whatsapp }} · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
       </div>
       <span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span>
     </div>
@@ -19,13 +20,13 @@
 </section>
 
 {% if user.peut_publier %}
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Commandes reçues</h2>
   {% for c in recues %}
     <div class="ligne">
       <div>
         <a href="{% url 'commande' c.pk %}"><strong>{{ c.titre }}</strong></a><br>
-        <span class="muted">de {{ c.acheteur.pseudo_whatsapp }} · <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
+        <span class="muted">de {{ c.acheteur.pseudo_whatsapp }} · <img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ c.prix_cubis }} · {{ c.date_creation|date:"d/m/Y" }}</span>
       </div>
       <span class="statut s-{{ c.statut }}">{{ c.get_statut_display }}</span>
     </div>

@@ -1,41 +1,42 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 {% include "partials/carte_profil.html" with m=membre %}
 
 {% if est_moi %}
 <div class="actions-profil">
-  <a class="petit" href="{% url 'modifier_profil' %}">✏️ Modifier</a>
-  <a class="petit" href="{% url 'transactions' %}">🧾 Transactions</a>
-  <a class="petit" href="{% url 'commandes' %}">📦 Mes commandes</a>
-  <a class="petit" href="{% url 'cadeaux' %}">🎁 Cadeaux</a>
-  <a class="petit" href="{% url 'favoris' %}">♥ Favoris</a>
-  <a class="petit" href="{% url 'fil' %}">✨ Mon fil</a>
+  <a class="petit" href="{% url 'modifier_profil' %}">️ Modifier</a>
+  <a class="petit" href="{% url 'transactions' %}"> Transactions</a>
+  <a class="petit" href="{% url 'commandes' %}"> Mes commandes</a>
+  <a class="petit" href="{% url 'cadeaux' %}"> Cadeaux</a>
+  <a class="petit" href="{% url 'favoris' %}"> Favoris</a>
+  <a class="petit" href="{% url 'fil' %}"> Mon fil</a>
   {% if equip and equip.musique %}
   <form method="post" action="{% url 'musique_retirer' %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit">🎵 Retirer ma musique</button>
+    {% csrf_token %}<button type="submit" class="petit"> Retirer ma musique</button>
   </form>
   {% endif %}
   {% if not membre.createur_valide %}
     {% if candidature_en_cours %}
       <span class="petit inactif">⏳ Candidature en attente</span>
     {% else %}
-      <a class="petit" href="{% url 'postuler' %}">🎨 Devenir Créateur</a>
+      <a class="petit" href="{% url 'postuler' %}"> Devenir Créateur</a>
     {% endif %}
   {% endif %}
   <form method="post" action="{% url 'deconnexion' %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit">🚪 Déconnexion</button>
+    {% csrf_token %}<button type="submit" class="petit"> Déconnexion</button>
   </form>
 </div>
 {% else %}
 <div class="actions-profil">
-  {% if membre.peut_publier and not user.est_divinite %}<a class="petit" href="{% url 'commande_nouvelle' membre.pk %}">📦 Commander une création</a>{% endif %}
+  {% if membre.peut_publier and not user.est_divinite %}<a class="petit" href="{% url 'commande_nouvelle' membre.pk %}"> Commander une création</a>{% endif %}
   {% if membre.peut_publier %}
   <form method="post" action="{% url 'abonner' membre.pk %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit">{% if suis %}✓ Abonné{% else %}➕ S'abonner{% endif %}</button>
+    {% csrf_token %}<button type="submit" class="petit">{% if suis %} Abonné{% else %} S'abonner{% endif %}</button>
   </form>
   {% endif %}
-  <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}">🚩 Signaler</a>
-  {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">🛡️ Modérer</a>{% endif %}
+  <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}"> Signaler</a>
+  {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">️ Modérer</a>{% endif %}
 </div>
 {% endif %}
 
@@ -51,7 +52,7 @@
   {% if membre.bio_rp %}<p>{{ membre.bio_rp|linebreaksbr }}</p>{% else %}<p class="muted">Pas encore de biographie.</p>{% endif %}
 </section>
 
-<section class="card" style="margin-top:12px">
+<section class="card mt-12" >
   <h2>🌹 Offrandes reçues{% if nb_offrandes %} ({{ nb_offrandes }}){% endif %}</h2>
   {% if offrandes %}
     <div class="vitrine-offrandes">
@@ -64,7 +65,7 @@
   {% endif %}
   <div class="actions-article">
     <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">Voir tout</a>
-    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}">🌹 Envoyer une offrande</a>{% endif %}
+    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}"> Envoyer une offrande</a>{% endif %}
   </div>
 </section>
 
@@ -76,7 +77,7 @@
       <a href="{% url 'article' a.pk %}">{% if a.apercu %}<img src="{{ a.apercu.url }}" alt="">{% endif %}</a>
       <div class="info">
         <a href="{% url 'article' a.pk %}"><strong>{{ a.titre }}</strong></a>
-        <div class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ a.prix_cubis }}</div>
+        <div class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ a.prix_cubis }}</div>
       </div>
     </div>
   {% endfor %}

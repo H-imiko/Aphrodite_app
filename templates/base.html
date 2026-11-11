@@ -26,7 +26,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15v-4a6 6 0 1 0-12 0v4l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
         {% if nb_notifications %}<span class="pastille">{{ nb_notifications }}</span>{% endif %}
       </a>
-      <a class="solde-nav" href="{% url 'portefeuille' %}"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</a>
+      <a class="solde-nav" href="{% url 'portefeuille' %}"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</a>
       <a class="nav-avatar" href="{% url 'profil' %}" title="Mon profil">
         {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">{% else %}<span>{{ user.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
       </a>
@@ -45,13 +45,13 @@
 {% if user.is_authenticated %}
 {% with n=request.resolver_match.url_name %}
 <nav class="barre">
-  <a href="{% url 'boutique' %}" class="{% if n == 'boutique' or n == 'article' %}actif{% endif %}"><img class="ic-img" src="/static/images/icons/boutique_barre.png" alt="">Boutique</a>
-  <a href="{% url 'inventaire' %}" class="{% if n == 'inventaire' %}actif{% endif %}"><img class="ic-img" src="/static/images/icons/inventaire_barre.png" alt="">Inventaire</a>
-  <a href="{% url 'portefeuille' %}" class="{% if n == 'portefeuille' or n == 'transactions' %}actif{% endif %}"><img class="ic-img ic-cube" src="/static/images/cube_cubis.svg" alt="">Cubis</a>
+  <a href="{% url 'boutique' %}" class="{% if n == 'boutique' or n == 'article' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/boutique_barre.png' %}" alt="">Boutique</a>
+  <a href="{% url 'inventaire' %}" class="{% if n == 'inventaire' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/inventaire_barre.png' %}" alt="">Inventaire</a>
+  <a href="{% url 'portefeuille' %}" class="{% if n == 'portefeuille' or n == 'transactions' %}actif{% endif %}"><img class="ic-img ic-cube" src="{% static 'images/cube_cubis.svg' %}" alt="">Cubis</a>
   {% if user.peut_publier %}
-  <a href="{% url 'mes_articles' %}" class="{% if n == 'mes_articles' or n == 'nouvel_article' %}actif{% endif %}"><img class="ic-img" src="/static/images/icons/creations_barre.png" alt="">Créations</a>
+  <a href="{% url 'mes_articles' %}" class="{% if n == 'mes_articles' or n == 'nouvel_article' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/creations_barre.png' %}" alt="">Créations</a>
   {% endif %}
-  <a href="{% url 'profil' %}" class="{% if n == 'membre' or n == 'modifier_profil' %}actif{% endif %}"><img class="ic-img" src="/static/images/icons/profil_barre.png" alt="">Profil</a>
+  <a href="{% url 'profil' %}" class="{% if n == 'membre' or n == 'modifier_profil' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/profil_barre.png' %}" alt="">Profil</a>
 </nav>
 {% endwith %}
 {% endif %}

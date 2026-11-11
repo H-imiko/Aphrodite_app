@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Mon inventaire</h1>
-<p><a class="petit" href="{% url 'cadeaux' %}">🎁 Mes cadeaux</a></p>
+<p><a class="petit" href="{% url 'cadeaux' %}"> Mes cadeaux</a></p>
 <div class="grille">
   {% for o in objets %}
     <div class="article">
@@ -15,24 +15,24 @@
           {% if equip and equip.cadre_id == o.item.pk %}
             <form method="post" action="{% url 'retirer_equipement' 'cadre' %}">{% csrf_token %}<button type="submit" class="petit">Retirer le cadre</button></form>
           {% else %}
-            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit">✨ Équiper</button></form>
+            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> Équiper</button></form>
           {% endif %}
         {% elif o.item.categorie == "decor" %}
           {% if equip and equip.decor_id == o.item.pk %}
             <form method="post" action="{% url 'retirer_equipement' 'decor' %}">{% csrf_token %}<button type="submit" class="petit">Retirer le décor</button></form>
           {% else %}
-            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit">✨ Équiper</button></form>
+            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> Équiper</button></form>
           {% endif %}
         {% elif o.item.categorie == "audio" %}
           <audio controls controlsList="nodownload" preload="none" src="{% url 'lire' o.item.pk %}"></audio>
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}">⬇ Télécharger</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
         {% elif o.item.categorie == "video" %}
           <a class="petit" href="{% url 'article' o.item.pk %}">▶ Regarder</a>
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}">⬇ Télécharger</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
         {% else %}
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}">⬇ Télécharger</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
         {% endif %}
-        <a class="petit" href="{% url 'offrir' o.item.pk %}">🎁 Offrir</a>
+        <a class="petit" href="{% url 'offrir' o.item.pk %}"> Offrir</a>
       </div>
     </div>
   {% empty %}

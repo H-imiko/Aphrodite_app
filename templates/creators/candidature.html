@@ -22,12 +22,12 @@
   {% if c.statut == "en_attente" %}
     <form method="post" action="{% url 'candidature_valider' c.pk %}">
       {% csrf_token %}
-      <button type="submit" class="btn">✅ Valider (+500 Cubis)</button>
+      <button type="submit" class="btn"> Valider (+500 Cubis)</button>
     </form>
     <form method="post" action="{% url 'candidature_refuser' c.pk %}" style="margin-top:14px">
       {% csrf_token %}
       <input type="text" name="motif" placeholder="Motif du refus (facultatif)" maxlength="300">
-      <button type="submit" class="btn danger">❌ Refuser</button>
+      <button type="submit" class="btn danger"> Refuser</button>
     </form>
   {% else %}
     <p><strong>Décision :</strong> {{ c.get_statut_display }} par {{ c.traitee_par.pseudo_whatsapp|default:"?" }}</p>

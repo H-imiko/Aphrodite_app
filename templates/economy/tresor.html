@@ -11,14 +11,15 @@
 
 
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <section class="card center">
   <h1>Le Trésor</h1>
   <p class="muted">Cubis en circulation chez les membres</p>
-  <h2 class="solde"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ total }}</h2>
+  <h2 class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ total }}</h2>
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Envoyer une récompense</h2>
   <form method="post">
     {% csrf_token %}
@@ -27,7 +28,7 @@
   </form>
 </section>
 
-<section class="card" style="margin-top:16px">
+<section class="card mt-16" >
   <h2>Derniers envois</h2>
   {% for t in recents %}
     <div class="ligne">
