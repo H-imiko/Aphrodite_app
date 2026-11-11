@@ -12,7 +12,7 @@
   </div>
   <form method="post" style="margin-top:14px">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer la demande</button>
   </form>
   <p><a href="{% url 'membre' vendeur.pk %}">← Annuler</a></p>

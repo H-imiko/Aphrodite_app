@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
 {% extends "base.html" %}
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
@@ -15,12 +5,12 @@
 
 {% block content %}
 <h1>Modifier mon profil</h1>
-<p class="muted">Aperçu en direct 👇</p>
+<p class="muted">Aperçu en direct</p>
 {% include "partials/carte_profil.html" with m=user %}
 
 <form method="post" enctype="multipart/form-data" class="card" style="margin-top:16px">
   {% csrf_token %}
-  {{ form.as_p }}
+  <div class="formulaire">{% include "partials/champs.html" %}</div>
   <p class="muted">Quand tu choisis une photo ou une bannière, une fenêtre s'ouvre pour la recadrer.</p>
   <button type="submit" class="btn">Enregistrer</button>
 </form>

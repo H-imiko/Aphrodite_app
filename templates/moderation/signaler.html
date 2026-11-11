@@ -6,7 +6,7 @@
   <p class="muted">Ton signalement est lu par les Divinités. Les faux signalements répétés peuvent être sanctionnés.</p>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer le signalement</button>
   </form>
 </section>

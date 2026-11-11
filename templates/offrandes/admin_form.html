@@ -5,7 +5,7 @@
   <img class="don-image" src="{{ offrande.image.url }}" alt="">
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Enregistrer</button>
   </form>
   <p><a href="{% url 'offrandes_admin' %}">← Retour au catalogue</a></p>

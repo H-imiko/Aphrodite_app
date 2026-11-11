@@ -90,3 +90,42 @@ Les packs de stickers, eux, sont une nouveauté → version 1 = ZIP + tutoriel.
 - commande personnalisée avec suivi de livraison WhatsApp ;
 - statistiques créateur ;
 - application mobile.
+
+---
+
+## État d'avancement — 11 novembre 2026
+
+| Sprint | Objectif | État |
+|---|---|---|
+| S0 | filet de tests, gel, migrations propres | ✅ 44 tests verts |
+| S1 | P0 1-3 : clé secrète, configuration, sauvegardes, HTTPS | ✅ fait et vérifié |
+| S2 | P0 4-5 : économie non manipulable | 🟡 P0 4 fait ; P0 5 partiel (plafond par appareil, pas d'email vérifié) |
+| S3 | P0 6 + P1 11-12 : CGU, mot de passe oublié, suppression de compte | ⬜ à faire |
+| S4 | P2 14, 18-20 : cadres normalisés, accessibilité, poids des pages | ⬜ à faire |
+| Buffer | corrections, répétition générale | ⬜ |
+
+### Ce qui manque encore pour lancer
+
+1. **P0 6 — pages de règlement** : la case 18+ obligatoire ne renvoie vers
+   aucun texte. C'est le seul P0 encore ouvert ; sans lui, l'inscription
+   recueille un consentement qui n'existe pas.
+2. **P1 11 — mot de passe oublié** : un membre qui perd son mot de passe est
+   perdu, définitivement.
+3. **P1 12 — suppression de compte** : obligatoire pour une app 18+.
+4. **P0 5 — email vérifié avant bonus** : demande un service d'envoi d'emails
+   et des enregistrements DNS, donc une inscription chez un prestataire.
+5. **P1 9 — limitation de débit** sur connexion, inscription, offrandes et
+   signalements.
+6. **Hébergement** : nom de domaine, HTTPS, tâche de sauvegarde quotidienne.
+7. **P2 18 — accessibilité** : partiel (icônes de l'en-tête en SVG avec
+   `aria-label`, formulaires liés à leurs libellés).
+
+### Fait le 11 novembre
+
+- Rendu commun des formulaires (`partials/champs.html`) : libellés, champs,
+  textes d'aide et erreurs alignés ; appliqué aux 12 écrans de formulaire.
+- `modifier_profil.html` ne commence plus par un document HTML parasite, qui
+  cassait l'affichage de la page.
+- Icônes de l'en-tête en SVG (engrenage, colis, cloche) au lieu d'emojis.
+- `python manage.py installer_catalogue` : 10 offrandes + cadre noir + cadre
+  équipé, en une commande idempotente. C'était la cause des « catalogues vides ».

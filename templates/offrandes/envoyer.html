@@ -1,26 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="card">
-  <h1>Envoyer une offrande 🌹</h1>
+  <h1>Envoyer une offrande</h1>
   <p class="muted">À {% include "partials/pseudo.html" with u=dest %}</p>
   <p class="muted">Les Cubis dépensés sont détruits : l'offrande ne peut ni être revendue ni être transformée en Cubis. Le membre peut la masquer et bloquer l'expéditeur.</p>
   {% if erreur %}<div class="alerte">{{ erreur }}</div>{% endif %}
-  <form method="post">
+
+  {% if offrandes %}
+  <form method="post" class="formulaire">
     {% csrf_token %}
-    <div class="choix-offrandes">
-      {% for o in offrandes %}
-      <label class="choix">
-        <input type="radio" name="offrande" value="{{ o.pk }}"{% if choix == o.pk|stringformat:"s" %} checked{% endif %} required>
-        <span class="carte-offrande"><img src="{{ o.image.url }}" alt=""><strong>{{ o.nom }}</strong><span class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ o.prix_cubis }}</span></span>
-      </label>
-      {% empty %}
-      <p class="muted">Le catalogue est vide pour l'instant.</p>
-      {% endfor %}
+    <div class="champ" role="radiogroup" aria-labelledby="titre-offrandes">
+      <p class="muted petit-texte" id="titre-offrandes">Choisis une offrande</p>
+      <div class="choix-offrandes">
+        {% for o in offrandes %}
+        <label class="choix">
+          <input type="radio" name="offrande" value="{{ o.pk }}"{% if choix == o.pk|stringformat:"s" %} checked{% endif %} required>
+          <span class="carte-offrande"><img src="{{ o.image.url }}" alt="{{ o.nom }}"><strong>{{ o.nom }}</strong><span class="prix"><img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {{ o.prix_cubis }}</span></span>
+        </label>
+        {% endfor %}
+      </div>
     </div>
-    <p><label>Petit message (facultatif)<input type="text" name="message" maxlength="150"></label></p>
-    <p><label><input type="checkbox" name="anonyme" value="1"> Envoyer anonymement</label></p>
+    <div class="champ">
+      <label for="message">Petit message (facultatif)</label>
+      <input type="text" name="message" id="message" maxlength="150" placeholder="Quelques mots...">
+    </div>
+    <label class="champ-case">
+      <input type="checkbox" name="anonyme" value="1">
+      <span>Envoyer anonymement</span>
+    </label>
     <button type="submit" class="btn">Envoyer l'offrande</button>
   </form>
+  {% else %}
+  <div class="vide">Le catalogue est vide pour l'instant : aucune offrande n'est disponible.</div>
+  {% endif %}
+
   <p class="muted">Ton solde : <img class="cb" src="/static/images/cube_cubis.svg" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</p>
   <p><a href="{% url 'membre' dest.pk %}">← Annuler</a></p>
 </section>

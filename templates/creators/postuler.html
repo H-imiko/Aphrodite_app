@@ -27,7 +27,7 @@
     <p class="muted">Choisis ce que tu crées et montre-nous 1 à 3 exemples. Ces captures ne sont visibles que par les Divinités.</p>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form.as_p }}
+      <div class="formulaire">{% include "partials/champs.html" %}</div>
       <button type="submit" class="btn">Envoyer ma candidature</button>
     </form>
   {% endif %}

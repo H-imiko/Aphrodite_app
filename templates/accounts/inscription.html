@@ -14,7 +14,7 @@
   <h1>Rejoindre Aphrodite</h1>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Créer mon compte</button>
   </form>
 </section>

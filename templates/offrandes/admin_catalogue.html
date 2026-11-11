@@ -21,7 +21,7 @@
   <h2>Ajouter une offrande</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Ajouter</button>
   </form>
   <p><a href="{% url 'panel' %}">← Retour au panel</a></p>

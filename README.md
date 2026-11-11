@@ -73,6 +73,19 @@ Generer une cle secrete :
 python -c "import secrets; print(secrets.token_urlsafe(64))"
 ```
 
+## Catalogue de départ
+
+Sur une installation neuve, la boutique et le catalogue d'offrandes sont vides :
+ces objets vivent en base, pas dans git. Une seule commande les installe (10
+offrandes, le cadre noir, et le cadre équipé sur ton compte) :
+
+```bash
+python manage.py installer_catalogue
+```
+
+Elle peut être relancée sans risque : rien n'est dupliqué. Pour choisir un autre
+compte propriétaire : `--proprietaire ton@email`.
+
 ## Comptes de test
 
 | Email | Mot de passe | Rôle |

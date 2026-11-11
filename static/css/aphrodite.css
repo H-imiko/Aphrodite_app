@@ -349,3 +349,31 @@ input[type=file] { padding: 9px; }
 @media (max-width: 420px) {
   .choix-offrandes { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ===== Formulaires ===== */
+.formulaire { display: grid; gap: 14px; margin-top: 10px; }
+.champ { display: grid; }
+.champ > label { font-weight: 600; font-size: .86rem; }
+.requis { color: var(--neon); margin-left: 3px; }
+.aide { color: var(--muted); font-size: .78rem; margin: 6px 0 0;
+  line-height: 1.4; }
+.aide ul { margin: 4px 0 0; padding-left: 18px; }
+.erreur-champ { color: #ff7a9c; font-size: .82rem; margin: 6px 0 0; }
+.champ-invalide input, .champ-invalide textarea, .champ-invalide select {
+  border-color: rgba(255, 122, 156, .75); }
+.champ-case { display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(255, 255, 255, .03); cursor: pointer; }
+.champ-case input { margin: 3px 0 0; flex-shrink: 0; }
+.champ-case span { font-size: .84rem; line-height: 1.4; }
+.formulaire .btn { margin-top: 4px; }
+.formulaire input[type=file] { border-style: dashed; padding: 12px; }
+.vide { border: 1px dashed var(--line); border-radius: 14px; padding: 16px;
+  text-align: center; color: var(--muted); }
+
+/* ===== Icônes de l'en-tête ===== */
+.icone-nav { display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; color: var(--soft); border-radius: 50%;
+  transition: background .2s, color .2s; }
+.icone-nav:hover { background: rgba(255, 46, 147, .16); color: var(--text); }
+.icone-nav svg { width: 21px; height: 21px; }

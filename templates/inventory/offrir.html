@@ -7,7 +7,7 @@
   <p class="muted">Le membre pourra accepter ou refuser. S'il accepte, l'objet quitte ton inventaire et passe dans le sien. Sans réponse, le cadeau expire après 14 jours.</p>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Envoyer le cadeau</button>
   </form>
   <p><a href="{% url 'inventaire' %}">← Retour à l'inventaire</a></p>

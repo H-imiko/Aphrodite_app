@@ -1,0 +1,24 @@
+{% comment %}
+Rendu commun des formulaires : libellé, champ, aide et erreurs.
+S'utilise avec un formulaire nommé `form` :
+  {% include "partials/champs.html" %}
+{% endcomment %}
+{% for champ in form.hidden_fields %}{{ champ }}{% endfor %}
+{% if form.non_field_errors %}
+  <div class="alerte">{% for erreur in form.non_field_errors %}{{ erreur }}{% endfor %}</div>
+{% endif %}
+{% for champ in form.visible_fields %}
+  {% if champ.field.widget.input_type == "checkbox" %}
+    <label class="champ-case">
+      {{ champ }}
+      <span>{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</span>
+    </label>
+  {% else %}
+    <div class="champ{% if champ.errors %} champ-invalide{% endif %}">
+      <label for="{{ champ.id_for_label }}">{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</label>
+      {{ champ }}
+      {% if champ.help_text %}<p class="aide">{{ champ.help_text|safe }}</p>{% endif %}
+      {% for erreur in champ.errors %}<p class="erreur-champ">{{ erreur }}</p>{% endfor %}
+    </div>
+  {% endif %}
+{% endfor %}
