@@ -6,10 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Aphrodite</title>
   {% comment %} ?v= : changer cette valeur à chaque modification du CSS, sinon les navigateurs gardent l'ancienne feuille en cache. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}?v=20261111">
+  <link rel="stylesheet" href="{% static 'css/aphrodite.css' %}?v=20261112">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
 <header class="nav">
   <a class="logo" href="{% if user.is_authenticated %}{% url 'boutique' %}{% else %}{% url 'accueil' %}{% endif %}">Aphrodite</a>
   <nav>
@@ -37,24 +38,39 @@
 </nav>
 </header>
 
-<main>
-  {% for m in messages %}<div class="msg">{{ m }}</div>{% endfor %}
+<main id="contenu">
+  <div class="messages" role="status" aria-live="polite">
+    {% for m in messages %}<div class="msg">{{ m }}</div>{% endfor %}
+  </div>
   {% block content %}{% endblock %}
 </main>
 
 {% if user.is_authenticated %}
 {% with n=request.resolver_match.url_name %}
 <nav class="barre">
-  <a href="{% url 'boutique' %}" class="{% if n == 'boutique' or n == 'article' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/boutique_barre.png' %}" alt="">Boutique</a>
-  <a href="{% url 'inventaire' %}" class="{% if n == 'inventaire' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/inventaire_barre.png' %}" alt="">Inventaire</a>
-  <a href="{% url 'portefeuille' %}" class="{% if n == 'portefeuille' or n == 'transactions' %}actif{% endif %}"><img class="ic-img ic-cube" src="{% static 'images/cube_cubis.svg' %}" alt="">Cubis</a>
+  <a href="{% url 'boutique' %}" class="{% if n == 'boutique' or n == 'article' %}actif" aria-current="page{% endif %}"><img class="ic-img" src="{% static 'images/icons/boutique_barre.png' %}" alt="">Boutique</a>
+  <a href="{% url 'inventaire' %}" class="{% if n == 'inventaire' %}actif" aria-current="page{% endif %}"><img class="ic-img" src="{% static 'images/icons/inventaire_barre.png' %}" alt="">Inventaire</a>
+  <a href="{% url 'portefeuille' %}" class="{% if n == 'portefeuille' or n == 'transactions' %}actif" aria-current="page{% endif %}"><img class="ic-img ic-cube" src="{% static 'images/cube_cubis.svg' %}" alt="">Cubis</a>
   {% if user.peut_publier %}
-  <a href="{% url 'mes_articles' %}" class="{% if n == 'mes_articles' or n == 'nouvel_article' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/creations_barre.png' %}" alt="">Créations</a>
+  <a href="{% url 'mes_articles' %}" class="{% if n == 'mes_articles' or n == 'nouvel_article' %}actif" aria-current="page{% endif %}"><img class="ic-img" src="{% static 'images/icons/creations_barre.png' %}" alt="">Créations</a>
   {% endif %}
-  <a href="{% url 'profil' %}" class="{% if n == 'membre' or n == 'modifier_profil' %}actif{% endif %}"><img class="ic-img" src="{% static 'images/icons/profil_barre.png' %}" alt="">Profil</a>
+  <a href="{% url 'profil' %}" class="{% if n == 'membre' or n == 'modifier_profil' %}actif" aria-current="page{% endif %}"><img class="ic-img" src="{% static 'images/icons/profil_barre.png' %}" alt="">Profil</a>
 </nav>
 {% endwith %}
 {% endif %}
 {% block scripts %}{% endblock %}
+<script>
+(function () {
+  // Empeche un double envoi (double clic, reseau lent) sans desactiver le
+  // bouton, pour ne pas perdre la valeur du bouton clique.
+  document.addEventListener("submit", function (evenement) {
+    var formulaire = evenement.target;
+    if (!formulaire || formulaire.tagName !== "FORM") { return; }
+    if (formulaire.dataset.envoi === "1") { evenement.preventDefault(); return; }
+    formulaire.dataset.envoi = "1";
+    formulaire.setAttribute("aria-busy", "true");
+  });
+})();
+</script>
 </body>
 </html>
