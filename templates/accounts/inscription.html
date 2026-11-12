@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Inscription</title>
-</head>
-<body>
-
-</body>
-</html>
 {% extends "base.html" %}
+{% block title %}Rejoindre Aphrodite{% endblock %}
 {% block content %}
 <section class="card">
   <h1>Rejoindre Aphrodite</h1>
@@ -16,6 +7,6 @@
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Créer mon compte</button>
-</form>
+  </form>
 </section>
 {% endblock %}

@@ -2,6 +2,8 @@ from datetime import date
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.files.uploadedfile import UploadedFile
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from .models import User
 
 
@@ -13,6 +15,15 @@ class InscriptionForm(UserCreationForm):
     accepte_cgu = forms.BooleanField(
         label="J'ai 18 ans ou plus et j'accepte le règlement"
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Le libellé de la case contient un vrai lien vers le règlement :
+        # Django échappe les libellés, mark_safe n'est utilisé que pour ce
+        # texte constant, avec une URL produite par reverse().
+        self.fields["accepte_cgu"].label = mark_safe(
+            "J'ai 18 ans ou plus et j'accepte "
+            f'<a href="{reverse("reglement")}">le règlement</a>')
 
     class Meta(UserCreationForm.Meta):
         model = User

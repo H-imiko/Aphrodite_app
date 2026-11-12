@@ -29,6 +29,11 @@ def donnees_inscription(**extra):
 
 
 class InscriptionTests(TestCase):
+    def test_case_reglement_contient_un_lien(self):
+        reponse = self.client.get(reverse("inscription"))
+
+        self.assertContains(reponse, '<a href="/reglement/">le règlement</a>')
+
     def test_mineur_refuse(self):
         data = donnees_inscription(date_naissance=annee_ecartee(17).isoformat())
         reponse = self.client.post(reverse("inscription"), data)
