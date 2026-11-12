@@ -191,7 +191,10 @@ une sauvegarde sur le même disque que la base ne protège pas d'une panne disqu
 4. `manage.py collectstatic --noinput` exécuté **après** le dernier `git pull`.
 5. `createsuperuser` fait, compte propriétaire en `is_superuser` (seule à pouvoir réduire des Cubis et retirer un statut Créateur).
 6. `installer_catalogue --proprietaire=…` : 10 offrandes + cadre noir.
-7. Comptes et articles de test supprimés de la base.
+7. Comptes et articles de test supprimés : `manage.py purger_demonstration`
+   (liste d'abord, puis `--supprimer` pour agir). Les articles officiels
+   partent avec les comptes de démo : relancer ensuite
+   `installer_catalogue --proprietaire=<compte réel>`.
 8. `waitress` lancé et supervisé (redémarrage automatique).
 9. Proxy en HTTPS, `X-Forwarded-Proto` transmis, `/media/` servi, `/private_media/` absent.
 10. Les deux tâches planifiées actives, une sauvegarde déclenchée à la main pour vérifier.
