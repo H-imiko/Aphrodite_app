@@ -23,13 +23,19 @@ def _divinite(acteur):
         raise ErreurModeration("Réservé aux Divinités.")
 
 
+def _moderateur(acteur):
+    """Divinité ou membre du staff : les deux tiennent la modération."""
+    if not (acteur.est_divinite or acteur.is_staff):
+        raise ErreurModeration("Réservé à l'équipe de modération.")
+
+
 def _safir(acteur):
     if not acteur.is_superuser:
         raise ErreurModeration("Décision réservée à Safir.")
 
 
 def _verifier(acteur, cible):
-    _divinite(acteur)
+    _moderateur(acteur)
     if acteur.pk == cible.pk:
         raise ErreurModeration("Tu ne peux pas te sanctionner toi-même.")
     if cible.is_superuser:
@@ -141,7 +147,7 @@ def reduire_cubis(acteur, cible, montant, raison, signalement_id=None):
 
 
 def masquer_article(acteur, signalement_id):
-    _divinite(acteur)
+    _moderateur(acteur)
     with transaction.atomic():
         try:
             r = Report.objects.select_for_update().get(pk=signalement_id)
@@ -167,7 +173,7 @@ def masquer_article(acteur, signalement_id):
 
 
 def classer(acteur, signalement_id):
-    _divinite(acteur)
+    _moderateur(acteur)
     with transaction.atomic():
         try:
             r = Report.objects.select_for_update().get(pk=signalement_id)

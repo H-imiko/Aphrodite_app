@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}L'équipe — Aphrodite{% endblock %}
+{% block content %}
+<h1>L'équipe</h1>
+<p class="muted">{{ nb_divinites }} Divinité{{ nb_divinites|pluralize }},
+   {{ nb_staff }} modérateur{{ nb_staff|pluralize }}.
+   Une <strong>Divinité</strong> a tous les pouvoirs : Trésor, économie, litiges,
+   candidatures, sanctions et nominations. Un <strong>modérateur</strong> traite les
+   signalements et les sanctions, sans toucher aux Cubis ni au Trésor.</p>
+
+<form method="get" class="recherche card">
+  <input type="search" name="q" value="{{ q }}" maxlength="60"
+         placeholder="Chercher un pseudo ou un email…">
+  <button type="submit" class="btn">Chercher</button>
+</form>
+
+<p class="muted">{{ total }} membre{{ total|pluralize }}{% if total > 100 %} —
+   100 premiers affichés{% endif %}</p>
+
+<section class="card">
+  {% for m in membres %}
+  <div class="param-ligne">
+    <div>
+      <strong>{{ m.pseudo_whatsapp }}</strong>
+      <span class="muted">{{ m.email }}</span>
+      <span class="role-tags">
+        {% if m.is_superuser %}<span class="tag">Propriétaire</span>{% endif %}
+        {% if m.est_divinite %}<span class="tag">Divinité</span>{% endif %}
+        {% if m.is_staff %}<span class="tag">Modérateur</span>{% endif %}
+      </span>
+    </div>
+    <div class="actions-role">
+      {% if m.is_superuser or m.pk == user.pk %}
+        <span class="muted">—</span>
+      {% else %}
+        <form method="post" action="{% url 'equipe_action' m.pk %}">
+          {% csrf_token %}
+          {% if m.est_divinite %}
+            <input type="hidden" name="action" value="retirer_divinite">
+            <button class="petit">Retirer Divinité</button>
+          {% else %}
+            <input type="hidden" name="action" value="divinite">
+            <button class="petit">Nommer Divinité</button>
+          {% endif %}
+        </form>
+        <form method="post" action="{% url 'equipe_action' m.pk %}">
+          {% csrf_token %}
+          {% if m.is_staff %}
+            <input type="hidden" name="action" value="retirer_staff">
+            <button class="petit">Retirer modérateur</button>
+          {% else %}
+            <input type="hidden" name="action" value="staff">
+            <button class="petit">Nommer modérateur</button>
+          {% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+    <p class="muted">Aucun membre ne correspond à cette recherche.</p>
+  {% endfor %}
+</section>
+
+<p class="muted">Tu ne peux pas modifier tes propres rôles : demande à une autre
+   Divinité. Le compte de la propriétaire est protégé et ne se change pas ici.</p>
+<p><a href="{% url 'panel' %}">← Retour au panel</a></p>
+{% endblock %}

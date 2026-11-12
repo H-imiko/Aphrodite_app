@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Aphrodite{% endblock %}</title>
   {% comment %} ?v= : changer cette valeur à chaque modification du CSS, sinon les navigateurs gardent l'ancienne feuille en cache. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261117">
-  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261117">
-  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261117">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261119">
+  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261119">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261119">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">
@@ -17,7 +17,7 @@
   <a class="logo" href="{% if user.is_authenticated %}{% url 'boutique' %}{% else %}{% url 'accueil' %}{% endif %}">Aphrodite</a>
   <nav>
     {% if user.is_authenticated %}
-      {% if user.est_divinite %}
+      {% if user.est_divinite or user.is_staff %}
       <a class="icone-nav" href="{% url 'panel' %}" title="Panel des Divinités" aria-label="Panel des Divinités">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></svg>
 </a>{% endif %}

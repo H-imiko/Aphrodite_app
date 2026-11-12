@@ -16,6 +16,8 @@ class AuditLog(models.Model):
         REDUCTION_CUBIS = "reduction_cubis", "Réduction de Cubis"
         SIGNALEMENT_CLASSE = "signalement_classe", "Signalement classé"
         LITIGE_RESOLU = "litige_resolu", "Litige de commande tranché"
+        ROLE_ATTRIBUE = "role_attribue", "Rôle attribué"
+        ROLE_RETIRE = "role_retire", "Rôle retiré"
 
     auteur = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True,

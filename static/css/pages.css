@@ -260,3 +260,11 @@
 .reglement ul { margin: var(--e-2) 0 var(--e-4); padding-left: var(--e-5); }
 .reglement li { margin-bottom: var(--e-1); }
 @media (min-width: 640px) { .sommaire { grid-template-columns: repeat(3, 1fr); } }
+
+/* ----- Équipe et rôles ----- */
+.role-tags { display: inline-flex; flex-wrap: wrap; gap: var(--e-1);
+  margin-left: var(--e-2); vertical-align: middle; }
+.role-tags .tag { margin-left: 0; }
+.actions-role { display: flex; flex-wrap: wrap; gap: var(--e-2);
+  justify-content: flex-end; }
+.actions-role form { margin: 0; }

@@ -43,6 +43,17 @@ def divinite_requise(vue):
     return enveloppe
 
 
+def moderation_requise(vue):
+    """Divinité ou membre du staff : accès aux outils de modération."""
+    @login_required
+    @wraps(vue)
+    def enveloppe(request, *args, **kwargs):
+        if not (request.user.est_divinite or request.user.is_staff):
+            raise PermissionDenied
+        return vue(request, *args, **kwargs)
+    return enveloppe
+
+
 def _somme(qs):
     return qs.aggregate(t=Sum("montant"))["t"] or 0
 
@@ -62,7 +73,7 @@ def _entier(valeur):
         return 0
 
 
-@divinite_requise
+@moderation_requise
 def panel(request):
     il_y_a_7_jours = timezone.now() - timedelta(days=7)
     return render(request, "moderation/panel.html", {
@@ -137,7 +148,7 @@ def journal(request):
     return render(request, "moderation/journal.html", {"logs": logs})
 
 
-@divinite_requise
+@moderation_requise
 def signalements(request):
     ouverts = (Report.objects.filter(statut=Report.Statut.OUVERT)
                .select_related("auteur", "article", "membre")
@@ -149,7 +160,7 @@ def signalements(request):
                   {"ouverts": ouverts, "traites": traites})
 
 
-@divinite_requise
+@moderation_requise
 def signalement(request, pk):
     r = get_object_or_404(
         Report.objects.select_related("auteur", "article",
@@ -160,7 +171,7 @@ def signalement(request, pk):
                   {"r": r, "cible": cible})
 
 
-@divinite_requise
+@moderation_requise
 @require_POST
 def signalement_action(request, pk):
     action = request.POST.get("action")
@@ -178,14 +189,16 @@ def signalement_action(request, pk):
     return redirect("signalements")
 
 
-@divinite_requise
+@moderation_requise
 def membre_moderation(request, pk):
     cible = get_object_or_404(User, pk=pk)
     sig = request.GET.get("signalement")
     signalement_lie = (Report.objects.filter(pk=sig).first()
                        if sig and sig.isdigit() else None)
     protege = (cible.pk == request.user.pk or cible.is_superuser
-               or (cible.est_divinite and not request.user.is_superuser))
+               or (cible.est_divinite and not request.user.is_superuser)
+               # un modérateur n'agit pas sur un autre modérateur
+               or (cible.is_staff and not request.user.est_divinite))
     return render(request, "moderation/membre.html", {
         "cible": cible,
         "sanctions": cible.sanctions.select_related("par")[:30],
@@ -200,7 +213,7 @@ def membre_moderation(request, pk):
     })
 
 
-@divinite_requise
+@moderation_requise
 @require_POST
 def sanction_action(request, pk):
     cible = get_object_or_404(User, pk=pk)
@@ -236,3 +249,70 @@ def sanction_action(request, pk):
     if sig_id:
         url += f"?signalement={sig_id}"
     return redirect(url)
+
+
+# ----- Rôles : nommer des Divinités et des modérateurs -----
+
+# action -> (champ du compte, valeur, nom du rôle)
+ROLES = {
+    "divinite": ("est_divinite", True, "Divinité"),
+    "retirer_divinite": ("est_divinite", False, "Divinité"),
+    "staff": ("is_staff", True, "Modérateur"),
+    "retirer_staff": ("is_staff", False, "Modérateur"),
+}
+
+
+@divinite_requise
+def equipe(request):
+    recherche = request.GET.get("q", "").strip()
+    membres = User.objects.filter(is_active=True).order_by(
+        "-est_divinite", "-is_staff", "pseudo_whatsapp")
+    if recherche:
+        membres = membres.filter(Q(pseudo_whatsapp__icontains=recherche)
+                                 | Q(email__icontains=recherche))
+    return render(request, "moderation/equipe.html", {
+        "membres": membres[:100],
+        "total": membres.count(),
+        "q": recherche,
+        "nb_divinites": User.objects.filter(est_divinite=True,
+                                            is_active=True).count(),
+        "nb_staff": User.objects.filter(is_staff=True,
+                                        is_active=True).count(),
+    })
+
+
+@divinite_requise
+@require_POST
+def equipe_action(request, pk):
+    cible = get_object_or_404(User, pk=pk)
+    action = request.POST.get("action", "")
+    if action not in ROLES:
+        messages.error(request, "Action inconnue.")
+        return redirect("equipe")
+    if cible.is_superuser:
+        messages.error(request,
+                       "Le compte de la propriétaire ne se modifie pas ici.")
+        return redirect("equipe")
+    if cible.pk == request.user.pk:
+        messages.error(request, "Tu ne peux pas modifier tes propres rôles : "
+                                "demande-le à une autre Divinité.")
+        return redirect("equipe")
+    champ, valeur, libelle = ROLES[action]
+    if (champ == "est_divinite" and not valeur
+            and not User.objects.filter(est_divinite=True)
+                                .exclude(pk=cible.pk).exists()):
+        messages.error(request, "Il doit rester au moins une Divinité.")
+        return redirect("equipe")
+    setattr(cible, champ, valeur)
+    cible.save(update_fields=[champ])
+    AuditLog.objects.create(
+        auteur=request.user,
+        action=(AuditLog.Action.ROLE_ATTRIBUE if valeur
+                else AuditLog.Action.ROLE_RETIRE),
+        cible=cible,
+        details=f"{libelle} · {cible.pseudo_whatsapp}")
+    messages.success(
+        request,
+        f"{libelle} {'attribué à' if valeur else 'retiré à'} "
+        f"{cible.pseudo_whatsapp}.")
+    return redirect("equipe")

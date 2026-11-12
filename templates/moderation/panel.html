@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Panel des Divinités ✨</h1>
+{% if user.is_staff and not user.est_divinite %}
+<p class="muted">Tu es modérateur : tu traites les signalements et les sanctions.
+   Le Trésor, l'économie, les litiges et les candidatures restent réservés aux
+   Divinités.</p>
+{% endif %}
 <div class="stats">
   <div class="stat"><span class="muted">Membres</span><strong>{{ nb_membres }}</strong><span class="muted">+{{ nb_nouveaux }} cette semaine</span></div>
   <div class="stat"><span class="muted">Créateurs</span><strong>{{ nb_createurs }}</strong></div>
@@ -8,12 +13,15 @@
   <div class="stat"><span class="muted">À traiter</span><strong>{{ nb_candidatures|add:nb_signalements|add:nb_litiges }}</strong><span class="muted">candidatures, signalements, litiges</span></div>
 </div>
 <section class="card liens-panel">
-  <a class="btn lien" href="{% url 'signalements' %}"> Signalements{% if nb_signalements %} ({{ nb_signalements }}){% endif %}</a>
-  <a class="btn lien" href="{% url 'litiges' %}">️ Litiges de commandes{% if nb_litiges %} ({{ nb_litiges }}){% endif %}</a>
-  <a class="btn lien" href="{% url 'candidatures' %}"> Candidatures Créateurs{% if nb_candidatures %} ({{ nb_candidatures }}){% endif %}</a>
+  <a class="btn lien" href="{% url 'signalements' %}">Signalements{% if nb_signalements %} ({{ nb_signalements }}){% endif %}</a>
+  {% if user.est_divinite %}
+  <a class="btn lien" href="{% url 'litiges' %}">Litiges de commandes{% if nb_litiges %} ({{ nb_litiges }}){% endif %}</a>
+  <a class="btn lien" href="{% url 'candidatures' %}">Candidatures Créateurs{% if nb_candidatures %} ({{ nb_candidatures }}){% endif %}</a>
   <a class="btn lien" href="{% url 'tresor' %}">Trésor : envoyer des récompenses</a>
-  <a class="btn lien" href="{% url 'offrandes_admin' %}"> Catalogue des offrandes</a>
-  <a class="btn lien" href="{% url 'economie' %}"> Économie</a>
-  <a class="btn lien" href="{% url 'journal' %}"> Journal des actions</a>
+  <a class="btn lien" href="{% url 'offrandes_admin' %}">Catalogue des offrandes</a>
+  <a class="btn lien" href="{% url 'economie' %}">Économie</a>
+  <a class="btn lien" href="{% url 'journal' %}">Journal des actions</a>
+  <a class="btn lien" href="{% url 'equipe' %}">L'équipe : nommer des Divinités et des modérateurs</a>
+  {% endif %}
 </section>
 {% endblock %}
