@@ -1,10 +1,63 @@
 {% extends "base.html" %}
 {% block title %}Aphrodite — le monde permanent de la communauté{% endblock %}
 {% block content %}
+<section class="hero">
+  <p class="hero-sur">Monde RP · communauté WhatsApp</p>
+  <h1>Aphrodite</h1>
+  <p class="hero-texte">Un monde permanent pour ta communauté : un profil qui te ressemble,
+     une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes
+     pour remercier ceux qui font vivre le RP.</p>
+  <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
+  <p class="hero-second"><a href="{% url 'connexion' %}">J'ai déjà un compte</a></p>
+</section>
+
+<section class="chiffres">
+  <div class="chiffre">
+    <strong>{{ nb_membres }}</strong>
+    <span class="muted">membre{{ nb_membres|pluralize }}</span>
+  </div>
+  <div class="chiffre">
+    <strong>{{ nb_articles }}</strong>
+    <span class="muted">création{{ nb_articles|pluralize }} en vente</span>
+  </div>
+</section>
+
+{% if articles %}
+<section>
+  <h2>À la une</h2>
+  <div class="grille">
+    {% for a in articles %}
+      {% include "partials/carte_article.html" with a=a %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section>
+  <h2>Ce que tu y trouves</h2>
+  <div class="etapes">
+    <div class="card etape">
+      <h3>Ton profil</h3>
+      <p class="muted">Pseudo, espèce, bio RP, cadre, décor et musique de profil :
+         une identité qui reste, même quand la conversation WhatsApp défile.</p>
+    </div>
+    <div class="card etape">
+      <h3>Les Cubis</h3>
+      <p class="muted">La monnaie du monde. Tu en gagnes chaque jour, tu en dépenses en
+         boutique, tu en offres aux autres membres. Aucun argent réel n'entre ici.</p>
+    </div>
+    <div class="card etape">
+      <h3>Tes créations</h3>
+      <p class="muted">Stickers, fonds d'écran, images RP, musiques : les créateurs
+         valident leur place et vendent leurs œuvres à la communauté.</p>
+    </div>
+  </div>
+</section>
+
 <section class="card center">
-  <h1>Bienvenue sur Aphrodite</h1>
-  <p>Le monde permanent de la communauté : profil, Cubis, boutique et inventaire.</p>
-  <p><a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
-     <a class="btn lien" href="{% url 'connexion' %}">J'ai déjà un compte</a></p>
+  <h2>Prêt à entrer</h2>
+  <p class="muted">L'inscription prend une minute. Tu choisis ton profil, tu reçois
+     tes premiers Cubis, et le monde est à toi.</p>
+  <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
 </section>
 {% endblock %}

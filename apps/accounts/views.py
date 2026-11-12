@@ -28,7 +28,15 @@ def _equipement(membre):
 def accueil(request):
     if request.user.is_authenticated:
         return redirect("boutique")
-    return render(request, "accueil.html")
+    en_vente = Item.objects.filter(est_actif=True, masque_moderation=False)
+    return render(request, "accueil.html", {
+        "articles": en_vente.select_related("createur")
+                            .order_by("-est_mis_en_avant", "-date_creation")[:4],
+        "nb_membres": User.objects.filter(is_active=True).count(),
+        "nb_articles": en_vente.count(),
+        "possedes": set(),
+        "aimes": set(),
+    })
 
 
 def inscription(request):

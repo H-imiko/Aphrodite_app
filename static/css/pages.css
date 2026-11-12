@@ -217,3 +217,24 @@
 @media (max-width: 420px) {
   .choix-offrandes { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ----- Accueil publique ----- */
+.hero { text-align: center; padding: var(--e-6) var(--e-2) var(--e-5); }
+.hero-sur { margin: 0 0 var(--e-3); font-size: var(--t-xs); letter-spacing: .22em;
+  text-transform: uppercase; color: var(--rose); }
+.hero h1 { margin: 0 0 var(--e-3); font-size: var(--t-3xl); letter-spacing: .12em;
+  text-transform: uppercase; }
+.hero-texte { max-width: 34rem; margin: 0 auto var(--e-5); font-size: var(--t-md);
+  line-height: 1.6; }
+.hero-second { margin: var(--e-3) 0 0; font-size: var(--t-sm); }
+.chiffres { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--e-3);
+  margin: var(--e-5) 0; }
+.chiffre { padding: var(--e-4); text-align: center; background: var(--card);
+  border: 1px solid var(--line); border-radius: 14px; }
+.chiffre strong { display: block; font-family: var(--titre); font-size: var(--t-2xl);
+  color: var(--soft); }
+.chiffre span { font-size: var(--t-sm); }
+.etapes { display: grid; gap: var(--e-3); }
+.etape h3 { margin: 0 0 var(--e-2); font-size: var(--t-lg); }
+.etape p { margin: 0; font-size: var(--t-sm); line-height: 1.55; }
+@media (min-width: 640px) { .etapes { grid-template-columns: repeat(3, 1fr); } }
