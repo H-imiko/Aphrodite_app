@@ -94,6 +94,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Sert les fichiers statiques depuis le processus Django (production).
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -205,6 +207,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+# Dossier ou collectstatic range les fichiers servis en production. Il est
+# ignore par git : c'est un produit de build, pas une source.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise compresse le CSS et ajoute une empreinte au nom des fichiers en
+# production (cache long sans risque d'ancienne version). En developpement,
+# runserver sert les fichiers d'origine et l'empreinte serait genante.
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {
+        'BACKEND': ('django.contrib.staticfiles.storage.StaticFilesStorage'
+                    if DEBUG else
+                    'whitenoise.storage.CompressedManifestStaticFilesStorage'),
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

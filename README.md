@@ -139,6 +139,7 @@ l'application dessus.
 - `docs/captures/` : captures des écrans réels de l'application
 - `docs/registre-et-plan.md` : liste des défauts à corriger et calendrier
 - `docs/migration-postgres.md` : bascule SQLite → PostgreSQL, étape par étape
+- `docs/deploiement.md` : mise en ligne (waitress, WhiteNoise, proxy, tâches planifiées)
 - `.env.example` : modèle de configuration (à copier en `.env`)
 - `LISEZMOI.txt` : historique, obsolète
 
