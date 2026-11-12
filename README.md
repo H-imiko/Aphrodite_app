@@ -132,7 +132,7 @@ l'application dessus.
 
 - `apps/` : le code (accounts, economy, shop, inventory, creators, moderation,
   orders, notifications, social, offrandes)
-- `templates/`, `static/css/aphrodite.css` : l'interface
+- `templates/`, `static/css/base.css`, `composants.css`, `pages.css` : l'interface
 - `static/images/offrandes/` : les 10 offrandes de départ (256×256)
 - `static/images/cadres/cadre_noir.png` : cadre livré, 800×800 transparent
 - `maquette/` : maquette HTML des écrans + aperçu PNG

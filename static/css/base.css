@@ -1,0 +1,60 @@
+/* Aphrodite : socle (polices, couleurs, echelles, elements de base) */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@400;500;600&family=Playfair+Display:ital@0;1&display=swap');
+
+/* ============ Aphrodite : thème "Sanctuaire" ============ */
+:root {
+  --bg: #0a0710;
+  --bg2: #140a1e;
+  --card: rgba(26, 13, 38, .82);
+  --line: rgba(255, 107, 193, .28);
+  --line-fort: rgba(255, 107, 193, .55);
+  --neon: #ff2e93;
+  --rose: #ff6bc1;
+  --soft: #ffb6e1;
+  --violet: #7c3aed;
+  --emerald: #00b894;
+  --gold: #e8c468;
+  --text: #f7ecf8;
+  --muted: #b99ac4;
+  --titre: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --corps: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --lueur: 0 0 22px rgba(255, 46, 147, .22);
+  /* Echelle typographique : 7 tailles, rien d'autre. */
+  --t-xs: .75rem;
+  --t-sm: .82rem;
+  --t-md: .88rem;
+  --t-lg: .95rem;
+  --t-xl: 1.1rem;
+  --t-2xl: 1.35rem;
+  --t-3xl: 1.55rem;
+  --t-4xl: 2.3rem;
+  /* Echelle d'espacement : pas de 4 px. */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 20px;
+  --e-6: 24px;
+  --e-7: 32px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; color: var(--text); font-family: var(--corps); line-height: 1.5;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 45% at 85% -5%, rgba(255, 46, 147, .20), transparent 60%),
+    radial-gradient(ellipse 70% 40% at 0% 20%, rgba(124, 58, 237, .18), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+body.avec-nav { padding-bottom: calc(94px + env(safe-area-inset-bottom)); }
+a { color: var(--rose); text-decoration: none; }
+a:hover { color: var(--soft); }
+:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--titre); font-weight: 700; letter-spacing: .04em;
+             color: var(--soft); }
+h1 { font-size: var(--t-3xl); margin: .3em 0 .4em; }
+h2 { font-size: var(--t-xl); margin: 1.1em 0 .5em; }
+.cb { height: 1.1em; width: 1.1em; vertical-align: -.2em; margin-right: .22em; }
