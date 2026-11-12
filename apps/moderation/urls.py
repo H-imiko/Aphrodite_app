@@ -20,4 +20,7 @@ urlpatterns = [
          name="membre_moderation"),
     path("divinites/membres/<int:pk>/sanction/", views.sanction_action,
          name="sanction_action"),
+    path("divinites/membres/<int:pk>/mot-de-passe/",
+         views.reinitialiser_mot_de_passe,
+         name="reinitialiser_mot_de_passe"),
 ]

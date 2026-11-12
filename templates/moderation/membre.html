@@ -23,6 +23,18 @@
     <p class="muted">Tu ne peux pas sanctionner ce compte (toi-même, la propriétaire, ou une Divinité si tu n'es pas Safir).</p>
 </section>
 {% else %}
+  {% if peut_reinitialiser %}
+  <section class="card mt-16" >
+    <h2>Mot de passe oublié</h2>
+    <p class="muted">Génère un mot de passe provisoire et transmets-le en privé :
+       il ne s'affichera qu'une fois, et le membre le remplacera depuis ses
+       paramètres. Aucun email n'est envoyé.</p>
+    <form method="post" action="{% url 'reinitialiser_mot_de_passe' cible.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">Générer un mot de passe provisoire</button>
+    </form>
+  </section>
+  {% endif %}
   <section class="card mt-16" >
     <h2>⚠️ Avertir</h2>
     <form method="post" action="{% url 'sanction_action' cible.pk %}">

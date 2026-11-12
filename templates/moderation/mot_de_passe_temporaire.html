@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Mot de passe provisoire — Aphrodite{% endblock %}
+{% block content %}
+<h1>Mot de passe provisoire</h1>
+
+<section class="card center">
+  <p class="muted">Pour {{ cible.pseudo_whatsapp }}</p>
+  <p class="mdp-temporaire">{{ temporaire }}</p>
+  <p class="muted">Ce mot de passe ne s'affichera plus. Note-le, ou transmets-le
+     tout de suite à {{ cible.pseudo_whatsapp }} en message privé WhatsApp.</p>
+</section>
+
+<section class="card mt-16">
+  <h2>À dire au membre</h2>
+  <p class="muted">« Ton mot de passe a été réinitialisé. Connecte-toi avec celui-ci,
+     puis va dans Paramètres → Mot de passe pour choisir le tien. »</p>
+  <a class="btn lien" href="{% url 'membre_moderation' cible.pk %}">Retour à la fiche</a>
+</section>
+{% endblock %}

@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.db.models import Count
-from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth import (login, logout, get_user_model,
+                                 update_session_auth_hash)
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 
 from apps.creators.models import Candidature
@@ -66,6 +68,18 @@ def reglement(request):
 @login_required
 def parametres(request):
     return render(request, "accounts/parametres.html")
+
+
+@login_required
+def changer_mot_de_passe(request):
+    form = PasswordChangeForm(request.user, request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        # Sans ca, changer le mot de passe deconnecte le membre.
+        update_session_auth_hash(request, form.user)
+        messages.success(request, "Mot de passe changé.")
+        return redirect("parametres")
+    return render(request, "accounts/mot_de_passe.html", {"form": form})
 
 
 @login_required

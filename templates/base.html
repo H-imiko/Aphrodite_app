@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Aphrodite{% endblock %}</title>
   {% comment %} ?v= : changer cette valeur à chaque modification du CSS, sinon les navigateurs gardent l'ancienne feuille en cache. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261119">
-  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261119">
-  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261119">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261120">
+  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261120">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261120">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">

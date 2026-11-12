@@ -18,6 +18,8 @@ class AuditLog(models.Model):
         LITIGE_RESOLU = "litige_resolu", "Litige de commande tranché"
         ROLE_ATTRIBUE = "role_attribue", "Rôle attribué"
         ROLE_RETIRE = "role_retire", "Rôle retiré"
+        MOT_DE_PASSE_REINITIALISE = ("mot_de_passe_reinitialise",
+                                     "Mot de passe réinitialisé")
 
     auteur = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True,

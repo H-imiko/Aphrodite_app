@@ -1,3 +1,4 @@
+import secrets
 from datetime import timedelta
 from functools import wraps
 
@@ -14,6 +15,7 @@ from django.views.decorators.http import require_POST
 from apps.creators.models import Candidature
 from apps.economy.models import Transaction
 from apps.orders.models import Order
+from apps.notifications.services import notifier
 from apps.shop.models import Item
 from . import sanctions
 from .models import AuditLog, Report
@@ -208,6 +210,7 @@ def membre_moderation(request, pk):
         "offrandes_recues": cible.offrandes_recues.select_related(
             "expediteur", "offrande")[:20],
         "peut_decider": request.user.is_superuser,
+        "peut_reinitialiser": request.user.est_divinite and not protege,
         "protege": protege,
         "durees": sanctions.DUREES,
     })
@@ -249,6 +252,51 @@ def sanction_action(request, pk):
     if sig_id:
         url += f"?signalement={sig_id}"
     return redirect(url)
+
+
+# Alphabet sans caracteres ambigus (0/O, 1/l/I) : le mot de passe provisoire
+# sera lu a voix haute ou recopie depuis WhatsApp.
+ALPHABET_MDP = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+
+def mot_de_passe_temporaire(longueur=10):
+    return "".join(secrets.choice(ALPHABET_MDP) for _ in range(longueur))
+
+
+@divinite_requise
+@require_POST
+def reinitialiser_mot_de_passe(request, pk):
+    """Remplace le mot de passe par un provisoire, affiche une seule fois.
+
+    Aucun email n'est envoye : la Divinité transmet le mot de passe en main
+    propre (WhatsApp prive), le membre le change depuis ses parametres.
+    """
+    cible = get_object_or_404(User, pk=pk)
+    if cible.is_superuser:
+        messages.error(request, "Le mot de passe de la propriétaire ne se "
+                                "réinitialise pas ici.")
+        return redirect("membre_moderation", pk=pk)
+    if cible.pk == request.user.pk:
+        messages.error(request, "Utilise « Changer mon mot de passe » depuis "
+                                "tes paramètres.")
+        return redirect("membre_moderation", pk=pk)
+    if cible.est_divinite and not request.user.is_superuser:
+        messages.error(request, "Seule Safir peut réinitialiser le mot de "
+                                "passe d'une Divinité.")
+        return redirect("membre_moderation", pk=pk)
+
+    temporaire = mot_de_passe_temporaire()
+    cible.set_password(temporaire)
+    cible.save(update_fields=["password"])
+    notifier(cible, "Mot de passe réinitialisé",
+             "L'équipe a réinitialisé ton mot de passe. Change-le depuis tes "
+             "paramètres.", reverse("changer_mot_de_passe"), "securite")
+    AuditLog.objects.create(
+        auteur=request.user,
+        action=AuditLog.Action.MOT_DE_PASSE_REINITIALISE,
+        cible=cible, details="Mot de passe provisoire remis en main propre")
+    return render(request, "moderation/mot_de_passe_temporaire.html",
+                  {"cible": cible, "temporaire": temporaire})
 
 
 # ----- Rôles : nommer des Divinités et des modérateurs -----

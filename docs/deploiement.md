@@ -220,5 +220,5 @@ Puis dans un navigateur, en navigation privée :
 ## 9. Limites connues avant lancement
 
 - **SQLite** : un seul écrivain. Convient au lancement ; voir `docs/migration-postgres.md` si la fréquentation monte.
-- **Pas de « mot de passe oublié »** : aucune réinitialisation par email n'existe. Prévoir une procédure manuelle (Divinité qui redéfinit le mot de passe depuis `/admin/`).
+- **Mot de passe oublié** : il n'y a pas d'email, donc pas de lien de réinitialisation. La procédure est manuelle et assumée : le membre prévient l'équipe, une Divinité ouvre `/divinites/membres/<id>/` et génère un mot de passe provisoire, qu'elle transmet en privé (WhatsApp). Le membre le remplace ensuite dans Paramètres → Mot de passe. L'action est inscrite au journal des actions.
 - **Litiges** : une commande en litige bloque la suppression de compte de ses deux parties jusqu'à décision. Vider les litiges avant d'annoncer la fonction de suppression.

@@ -253,3 +253,91 @@ class SuppressionAvecCommandeTests(TestCase):
         self.assertRedirects(reponse, reverse("accueil"))
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
+
+
+class MotDePasseTests(TestCase):
+    def setUp(self):
+        self.membre = User.objects.create_user(
+            email="oubli@test.cg", password=MDP, pseudo_whatsapp="Oublieuse")
+        self.divinite = User.objects.create_user(
+            email="divinite@test.cg", password=MDP, pseudo_whatsapp="Divinite",
+            est_divinite=True)
+        self.staff = User.objects.create_user(
+            email="staff@test.cg", password=MDP, pseudo_whatsapp="Staff",
+            is_staff=True)
+        self.proprietaire = User.objects.create_superuser(
+            email="safir@test.cg", password=MDP, pseudo_whatsapp="Safir")
+
+    def test_changement_refuse_avec_mauvais_ancien_mot_de_passe(self):
+        self.client.force_login(self.membre)
+
+        reponse = self.client.post(reverse("changer_mot_de_passe"), {
+            "old_password": "FauxMotDePasse!1",
+            "new_password1": "NouveauMotDePasse!2026",
+            "new_password2": "NouveauMotDePasse!2026"})
+
+        self.assertEqual(reponse.status_code, 200)
+        self.membre.refresh_from_db()
+        self.assertTrue(self.membre.check_password(MDP))
+
+    def test_changement_garde_la_session_ouverte(self):
+        self.client.force_login(self.membre)
+
+        reponse = self.client.post(reverse("changer_mot_de_passe"), {
+            "old_password": MDP,
+            "new_password1": "NouveauMotDePasse!2026",
+            "new_password2": "NouveauMotDePasse!2026"})
+
+        self.assertRedirects(reponse, reverse("parametres"))
+        self.assertEqual(self.client.get(reverse("parametres")).status_code, 200)
+        self.membre.refresh_from_db()
+        self.assertTrue(self.membre.check_password("NouveauMotDePasse!2026"))
+
+    def test_divinite_reinitialise_et_le_membre_se_connecte(self):
+        self.client.force_login(self.divinite)
+
+        reponse = self.client.post(
+            reverse("reinitialiser_mot_de_passe", args=[self.membre.pk]))
+
+        self.assertEqual(reponse.status_code, 200)
+        temporaire = reponse.context["temporaire"]
+        self.assertGreaterEqual(len(temporaire), 10)
+        self.membre.refresh_from_db()
+        self.assertTrue(self.membre.check_password(temporaire))
+        self.assertFalse(self.membre.check_password(MDP))
+
+        autre_client = Client()
+        self.assertTrue(autre_client.login(username="oubli@test.cg",
+                                           password=temporaire))
+        self.assertEqual(
+            autre_client.get(reverse("parametres")).status_code, 200)
+
+    def test_moderateur_ne_peut_pas_reinitialiser(self):
+        self.client.force_login(self.staff)
+
+        reponse = self.client.post(
+            reverse("reinitialiser_mot_de_passe", args=[self.membre.pk]))
+
+        self.assertEqual(reponse.status_code, 403)
+        self.membre.refresh_from_db()
+        self.assertTrue(self.membre.check_password(MDP))
+
+    def test_proprietaire_intouchable(self):
+        self.client.force_login(self.divinite)
+
+        self.client.post(
+            reverse("reinitialiser_mot_de_passe", args=[self.proprietaire.pk]))
+
+        self.proprietaire.refresh_from_db()
+        self.assertTrue(self.proprietaire.check_password(MDP))
+
+    def test_reinitialisation_inscrite_au_journal(self):
+        from apps.moderation.models import AuditLog
+        self.client.force_login(self.divinite)
+
+        self.client.post(
+            reverse("reinitialiser_mot_de_passe", args=[self.membre.pk]))
+
+        self.assertTrue(AuditLog.objects.filter(
+            action=AuditLog.Action.MOT_DE_PASSE_REINITIALISE,
+            cible=self.membre, auteur=self.divinite).exists())
