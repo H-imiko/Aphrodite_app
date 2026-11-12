@@ -238,3 +238,25 @@
 .etape h3 { margin: 0 0 var(--e-2); font-size: var(--t-lg); }
 .etape p { margin: 0; font-size: var(--t-sm); line-height: 1.55; }
 @media (min-width: 640px) { .etapes { grid-template-columns: repeat(3, 1fr); } }
+
+/* ----- Paramètres ----- */
+.parametres { display: grid; gap: 0; }
+.param-ligne { display: flex; align-items: center; justify-content: space-between;
+  gap: var(--e-3); padding: var(--e-3) 0;
+  border-bottom: 1px solid rgba(255, 107, 193, .14); }
+.param-ligne:last-child { border-bottom: none; }
+.param-ligne strong { display: block; font-size: var(--t-md); }
+.param-ligne span { font-size: var(--t-sm); }
+.danger-zone { border-color: rgba(255, 122, 156, .5); }
+.danger-zone h2 { color: #ff7a9c; }
+.danger-zone ul { margin: var(--e-2) 0 var(--e-4); padding-left: var(--e-5); }
+
+/* ----- Règlement ----- */
+.sommaire { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--e-2);
+  margin-bottom: var(--e-5); font-size: var(--t-sm); }
+.reglement { line-height: 1.65; }
+.reglement h2 { margin-top: var(--e-6); font-size: var(--t-xl); scroll-margin-top: 72px; }
+.reglement p, .reglement li { font-size: var(--t-md); }
+.reglement ul { margin: var(--e-2) 0 var(--e-4); padding-left: var(--e-5); }
+.reglement li { margin-bottom: var(--e-1); }
+@media (min-width: 640px) { .sommaire { grid-template-columns: repeat(3, 1fr); } }

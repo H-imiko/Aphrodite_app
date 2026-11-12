@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.db.models import Count
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -9,7 +9,8 @@ from apps.inventory.models import Equipement
 from apps.offrandes.models import Offrande, OffrandeEnvoyee
 from apps.shop.models import Item
 from apps.social.models import Abonnement
-from .forms import InscriptionForm, ProfilForm
+from .forms import InscriptionForm, ProfilForm, SuppressionCompteForm
+from .services import fermer_compte
 
 User = get_user_model()
 
@@ -55,6 +56,26 @@ def inscription(request):
             request, "Bienvenue sur Aphrodite ✨ Personnalise ton profil !")
         return redirect("modifier_profil")
     return render(request, "accounts/inscription.html", {"form": form})
+
+
+def reglement(request):
+    return render(request, "reglement.html")
+
+
+@login_required
+def parametres(request):
+    return render(request, "accounts/parametres.html")
+
+
+@login_required
+def supprimer_compte(request):
+    form = SuppressionCompteForm(request.POST or None, user=request.user)
+    if request.method == "POST" and form.is_valid():
+        fermer_compte(request.user)
+        logout(request)
+        messages.success(request, "Ton compte est supprimé. Merci d'avoir joué.")
+        return redirect("accueil")
+    return render(request, "accounts/supprimer_compte.html", {"form": form})
 
 
 @login_required

@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from .models import User
@@ -143,3 +143,48 @@ class ProfilTests(TestCase):
 
         self.assertEqual(reponse.status_code, 302)
         self.assertIn(reverse("connexion"), reponse["Location"])
+
+
+class CompteTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="partant@test.cg", password=MDP, pseudo_whatsapp="Partante")
+        self.client.force_login(self.user)
+
+    def test_parametres_et_suppression_reserves_aux_connectes(self):
+        anonyme = Client()
+        for nom in ("parametres", "supprimer_compte"):
+            self.assertEqual(anonyme.get(reverse(nom)).status_code, 302)
+
+    def test_reglement_public(self):
+        reponse = Client().get(reverse("reglement"))
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "18 ans")
+
+    def test_mauvais_mot_de_passe_ne_supprime_rien(self):
+        reponse = self.client.post(
+            reverse("supprimer_compte"),
+            {"mot_de_passe": "FauxMotDePasse!", "confirmer": "on"})
+
+        self.assertEqual(reponse.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+        self.assertEqual(self.user.email, "partant@test.cg")
+
+    def test_suppression_efface_les_donnees_personnelles(self):
+        self.user.solde_cubis = 120
+        self.user.save()
+
+        reponse = self.client.post(
+            reverse("supprimer_compte"),
+            {"mot_de_passe": MDP, "confirmer": "on"})
+
+        self.assertRedirects(reponse, reverse("accueil"))
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+        self.assertFalse(self.user.check_password(MDP))
+        self.assertNotEqual(self.user.email, "partant@test.cg")
+        self.assertEqual(self.user.pseudo_whatsapp, "Compte supprimé")
+        self.assertEqual(self.user.solde_cubis, 0)
+        self.assertFalse(self.user.avatar)

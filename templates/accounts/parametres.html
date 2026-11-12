@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Paramètres — Aphrodite{% endblock %}
+{% block content %}
+<h1>Paramètres</h1>
+
+<section class="card">
+  <h2>Mon compte</h2>
+  <div class="parametres">
+    <div class="param-ligne">
+      <div><strong>Email</strong><span class="muted">{{ user.email }}</span></div>
+    </div>
+    <div class="param-ligne">
+      <div><strong>Pseudo</strong><span class="muted">{{ user.pseudo_whatsapp }}</span></div>
+    </div>
+    <div class="param-ligne">
+      <div><strong>Profil</strong><span class="muted">Photo, bannière, bio, numéro WhatsApp</span></div>
+      <a class="petit" href="{% url 'modifier_profil' %}">Modifier</a>
+    </div>
+    <div class="param-ligne">
+      <div><strong>Notifications</strong><span class="muted">Commandes, messages, modération</span></div>
+      <a class="petit" href="{% url 'notifications' %}">Voir</a>
+    </div>
+  </div>
+</section>
+
+<section class="card mt-16">
+  <h2>Le règlement</h2>
+  <p class="muted">Les règles du monde : respect, contenus, Cubis, boutique, sanctions.</p>
+  <a class="petit" href="{% url 'reglement' %}">Lire le règlement</a>
+</section>
+
+<section class="card mt-16 danger-zone">
+  <h2>Supprimer mon compte</h2>
+  <p class="muted">Ton profil, tes données personnelles et tes articles disparaissent
+     définitivement. Les commandes passées restent visibles pour les autres membres.</p>
+  <a class="btn danger lien" href="{% url 'supprimer_compte' %}">Supprimer mon compte</a>
+</section>
+
+<p><a href="{% url 'profil' %}">← Retour à mon profil</a></p>
+{% endblock %}

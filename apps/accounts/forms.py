@@ -29,6 +29,27 @@ class InscriptionForm(UserCreationForm):
         return d
 
 
+class SuppressionCompteForm(forms.Form):
+    mot_de_passe = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
+    )
+    confirmer = forms.BooleanField(
+        label="Je comprends que mon profil et mes données personnelles "
+              "seront effacés et que je ne pourrai pas les récupérer.",
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_mot_de_passe(self):
+        mot_de_passe = self.cleaned_data["mot_de_passe"]
+        if not self.user or not self.user.check_password(mot_de_passe):
+            raise forms.ValidationError("Mot de passe incorrect.")
+        return mot_de_passe
+
+
 class ProfilForm(forms.ModelForm):
     class Meta:
         model = User

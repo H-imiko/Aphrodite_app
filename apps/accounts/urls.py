@@ -11,5 +11,8 @@ urlpatterns = [
     path("deconnexion/", auth_views.LogoutView.as_view(), name="deconnexion"),
     path("profil/", views.profil, name="profil"),
     path("profil/modifier/", views.modifier_profil, name="modifier_profil"),
+    path("parametres/", views.parametres, name="parametres"),
+    path("parametres/supprimer/", views.supprimer_compte, name="supprimer_compte"),
+    path("reglement/", views.reglement, name="reglement"),
     path("membre/<int:pk>/", views.membre, name="membre"),
 ]

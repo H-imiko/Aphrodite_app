@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Aphrodite</title>
+  <title>{% block title %}Aphrodite{% endblock %}</title>
   {% comment %} ?v= : changer cette valeur à chaque modification du CSS, sinon les navigateurs gardent l'ancienne feuille en cache. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261116">
-  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261116">
-  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261116">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261117">
+  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261117">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261117">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">
@@ -29,11 +29,15 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15v-4a6 6 0 1 0-12 0v4l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
         {% if nb_notifications %}<span class="pastille">{{ nb_notifications }}</span>{% endif %}
 </a>
+      <a class="icone-nav" href="{% url 'parametres' %}" title="Paramètres" aria-label="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 4.5V6M12 18v1.5M4.5 12H6M18 12h1.5M6.7 6.7l1.1 1.1M16.2 16.2l1.1 1.1M17.3 6.7l-1.1 1.1M7.8 16.2l-1.1 1.1"/></svg>
+</a>
       <a class="solde-nav" href="{% url 'portefeuille' %}"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</a>
       <a class="nav-avatar" href="{% url 'profil' %}" title="Mon profil">
         {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">{% else %}<span>{{ user.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
 </a>
     {% else %}
+      <a href="{% url 'reglement' %}">Règlement</a>
       <a href="{% url 'connexion' %}">Connexion</a>
       <a href="{% url 'inscription' %}">Inscription</a>
     {% endif %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Supprimer mon compte — Aphrodite{% endblock %}
+{% block content %}
+<h1>Supprimer mon compte</h1>
+
+<section class="card danger-zone">
+  <p><strong>Cette action est définitive.</strong> Aucune sauvegarde de ton profil ne
+     sera conservée.</p>
+  <h2>Ce qui disparaît</h2>
+  <ul class="muted">
+    <li>ton email, ton pseudo, ta bio, ton numéro WhatsApp, ton titre ;</li>
+    <li>ta photo de profil et ta bannière ;</li>
+    <li>tes Cubis restants et ta série de connexion ;</li>
+    <li>tes abonnements, tes favoris et tes notifications ;</li>
+    <li>tes articles, retirés de la boutique.</li>
+  </ul>
+  <h2>Ce qui reste</h2>
+  <p class="muted">Les commandes terminées, les offrandes reçues et les transactions
+     restent enregistrées sans ton identité : elles appartiennent aussi aux autres
+     membres et servent de preuve en cas de litige.</p>
+</section>
+
+<form method="post" class="card mt-16">
+  {% csrf_token %}
+  <div class="formulaire">{% include "partials/champs.html" %}</div>
+  <button type="submit" class="btn danger">Supprimer définitivement</button>
+  <p class="center mt-12"><a href="{% url 'parametres' %}">Annuler, je garde mon compte</a></p>
+</form>
+{% endblock %}
