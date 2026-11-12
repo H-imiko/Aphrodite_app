@@ -10,7 +10,8 @@ from apps.offrandes.models import Offrande, OffrandeEnvoyee
 from apps.shop.models import Item
 from apps.social.models import Abonnement
 from .forms import InscriptionForm, ProfilForm, SuppressionCompteForm
-from .services import fermer_compte
+from .services import (SuppressionRefusee, commandes_bloquantes,
+                       fermer_compte)
 
 User = get_user_model()
 
@@ -69,9 +70,18 @@ def parametres(request):
 
 @login_required
 def supprimer_compte(request):
+    commandes = list(commandes_bloquantes(request.user))
+    if commandes:
+        # Refus explicite : on montre les commandes à régler, pas de formulaire.
+        return render(request, "accounts/supprimer_compte.html",
+                      {"commandes": commandes})
     form = SuppressionCompteForm(request.POST or None, user=request.user)
     if request.method == "POST" and form.is_valid():
-        fermer_compte(request.user)
+        try:
+            fermer_compte(request.user)
+        except SuppressionRefusee as refus:
+            messages.error(request, str(refus))
+            return redirect("supprimer_compte")
         logout(request)
         messages.success(request, "Ton compte est supprimé. Merci d'avoir joué.")
         return redirect("accueil")

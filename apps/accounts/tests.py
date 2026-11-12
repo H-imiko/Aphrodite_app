@@ -3,6 +3,8 @@ from datetime import date
 from django.test import Client, TestCase
 from django.urls import reverse
 
+from apps.orders.models import Order
+
 from .models import User
 
 MDP = "MotDePasse!2026"
@@ -193,3 +195,61 @@ class CompteTests(TestCase):
         self.assertEqual(self.user.pseudo_whatsapp, "Compte supprimé")
         self.assertEqual(self.user.solde_cubis, 0)
         self.assertFalse(self.user.avatar)
+
+
+class SuppressionAvecCommandeTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="acheteur@test.cg", password=MDP, pseudo_whatsapp="Acheteur")
+        self.vendeur = User.objects.create_user(
+            email="vendeur@test.cg", password=MDP, pseudo_whatsapp="Vendeur")
+        self.client.force_login(self.user)
+
+    def commande(self, statut):
+        return Order.objects.create(
+            acheteur=self.user, vendeur=self.vendeur, titre="Scenario prive",
+            description="Une scene sur mesure", prix_cubis=40, statut=statut)
+
+    def supprimer(self):
+        return self.client.post(
+            reverse("supprimer_compte"),
+            {"mot_de_passe": MDP, "confirmer": "on"})
+
+    def test_chaque_statut_en_cours_bloque_la_suppression(self):
+        for statut in (Order.Statut.DEMANDE, Order.Statut.EN_COURS,
+                       Order.Statut.LITIGE):
+            with self.subTest(statut=statut):
+                commande = self.commande(statut)
+                reponse = self.supprimer()
+
+                self.assertEqual(reponse.status_code, 200)
+                self.user.refresh_from_db()
+                self.assertTrue(self.user.is_active)
+                self.assertEqual(self.user.email, "acheteur@test.cg")
+                self.assertContains(reponse, "Suppression impossible")
+                self.assertContains(
+                    reponse, reverse("commande", args=[commande.pk]))
+                commande.delete()
+
+    def test_commande_en_cours_du_vendeur_bloque_aussi(self):
+        Order.objects.create(
+            acheteur=self.vendeur, vendeur=self.user, titre="Ma creation",
+            description="Livraison attendue", prix_cubis=25,
+            statut=Order.Statut.EN_COURS)
+
+        reponse = self.supprimer()
+
+        self.assertEqual(reponse.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+
+    def test_suppression_possible_apres_commande_terminee(self):
+        commande = self.commande(Order.Statut.DEMANDE)
+        commande.statut = Order.Statut.TERMINEE
+        commande.save()
+
+        reponse = self.supprimer()
+
+        self.assertRedirects(reponse, reverse("accueil"))
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)

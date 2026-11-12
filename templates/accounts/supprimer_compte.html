@@ -3,6 +3,25 @@
 {% block content %}
 <h1>Supprimer mon compte</h1>
 
+{% if commandes %}
+<section class="card danger-zone">
+  <h2>Suppression impossible pour l'instant</h2>
+  <p>Tu as encore <strong>{{ commandes|length }} commande{{ commandes|length|pluralize }}
+     en cours</strong>. Tant qu'une commande n'est pas terminée ou annulée, elle garde
+     des Cubis bloqués (séquestre) ou une décision en attente : fermer ton compte
+     maintenant laisserait l'acheteur sans recours et ses Cubis bloqués pour toujours.</p>
+  <ul class="muted">
+    {% for c in commandes %}
+    <li><a href="{% url 'commande' c.pk %}">Commande #{{ c.pk }} — {{ c.titre }}</a>
+        : {{ c.get_statut_display }}, {{ c.prix_cubis }} Cubis</li>
+    {% endfor %}
+  </ul>
+  <p class="muted">Termine la livraison, confirme la réception ou annule la commande,
+     puis reviens sur cette page : la suppression sera alors possible.</p>
+  <a class="btn lien" href="{% url 'commandes' %}">Voir mes commandes</a>
+  <p class="center mt-12"><a href="{% url 'parametres' %}">← Retour aux paramètres</a></p>
+</section>
+{% else %}
 <section class="card danger-zone">
   <p><strong>Cette action est définitive.</strong> Aucune sauvegarde de ton profil ne
      sera conservée.</p>
@@ -26,4 +45,5 @@
   <button type="submit" class="btn danger">Supprimer définitivement</button>
   <p class="center mt-12"><a href="{% url 'parametres' %}">Annuler, je garde mon compte</a></p>
 </form>
+{% endif %}
 {% endblock %}
