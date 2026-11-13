@@ -169,9 +169,13 @@ else:
 # `manage.py check --deploy` soit propre en production sans gener le local.
 if not DEBUG:
     SECURE_SSL_REDIRECT = _drapeau("DJANGO_SECURE_SSL_REDIRECT", "1")
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HSTS : commencer court. Une duree d'un an se reverte difficilement si le
+    # HTTPS est mal configure (les navigateurs refusent le HTTP pendant un an).
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "3600"))
+    # Actifs par defaut pour que `check --deploy` reste propre. Les desactiver
+    # si un sous-domaine doit rester en HTTP.
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = _drapeau("DJANGO_HSTS_SOUS_DOMAINES", "1")
+    SECURE_HSTS_PRELOAD = _drapeau("DJANGO_HSTS_PRELOAD", "1")
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True

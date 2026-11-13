@@ -44,6 +44,7 @@ refuse de démarrer, volontairement.
 | `DJANGO_ALLOWED_HOSTS` | `aphrodite.example.com,www.aphrodite.example.com` | séparés par des virgules |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://aphrodite.example.com,https://www.aphrodite.example.com` | avec le `https://` |
 | `DJANGO_SECURE_SSL_REDIRECT` | `1` (défaut) | laisser à `1` derrière le proxy |
+| `DJANGO_HSTS_SECONDS` | `3600` | monter progressivement (86400, puis un an) quand tout est stable |
 | `DJANGO_USE_X_FORWARDED_FOR` | `0` | laisser à `0` avec `server.py` (waitress fait le travail). Passer à `1` seulement avec un autre serveur qui ne traite pas lui-même l'en-tête |
 | `APHRODITE_TRUSTED_PROXY` | `127.0.0.1,::1` | adresses des proxys autorisés à fournir `X-Forwarded-*` |
 | `DJANGO_SAUVEGARDES_DIR` | `D:\sauvegardes\aphrodite` | **hors du dossier du projet** |
