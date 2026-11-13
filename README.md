@@ -94,14 +94,30 @@ python manage.py normaliser_cadres --simuler   # montre, n'écrit rien
 python manage.py normaliser_cadres             # enregistre
 ```
 
-## Comptes de test
+## Comptes
 
-| Email | Mot de passe | Rôle |
-|---|---|---|
-| `safir@test.cg` | `Test12345!` | superutilisateur |
-| `membre@test.cg` | `Test12345!` | membre simple |
+Aucun compte n'est livré avec le dépôt : les mots de passe ne sont jamais
+écrits dans un fichier suivi par Git. Pour le premier compte (Safir, le compte
+principal), en local :
+
+```bash
+python manage.py createsuperuser
+```
+
+Ou sans saisie interactive, avec le mot de passe fourni par l'environnement :
+
+```bash
+DJANGO_SUPERUSER_PASSWORD='...' python manage.py createsuperuser \
+  --noinput --username safir --email safir@exemple.cg
+```
 
 Panel d'administration : http://127.0.0.1:8000/admin/
+
+> Les identifiants de démonstration qui figuraient ici ont été retirés : ce
+> dépôt est public, et un mot de passe publié reste lisible dans l'historique
+> Git même après suppression. Si un compte a déjà utilisé un mot de passe
+> présent dans l'historique, change-le :
+> `python manage.py changepassword <identifiant>`.
 
 ## Tests
 
