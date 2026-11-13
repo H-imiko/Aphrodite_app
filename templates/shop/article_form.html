@@ -1,33 +1,88 @@
 {% extends "base.html" %}
+{% block title %}{% if article %}Modifier l'article{% else %}Publier un article{% endif %} — Aphrodite{% endblock %}
 {% block content %}
-<section class="card">
-  <h1>{% if article %}Modifier l'article{% else %}Publier un article{% endif %}</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="formulaire">{% include "partials/champs.html" %}</div>
-    <p class="muted">Audio : mp3, m4a, ogg ou wav (25 Mo maximum, extrait 3 Mo). Vidéo : mp4 ou webm (100 Mo maximum, extrait 10 Mo). Les envois de gros fichiers peuvent prendre un moment : ne ferme pas la page.</p>
+<header class="entete-page">
+  <div>
+    <h1>{% if article %}Modifier l'article{% else %}Publier un article{% endif %}</h1>
+    <p class="muted">Un article réussi se voit d'abord : image nette, titre court, prix juste.</p>
+  </div>
+  <a class="petit" href="{% url 'mes_articles' %}">← Mes créations</a>
+</header>
+
+<form method="post" enctype="multipart/form-data" class="form-article">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="alerte">{% for erreur in form.non_field_errors %}{{ erreur }}{% endfor %}</div>
+  {% endif %}
+
+  <div class="deux-colonnes">
+    <section class="card form-bloc">
+      <h2>L'essentiel</h2>
+      <div class="grille-form">
+        {% include "partials/champ.html" with champ=form.titre %}
+        {% include "partials/champ.html" with champ=form.categorie %}
+        {% include "partials/champ.html" with champ=form.prix_cubis %}
+        {% include "partials/champ.html" with champ=form.description %}
+      </div>
+    </section>
+
+    <section class="card form-bloc">
+      <h2>Le visuel</h2>
+      <div class="apercu-article" id="apercu-article">
+        {% if article and article.apercu %}
+          <img id="apercu-image" src="{{ article.apercu.url }}" alt="Aperçu de l'article">
+        {% else %}
+          <div class="apercu-vide" id="apercu-vide">L'aperçu s'affiche ici</div>
+          <img id="apercu-image" alt="" hidden>
+        {% endif %}
+      </div>
+      {% include "partials/champ.html" with champ=form.image %}
+      <p class="muted petit-texte">Cadre ou décor : PNG carré, centre transparent, trou entre 40 % et 85 % de la largeur. Le cadre est ensuite aligné automatiquement sur la photo de profil.</p>
+    </section>
+  </div>
+
+  <section class="card form-bloc" id="bloc-media">
+    <h2>Fichiers audio ou vidéo</h2>
+    <p class="muted">Uniquement pour une musique ou une vidéo. L'extrait est gratuit, le fichier complet est réservé aux acheteurs.</p>
+    <div class="grille-form">
+      {% include "partials/champ.html" with champ=form.fichier %}
+      {% include "partials/champ.html" with champ=form.extrait %}
+    </div>
+    <p class="muted">Audio : mp3, m4a, ogg ou wav (25 Mo maximum, extrait 3 Mo). Vidéo : mp4 ou webm (100 Mo maximum, extrait 10 Mo). Ne ferme pas la page pendant l'envoi.</p>
+  </section>
+
+  <div class="barre-enregistrer">
     <button type="submit" class="btn">{% if article %}Enregistrer{% else %}Publier{% endif %}</button>
+    {% if article %}<a class="petit" href="{% url 'article' article.pk %}">Annuler</a>{% endif %}
+  </div>
 </form>
-  {% if article %}<p><a href="{% url 'article' article.pk %}">← Annuler</a></p>{% endif %}
-</section>
 {% endblock %}
 
 {% block scripts %}
 <script>
 (function () {
   var cat = document.getElementById("id_categorie");
-  if (!cat) { return; }
-  function maj() {
-    var media = (cat.value === "audio" || cat.value === "video");
-    ["id_fichier", "id_extrait"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) { return; }
-      var p = el.closest("p");
-      if (p) { p.hidden = !media; }
+  var blocMedia = document.getElementById("bloc-media");
+  if (cat && blocMedia) {
+    function majMedia() {
+      blocMedia.hidden = !(cat.value === "audio" || cat.value === "video");
+    }
+    cat.addEventListener("change", majMedia);
+    majMedia();
+  }
+
+  var input = document.getElementById("id_image");
+  var img = document.getElementById("apercu-image");
+  var vide = document.getElementById("apercu-vide");
+  if (input && img) {
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      if (!f) { return; }
+      img.src = URL.createObjectURL(f);
+      img.hidden = false;
+      if (vide) { vide.hidden = true; }
     });
   }
-  cat.addEventListener("change", maj);
-  maj();
 })();
 </script>
 {% endblock %}

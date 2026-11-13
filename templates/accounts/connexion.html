@@ -2,10 +2,14 @@
 {% block content %}
 <section class="card">
   <h1>Connexion</h1>
+  {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
     <button type="submit" class="btn">Entrer</button>
-</form>
+  </form>
+  <p class="muted mt-12">
+    <a href="{% url 'mot_de_passe_oublie' %}">Mot de passe oublié ?</a>
+  </p>
 </section>
 {% endblock %}

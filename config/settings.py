@@ -69,6 +69,12 @@ if not DEBUG and not ALLOWED_HOSTS:
 # Domaines autorises a envoyer des formulaires (obligatoire hors localhost).
 CSRF_TRUSTED_ORIGINS = _liste("DJANGO_CSRF_TRUSTED_ORIGINS")
 
+# Derriere un reverse proxy, l'adresse cliente arrive dans X-Forwarded-For.
+# Cette entete est falsifiable par le client : ne l'activer que si un proxy de
+# confiance la pose (nginx, Caddy, IIS+ARR). Sinon la limitation de debit se
+# contourne en changeant l'entete a chaque requete.
+USE_X_FORWARDED_FOR = _drapeau("DJANGO_USE_X_FORWARDED_FOR", "0")
+
 
 # Application definition
 
@@ -101,6 +107,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'apps.accounts.middleware.MotDePasseProvisoireMiddleware',
     'apps.moderation.middleware.ModerationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -237,12 +244,40 @@ LOGOUT_REDIRECT_URL = 'connexion'
 PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_media'
 # Dossier des sauvegardes de la base (non versionne).
 SAUVEGARDES_DIR = Path(os.environ.get("DJANGO_SAUVEGARDES_DIR", "") or BASE_DIR / "sauvegardes")
-LIMITE_ENVOI_GARDIENNE = 999999999999999999
+# Plafonds du Tresor : Safir (superutilisatrice) est seule a pouvoir
+# distribuer sans limite. Une Gardienne est plafonnee par envoi et par jour.
+LIMITE_ENVOI_GARDIENNE = int(os.environ.get("DJANGO_LIMITE_ENVOI_GARDIENNE",
+                                            "5000"))
+PLAFOND_JOURNALIER_TRESOR = int(
+    os.environ.get("DJANGO_PLAFOND_JOURNALIER_TRESOR", "50000"))
 BONUS_CREATEUR = 500
+# Prime mensuelle des createurs : podium, pas paiement automatique a tous.
+# Le montant du 1er, du 2e et du 3e, en Cubis. Budget maximal = la somme.
+PRIMES_CREATEURS = (5000, 2000, 1000)
+# Pour etre eligible : au moins N articles actifs publies dans le mois...
+PRIME_MIN_ARTICLES = 5
+# ... et une preuve d'utilite : une vente, ou N likes sur ces articles.
+PRIME_MIN_LIKES = 5
 # Nombre de bonus quotidiens servis a un meme appareil (IP + navigateur).
 # Empeche de creer des comptes en serie pour ramasser le bonus plusieurs fois.
 # 0 desactive le plafond (deconseille).
 BONUS_PLAFOND_APPAREIL = int(os.environ.get("DJANGO_BONUS_PLAFOND_APPAREIL", "3"))
+
+# Limitation de debit : (nombre d'essais, duree en secondes). Voir
+# apps/commun/limites.py. Un cache partage (Redis) est conseille si le site
+# tourne sur plusieurs processus.
+LIMITES = {
+    "connexion": (8, 300),
+    # Plafond global par adresse, tous comptes confondus : empeche le
+    # balayage de mots de passe sur des comptes differents.
+    "connexion_ip": (30, 300),
+    "inscription": (10, 900),
+    "offrande": (20, 600),
+    "signalement": (10, 600),
+    "transfert": (20, 600),
+    "tresor": (30, 600),
+    "mot_de_passe_oublie": (5, 900),
+}
 PRIX_CONSEILLES = {
     "stickers": (20, 60),
     "fonds": (10, 40),

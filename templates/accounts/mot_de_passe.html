@@ -2,6 +2,11 @@
 {% block title %}Changer mon mot de passe — Aphrodite{% endblock %}
 {% block content %}
 <h1>Changer mon mot de passe</h1>
+{% if provisoire %}
+<div class="alerte">Tu utilises un mot de passe provisoire remis par l'équipe.
+   Choisis-en un nouveau maintenant : c'est la seule façon de reprendre ton
+   compte pour toi.</div>
+{% endif %}
 <p class="muted">Si l'équipe t'a remis un mot de passe provisoire, c'est ici que tu le
    remplaces par le tien. Personne d'autre que toi ne le connaîtra.</p>
 

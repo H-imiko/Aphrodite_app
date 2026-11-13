@@ -309,6 +309,17 @@ class MotDePasseTests(TestCase):
         autre_client = Client()
         self.assertTrue(autre_client.login(username="oubli@test.cg",
                                            password=temporaire))
+        # Le mot de passe provisoire ne donne pas le compte : le membre doit
+        # en choisir un autre avant de pouvoir faire quoi que ce soit.
+        self.assertRedirects(autre_client.get(reverse("parametres")),
+                             reverse("changer_mot_de_passe"))
+
+        autre_client.post(reverse("changer_mot_de_passe"), {
+            "old_password": temporaire,
+            "new_password1": "MonVraiMotDePasse!2026",
+            "new_password2": "MonVraiMotDePasse!2026"})
+        self.membre.refresh_from_db()
+        self.assertFalse(self.membre.doit_changer_mot_de_passe)
         self.assertEqual(
             autre_client.get(reverse("parametres")).status_code, 200)
 

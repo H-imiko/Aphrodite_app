@@ -3,18 +3,58 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 {% endblock %}
 
+{% block title %}Modifier mon profil — Aphrodite{% endblock %}
 {% block content %}
-<h1>Modifier mon profil</h1>
-<p class="muted">Aperçu en direct</p>
-{% include "partials/carte_profil.html" with m=user %}
+<header class="entete-page">
+  <div>
+    <h1>Modifier mon profil</h1>
+    <p class="muted">Ce que les autres membres voient de toi. L'aperçu se met à jour pendant que tu écris.</p>
+  </div>
+  <a class="petit" href="{% url 'membre' user.pk %}">← Mon profil</a>
+</header>
 
-<form method="post" enctype="multipart/form-data" class="card mt-16" >
+<section class="apercu-profil">
+  <p class="etiquette-apercu">Aperçu</p>
+  {% include "partials/carte_profil.html" with m=user %}
+</section>
+
+<form method="post" enctype="multipart/form-data" class="form-profil">
   {% csrf_token %}
-  <div class="formulaire">{% include "partials/champs.html" %}</div>
-  <p class="muted">Quand tu choisis une photo ou une bannière, une fenêtre s'ouvre pour la recadrer.</p>
-  <button type="submit" class="btn">Enregistrer</button>
+  {% if form.non_field_errors %}
+    <div class="alerte">{% for erreur in form.non_field_errors %}{{ erreur }}{% endfor %}</div>
+  {% endif %}
+
+  <section class="card form-bloc">
+    <h2>Photos</h2>
+    <p class="muted">Choisis une image : une fenêtre s'ouvre pour la recadrer avant l'envoi.</p>
+    <div class="grille-form">
+      {% include "partials/champ.html" with champ=form.avatar %}
+      {% include "partials/champ.html" with champ=form.banniere %}
+    </div>
+  </section>
+
+  <section class="card form-bloc">
+    <h2>Identité</h2>
+    <div class="grille-form">
+      {% include "partials/champ.html" with champ=form.pseudo_whatsapp %}
+      {% include "partials/champ.html" with champ=form.titre %}
+      {% include "partials/champ.html" with champ=form.bio_rp %}
+      {% include "partials/champ.html" with champ=form.numero_whatsapp %}
+    </div>
+  </section>
+
+  <section class="card form-bloc">
+    <h2>Contenu mature</h2>
+    <p class="muted">Ces réglages protègent ta photo quand d'autres consultent ton profil.</p>
+    {% include "partials/champ.html" with champ=form.profil_mature %}
+    {% include "partials/champ.html" with champ=form.afficher_mature %}
+  </section>
+
+  <div class="barre-enregistrer">
+    <button type="submit" class="btn">Enregistrer</button>
+    <a class="petit" href="{% url 'membre' user.pk %}">Annuler</a>
+  </div>
 </form>
-<p><a href="{% url 'membre' user.pk %}">← Retour à mon profil</a></p>
 
 <div class="crop-modal" id="crop-modal" hidden>
   <div class="crop-boite">
@@ -24,8 +64,8 @@
     <div class="crop-actions">
       <button type="button" class="petit" id="crop-annuler">Annuler</button>
       <button type="button" class="btn" id="crop-valider">Valider</button>
-</div>
-</div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

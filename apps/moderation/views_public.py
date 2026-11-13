@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from apps.commun.limites import depasse
 from apps.shop.models import Item
 from .forms import SignalementForm
 from .models import AuditLog, Report, Sanction
@@ -37,7 +38,11 @@ def signaler(request, type_cible, pk):
             "membre", pk=membre.pk)
 
     form = SignalementForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST" and depasse("signalement", request):
+        form.add_error(
+            None, "Trop de signalements en peu de temps. Réessaie dans "
+                  "quelques minutes.")
+    elif request.method == "POST" and form.is_valid():
         recents = Report.objects.filter(
             auteur=request.user,
             date__gte=timezone.now() - timedelta(hours=1)).count()
@@ -55,13 +60,20 @@ def signaler(request, type_cible, pk):
                 auteur=request.user, article=article, membre=membre,
                 motif=form.cleaned_data["motif"],
                 details=form.cleaned_data["details"])
-            if article and r.motif in MOTIFS_URGENTS and article.est_actif:
+            # Un seul membre ne peut plus faire disparaitre un article :
+            # il faut plusieurs signalements distincts. Les motifs graves
+            # (mineur, illegal) baissent le seuil, ils ne le suppriment pas.
+            seuil = 2 if r.motif in MOTIFS_URGENTS else 3
+            signaleurs = (Report.objects.filter(article=article)
+                          .values("auteur_id").distinct().count())
+            if (article and article.est_actif and not article.masque_moderation
+                    and signaleurs >= seuil):
                 article.est_actif = False
                 article.masque_moderation = True
                 article.save(update_fields=["est_actif", "masque_moderation"])
                 journaliser(None, AuditLog.Action.ARTICLE_MASQUE,
                             article.createur,
-                            f"Masqué automatiquement (signalement #{r.pk})")
+                            f"Masqué après {signaleurs} signalements distincts")
             messages.success(request, "Signalement envoyé, merci 🙏")
             return retour()
     return render(request, "moderation/signaler.html", {

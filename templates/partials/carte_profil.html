@@ -2,12 +2,12 @@
 <section class="profil-pub{% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %} flou-mature{% endif %}">
   {% if m.profil_mature and not user.afficher_mature and m.pk != user.pk %}<button type="button" class="voile-mature" onclick="this.closest('.profil-pub').classList.remove('flou-mature')"> Contenu mature : touche pour afficher</button>{% endif %}
   {% if equip and equip.decor %}<img class="decor-profil" src="{% url 'cosmetique_image' equip.decor.pk %}" alt="">{% endif %}
-  <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{{ m.banniere.url }}')"{% endif %}></div>
+  <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{% url 'photo_membre' m.pk 'banniere' %}')"{% endif %}></div>
   <div class="ligne-avatar">
     <div class="avatar-wrap">
-      <img class="avatar" id="pv-avatar" alt=""{% if m.avatar %} src="{{ m.avatar.url }}"{% else %} hidden{% endif %}>
+      <img class="avatar" id="pv-avatar" alt=""{% if m.avatar %} src="{% url 'photo_membre' m.pk 'avatar' %}"{% else %} hidden{% endif %}>
       <div class="avatar vide" id="pv-initiale"{% if m.avatar %} hidden{% endif %}>{{ m.pseudo_whatsapp|slice:":1"|upper }}</div>
-      {% if equip and equip.cadre %}<img class="avatar-cadre" src="{% url 'cosmetique_image' equip.cadre.pk %}" alt="">{% endif %}
+      {% if equip and equip.cadre %}<img class="avatar-cadre" style="--cadre-l: {{ equip.cadre.largeur_cadre_pct }}%;" src="{% url 'cosmetique_image' equip.cadre.pk %}" alt="">{% endif %}
 </div>
     <div class="bulle" id="pv-bulle"{% if not m.titre %} hidden{% endif %}><span id="pv-bulle-texte">{{ m.titre }}</span></div>
 </div>

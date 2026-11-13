@@ -46,6 +46,9 @@ class Item(models.Model):
     est_mis_en_avant = models.BooleanField(default=False)
     est_actif = models.BooleanField(default=True)
     masque_moderation = models.BooleanField(default=False)
+    # Part de la largeur occupee par le trou transparent d'un cadre.
+    # Mesuree a l'envoi : elle sert a afficher le cadre a la bonne taille.
+    ratio_trou = models.FloatField(null=True, blank=True, editable=False)
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -66,6 +69,12 @@ class Item(models.Model):
     def est_cosmetique(self):
         return self.categorie in COSMETIQUES
 
+    @property
+    def largeur_cadre_pct(self):
+        """Largeur du cadre en % de l'avatar, pour aligner le trou."""
+        from .cadres import largeur_affichage
+        return largeur_affichage(self.ratio_trou) or 156.25
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.image and self.image.name != self._image_initiale:
@@ -77,6 +86,12 @@ class Item(models.Model):
         img = Image.open(self.image)
         img.load()
         self.image.close()
+        ratio_trou = None
+        if self.categorie in COSMETIQUES:
+            from .cadres import mesurer_trou
+            mesure = mesurer_trou(img)
+            if mesure:
+                ratio_trou = round(mesure["ratio"], 4)
         tampon = BytesIO()
         if self.categorie in COSMETIQUES:
             # cadres et décors : aperçu net, avec transparence
@@ -98,4 +113,8 @@ class Item(models.Model):
             img.save(tampon, "JPEG", quality=70)
             nom = f"apercu_{self.pk}.jpg"
         self.apercu.save(nom, ContentFile(tampon.getvalue()), save=False)
-        Item.objects.filter(pk=self.pk).update(apercu=self.apercu.name)
+        champs = {"apercu": self.apercu.name}
+        if self.categorie in COSMETIQUES:
+            self.ratio_trou = ratio_trou
+            champs["ratio_trou"] = ratio_trou
+        Item.objects.filter(pk=self.pk).update(**champs)

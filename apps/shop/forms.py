@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from PIL import Image
 
+from .cadres import problemes_cadre
 from .models import COSMETIQUES, MEDIAS, Item
 
 NOMS_COURTS = {
@@ -128,6 +129,21 @@ class ArticleForm(forms.ModelForm):
                     "Cette image n'est pas vraiment transparente : si tu vois "
                     "un damier gris et blanc, il fait partie de l'image. "
                     "Utilise un PNG avec un vrai fond transparent.")
+            elif cat == "cadre":
+                try:
+                    image.seek(0)
+                    with Image.open(image) as img:
+                        img.load()
+                        for probleme in problemes_cadre(img):
+                            self.add_error("image", probleme)
+                except Exception:
+                    self.add_error("image",
+                                   "Cette image ne peut pas être lue.")
+                finally:
+                    try:
+                        image.seek(0)
+                    except Exception:
+                        pass
         if cat in MEDIAS:
             fichier = data.get("fichier") or self.instance.fichier
             extrait = data.get("extrait") or self.instance.extrait

@@ -69,6 +69,10 @@ class Command(BaseCommand):
         else:
             self.stdout.write("Cadre noir deja present.")
 
+        # Mesure le trou du cadre pour que l'affichage soit aligne sur la
+        # photo de profil (utile aussi si le cadre existait deja).
+        call_command("normaliser_cadres", verbosity=0)
+
         InventoryItem.objects.get_or_create(proprietaire=proprietaire,
                                             item=item)
         equipement, _ = Equipement.objects.get_or_create(user=proprietaire)

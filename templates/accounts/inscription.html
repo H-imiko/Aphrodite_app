@@ -3,6 +3,7 @@
 {% block content %}
 <section class="card">
   <h1>Rejoindre Aphrodite</h1>
+  {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>

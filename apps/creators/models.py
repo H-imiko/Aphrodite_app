@@ -45,6 +45,37 @@ class Candidature(models.Model):
         return ", ".join(noms.get(t, t) for t in self.types_creation)
 
 
+class PrimeCreateur(models.Model):
+    """Prime mensuelle versee a un createur, une seule fois par mois.
+
+    La ligne sert de verrou d'idempotence : relancer la commande ne paie pas
+    deux fois le meme createur pour le meme mois.
+    """
+
+    mois = models.CharField(max_length=7)  # AAAA-MM
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name="primes_createur")
+    rang = models.PositiveSmallIntegerField()
+    montant = models.PositiveIntegerField()
+    nb_articles = models.PositiveIntegerField(default=0)
+    ventes_cubis = models.PositiveIntegerField(default=0)
+    nb_likes = models.PositiveIntegerField(default=0)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-mois", "rang"]
+        constraints = [
+            models.UniqueConstraint(fields=["mois", "user"],
+                                    name="unique_prime_createur_mois")
+        ]
+        verbose_name = "Prime createur"
+        verbose_name_plural = "Primes createurs"
+
+    def __str__(self):
+        return f"{self.mois} · {self.user} · {self.montant} Cubis"
+
+
 class ExempleCandidature(models.Model):
     candidature = models.ForeignKey(Candidature, on_delete=models.CASCADE,
                                     related_name="exemples")

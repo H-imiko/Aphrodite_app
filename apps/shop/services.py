@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.urls import reverse
 
 from apps.economy.models import Transaction
@@ -46,7 +46,13 @@ def acheter(acheteur, item_id, prix_attendu=None):
                 expediteur=ach, destinataire=vend, montant=prix,
                 type=Transaction.Type.ACHAT, description=item.titre)
 
-        InventoryItem.objects.create(proprietaire=ach, item=item)
+        try:
+            with transaction.atomic():
+                InventoryItem.objects.create(proprietaire=ach, item=item)
+        except IntegrityError:
+            # Deux achats simultanes du meme article : le second est annule
+            # (et son debit avec lui), il ne paie pas deux fois.
+            raise ErreurEconomie("Tu possèdes déjà cet article.")
         notifier(item.createur, "Nouvel achat",
                  f"{ach.pseudo_whatsapp} a acheté « {item.titre} »"
                  + ("" if item.est_officiel else f" (+{prix} Cubis)"),

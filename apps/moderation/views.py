@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from apps.accounts.models import DemandeAcces
 from apps.creators.models import Candidature
 from apps.economy.models import Transaction
 from apps.orders.models import Order
@@ -75,6 +76,31 @@ def _entier(valeur):
         return 0
 
 
+@divinite_requise
+def demandes(request):
+    """Demandes de mot de passe oublie laissees par les membres."""
+    return render(request, "moderation/demandes.html", {
+        "demandes": DemandeAcces.objects.filter(traite=False),
+        "traitees": DemandeAcces.objects.filter(traite=True)[:20],
+    })
+
+
+@divinite_requise
+@require_POST
+def traiter_demande(request, pk):
+    demande = get_object_or_404(DemandeAcces, pk=pk)
+    demande.traite = True
+    demande.date_traitement = timezone.now()
+    demande.traite_par = request.user
+    demande.save(update_fields=["traite", "date_traitement", "traite_par"])
+    messages.success(request, "Demande classée.")
+    compte = User.objects.filter(email__iexact=demande.email).first()
+    if compte is None:
+        messages.info(request, "Aucun compte ne porte cette adresse.")
+        return redirect("demandes")
+    return redirect("membre_moderation", pk=compte.pk)
+
+
 @moderation_requise
 def panel(request):
     il_y_a_7_jours = timezone.now() - timedelta(days=7)
@@ -90,6 +116,7 @@ def panel(request):
             statut=Report.Statut.OUVERT).count(),
         "nb_litiges": Order.objects.filter(
             statut=Order.Statut.LITIGE).count(),
+        "nb_demandes": DemandeAcces.objects.filter(traite=False).count(),
     })
 
 
@@ -287,10 +314,15 @@ def reinitialiser_mot_de_passe(request, pk):
 
     temporaire = mot_de_passe_temporaire()
     cible.set_password(temporaire)
-    cible.save(update_fields=["password"])
+    # Le mot de passe provisoire ne donne pas le compte : le membre doit en
+    # choisir un autre des sa prochaine connexion. La personne qui l'a remis
+    # en main propre n'a donc pas d'acces durable.
+    cible.doit_changer_mot_de_passe = True
+    cible.save(update_fields=["password", "doit_changer_mot_de_passe"])
     notifier(cible, "Mot de passe réinitialisé",
-             "L'équipe a réinitialisé ton mot de passe. Change-le depuis tes "
-             "paramètres.", reverse("changer_mot_de_passe"), "securite")
+             "L'équipe a réinitialisé ton mot de passe. Tu vas devoir en "
+             "choisir un nouveau en te connectant.",
+             reverse("changer_mot_de_passe"), "securite")
     AuditLog.objects.create(
         auteur=request.user,
         action=AuditLog.Action.MOT_DE_PASSE_REINITIALISE,

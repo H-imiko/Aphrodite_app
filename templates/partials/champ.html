@@ -1,0 +1,19 @@
+{% comment %}
+Un seul champ de formulaire, avec libellé, aide et erreurs.
+S'utilise avec un champ nommé `champ` :
+  {% include "partials/champ.html" with champ=form.titre %}
+{% endcomment %}
+{% if champ.field.widget.input_type == "checkbox" %}
+  <label class="champ-case">
+    {{ champ }}
+    <span>{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</span>
+  </label>
+  {% for erreur in champ.errors %}<p class="erreur-champ">{{ erreur }}</p>{% endfor %}
+{% else %}
+  <div class="champ{% if champ.errors %} champ-invalide{% endif %}">
+    <label for="{{ champ.id_for_label }}">{{ champ.label }}{% if champ.field.required %}<span class="requis" aria-hidden="true">*</span>{% endif %}</label>
+    {{ champ }}
+    {% if champ.help_text %}<p class="aide">{{ champ.help_text|safe }}</p>{% endif %}
+    {% for erreur in champ.errors %}<p class="erreur-champ">{{ erreur }}</p>{% endfor %}
+  </div>
+{% endif %}

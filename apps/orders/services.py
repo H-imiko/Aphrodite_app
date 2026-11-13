@@ -43,15 +43,22 @@ def _charger(order_id):
 
 
 def _liberer(c, texte):
-    """Verse les Cubis bloqués au Créateur et termine la commande."""
+    """Verse les Cubis bloqués au Créateur et termine la commande.
+
+    Le statut est revendiqué par une ecriture conditionnelle : sur SQLite,
+    select_for_update() ne verrouille rien. Deux confirmations simultanees
+    ne peuvent donc pas payer le Createur deux fois.
+    """
+    revendique = Order.objects.filter(
+        pk=c.pk, statut__in=(S.EN_COURS, S.LIVREE, S.LITIGE)
+    ).update(statut=S.TERMINEE, date_fin=timezone.now())
+    if revendique != 1:
+        raise ErreurEconomie("Cette commande a déjà été réglée.")
     vend = c.vendeur
     crediter(vend.pk, c.prix_cubis)
     Transaction.objects.create(
         expediteur=None, destinataire=vend, montant=c.prix_cubis,
         type=Transaction.Type.LIBERATION, description=c.titre[:150])
-    c.statut = S.TERMINEE
-    c.date_fin = timezone.now()
-    c.save()
     _systeme(c, texte)
     notifier(vend, "Paiement reçu",
              f"+{c.prix_cubis} Cubis pour la commande « {c.titre} »",
@@ -59,15 +66,17 @@ def _liberer(c, texte):
 
 
 def _rembourser(c, statut, texte):
-    """Rend les Cubis bloqués à l'acheteur."""
+    """Rend les Cubis bloqués à l'acheteur (une seule fois)."""
+    revendique = Order.objects.filter(
+        pk=c.pk, statut__in=(S.EN_COURS, S.LIVREE, S.LITIGE)
+    ).update(statut=statut, date_fin=timezone.now())
+    if revendique != 1:
+        raise ErreurEconomie("Cette commande a déjà été réglée.")
     ach = c.acheteur
     crediter(ach.pk, c.prix_cubis)
     Transaction.objects.create(
         expediteur=None, destinataire=ach, montant=c.prix_cubis,
         type=Transaction.Type.REMBOURSEMENT, description=c.titre[:150])
-    c.statut = statut
-    c.date_fin = timezone.now()
-    c.save()
     _systeme(c, texte)
     notifier(ach, "Commande remboursée",
              f"+{c.prix_cubis} Cubis rendus pour « {c.titre} »",
@@ -136,12 +145,14 @@ def accepter(user, order_id):
             raise ErreurEconomie(
                 "L'acheteur n'a plus assez de Cubis. Tu peux refuser la "
                 "demande.")
+        revendique = Order.objects.filter(
+            pk=c.pk, statut=S.DEMANDE).update(
+                statut=S.EN_COURS, date_acceptation=timezone.now())
+        if revendique != 1:
+            raise ErreurEconomie("Cette demande vient d'être traitée.")
         Transaction.objects.create(
             expediteur=ach, destinataire=None, montant=c.prix_cubis,
             type=Transaction.Type.SEQUESTRE, description=c.titre[:150])
-        c.statut = S.EN_COURS
-        c.date_acceptation = timezone.now()
-        c.save()
         _systeme(c, f"Commande acceptée. {c.prix_cubis} Cubis sont bloqués "
                     "jusqu'à la livraison.")
         notifier(c.acheteur, "Commande acceptée",
@@ -156,9 +167,9 @@ def refuser(user, order_id):
             raise ErreurEconomie("Cette commande n'est pas la tienne.")
         if c.statut != S.DEMANDE:
             raise ErreurEconomie("Cette demande n'est plus en attente.")
-        c.statut = S.REFUSEE
-        c.date_fin = timezone.now()
-        c.save()
+        if Order.objects.filter(pk=c.pk, statut=S.DEMANDE).update(
+                statut=S.REFUSEE, date_fin=timezone.now()) != 1:
+            raise ErreurEconomie("Cette demande vient d'être traitée.")
         _systeme(c, "Demande refusée par le Créateur.")
         notifier(c.acheteur, "Demande refusée",
                  f"Le Créateur a refusé « {c.titre} ».", _lien(c), "commande")
@@ -172,9 +183,9 @@ def annuler_demande(user, order_id):
         if c.statut != S.DEMANDE:
             raise ErreurEconomie(
                 "Tu ne peux plus annuler : si besoin, ouvre un litige.")
-        c.statut = S.ANNULEE
-        c.date_fin = timezone.now()
-        c.save()
+        if Order.objects.filter(pk=c.pk, statut=S.DEMANDE).update(
+                statut=S.ANNULEE, date_fin=timezone.now()) != 1:
+            raise ErreurEconomie("Cette demande vient d'être traitée.")
         _systeme(c, "Demande annulée par l'acheteur.")
         notifier(c.vendeur, "Demande annulée",
                  f"{c.acheteur.pseudo_whatsapp} a annulé « {c.titre} ».",
@@ -190,11 +201,11 @@ def livrer(user, order_id, message=""):
         if c.statut != S.EN_COURS:
             raise ErreurEconomie("Cette commande n'est pas en cours.")
         maintenant = timezone.now()
-        c.statut = S.LIVREE
-        c.date_livraison = maintenant
-        c.date_auto_confirmation = maintenant + timedelta(
-            days=_delai_confirmation())
-        c.save()
+        if Order.objects.filter(pk=c.pk, statut=S.EN_COURS).update(
+                statut=S.LIVREE, date_livraison=maintenant,
+                date_auto_confirmation=maintenant + timedelta(
+                    days=_delai_confirmation())) != 1:
+            raise ErreurEconomie("Cette commande vient d'être traitée.")
         _systeme(c, f"Le Créateur indique avoir livré la commande. Sans "
                     f"réponse de l'acheteur, elle sera confirmée "
                     f"automatiquement dans {_delai_confirmation()} jours.")
@@ -240,10 +251,11 @@ def ouvrir_litige(user, order_id, raison):
             raise ErreurEconomie("Cette commande n'est pas la tienne.")
         if c.statut not in (S.EN_COURS, S.LIVREE):
             raise ErreurEconomie("Un litige ne peut pas être ouvert ici.")
-        c.statut = S.LITIGE
-        c.raison_litige = raison
-        c.litige_par = user
-        c.save()
+        if Order.objects.filter(
+                pk=c.pk, statut__in=(S.EN_COURS, S.LIVREE)).update(
+                statut=S.LITIGE, raison_litige=raison,
+                litige_par=user) != 1:
+            raise ErreurEconomie("Cette commande vient d'être traitée.")
         _systeme(c, f"Litige ouvert par {user.pseudo_whatsapp} : {raison} "
                     "Une Divinité va examiner la commande.")
         autre = c.vendeur if user.pk == c.acheteur_id else c.acheteur
@@ -270,6 +282,13 @@ def trancher(divinite, order_id, decision, note):
                 "Tu ne peux pas trancher une commande où tu es concernée.")
         if c.statut != S.LITIGE:
             raise ErreurEconomie("Cette commande n'est pas en litige.")
+        # La decision doit etre ecrite explicitement : _rembourser() et
+        # _liberer() ne font plus de c.save() global (ils revendiquent le
+        # statut par ecriture conditionnelle), donc les champs poses sur
+        # l'objet en memoire seraient perdus.
+        if Order.objects.filter(pk=c.pk, statut=S.LITIGE).update(
+                tranche_par=divinite, decision=decision) != 1:
+            raise ErreurEconomie("Ce litige vient d'être tranché.")
         c.tranche_par = divinite
         c.decision = decision
         if decision == "rembourser":

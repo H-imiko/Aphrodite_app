@@ -129,3 +129,79 @@ Les packs de stickers, eux, sont une nouveauté → version 1 = ZIP + tutoriel.
 - Icônes de l'en-tête en SVG (engrenage, colis, cloche) au lieu d'emojis.
 - `python manage.py installer_catalogue` : 10 offrandes + cadre noir + cadre
   équipé, en une commande idempotente. C'était la cause des « catalogues vides ».
+
+---
+
+## État au 12 novembre 2026 — corrections avant lancement
+
+Les points ci-dessous ont été corrigés et vérifiés par des tests
+(`python manage.py test` : 149 tests verts, `check --deploy` propre).
+
+| Point | Correctif | Preuve |
+|---|---|---|
+| P0 5 farm de bonus | plafond par appareil conservé, limitation de débit sur inscription et connexion | `test_connexion_bloquee_apres_trop_d_essais`, `test_inscription_bloquee...`, `FarmBonusTests` |
+| P0 7 griefing | un article n'est masqué qu'après 3 signaleurs distincts (2 pour mineur/illégal) | `apps/moderation/test_signalements.py` |
+| P1 9 limitation de débit | connexion, inscription, offrande, signalement, transfert, trésor | `apps/commun/limites.py` + tests |
+| P1 10 trésor illimité | 5 000 par envoi et 50 000 par jour pour une Gardienne ; Safir sans plafond | `test_gardienne_plafonnee_par_jour` |
+| P1 11 mot de passe oublié | demande publique sans email, traitée dans le panel ; mot de passe provisoire à changer d'office | `DemandeAccesTests`, `MotDePasseProvisoireTests` |
+| P1 12 suppression de compte | déjà en place, conservée | `CompteTests` |
+| P1 13 CI | `.github/workflows/tests.yml` (tests + check --deploy) | workflow |
+| P1 14 cadres | trou mesuré et stocké, largeur calculée (`100 / ratio`), validation carré / centrage / 40–85 % | `apps/shop/tests.py` |
+| P2 16 profil | écran recomposé en blocs (photos, identité, contenu mature) avec aperçu en direct | `/profil/modifier/` |
+| P2 17 publication | écran recomposé en deux colonnes + aperçu de l'image + bloc audio/vidéo contextuel | `/mes-articles/nouveau/` |
+| Photos matures | stockage privé, servies par une vue qui vérifie l'accord du visiteur | `PhotoProfilTests` |
+| Double paiement des commandes | statut revendiqué par écriture conditionnelle (select_for_update est inopérant sur SQLite) | `apps/orders/tests.py` |
+| Achat simultané | contrainte d'inventaire interceptée, pas de double débit | `test_second_achat_refuse_sans_deuxieme_debit` |
+
+### Ce qui reste ouvert, assumé
+
+- **Email vérifié** : impossible sans service d'envoi ; remplacé par le plafond
+  par appareil et la limitation de débit. À faire quand un prestataire email
+  sera choisi.
+- **Cache partagé** : la limitation de débit compte par processus. Passer à
+  Redis si le site tourne sur plusieurs processus.
+- **Packs de stickers `.wastickers`** : confiés à un autre développeur.
+- **Accessibilité** : partielle (libellés, icônes nommées) ; les emojis
+  décoratifs restent à nettoyer écran par écran.
+
+### Prime mensuelle des créateurs — 12 novembre 2026
+
+Une prime fixe de 10 000 Cubis par créateur publiant 5 articles a été
+écartée : dans l'économie actuelle (bonus quotidien ~20, prix 10–100), elle
+vaudrait 25 ventes de stickers et récompenserait le volume plutôt que le
+travail. Remplacée par un podium mensuel (5 000 / 2 000 / 1 000) fondé sur
+les Cubis encaissés puis les likes, avec un seuil de 5 articles actifs et une
+preuve d'utilité. Commande idempotente `primes_createurs`, simulation par
+défaut. Tests : `apps/creators/tests.py` (9 tests).
+
+### Audit du 12 novembre 2026 — régressions corrigées
+
+Deux régressions introduites par les correctifs de la veille, trouvées par
+relecture et couvertes par des tests :
+
+1. **Décision de litige perdue.** `trancher()` posait `tranche_par` et
+   `decision` sur l'objet en mémoire, en comptant sur le `save()` global de
+   `_rembourser()`/`_liberer()`. Ces fonctions revendiquent désormais le statut
+   par écriture conditionnelle et ne sauvent plus l'objet entier : la décision
+   n'était plus écrite. Corrigé par un `update()` explicite, qui sert aussi de
+   revendication (deux décisions simultanées : une seule passe).
+   Tests : `test_decision_de_litige_enregistree`,
+   `test_decision_de_litige_en_faveur_du_createur_enregistree`.
+2. **Limitation de débit contournable.** Le compteur lisait la **première**
+   valeur de `X-Forwarded-For`, en-tête entièrement contrôlé par le client :
+   il suffisait de la changer à chaque requête pour repartir de zéro.
+   Corrigé : `REMOTE_ADDR` par défaut, `X-Forwarded-For` uniquement si
+   `DJANGO_USE_X_FORWARDED_FOR=1`, et alors la **dernière** valeur (celle du
+   proxy). Ajout d'un compteur global par IP sur la connexion, qui bloque le
+   balayage de mots de passe sur des comptes différents.
+   Tests : `test_entete_forwarded_for_ne_contourne_pas_la_limite`,
+   `test_balayage_sur_plusieurs_comptes_bloque_par_adresse`.
+
+Autres points trouvés pendant le même audit :
+
+- la limitation de débit des signalements était annoncée dans le README mais
+  **pas branchée** : elle l'est maintenant, avec un test ;
+- la suppression de compte laissait les demandes d'accès (adresse email) en
+  base : elles sont désormais effacées ;
+- la commande des primes pouvait planter sur deux lancements simultanés
+  (`IntegrityError`) : l'erreur est absorbée, une seule prime est versée.

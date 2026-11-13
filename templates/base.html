@@ -34,7 +34,7 @@
 </a>
       <a class="solde-nav" href="{% url 'portefeuille' %}"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %}</a>
       <a class="nav-avatar" href="{% url 'profil' %}" title="Mon profil">
-        {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">{% else %}<span>{{ user.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
+        {% if user.avatar %}<img src="{% url 'photo_membre' user.pk 'avatar' %}" alt="">{% else %}<span>{{ user.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
 </a>
     {% else %}
       <a href="{% url 'reglement' %}">Règlement</a>

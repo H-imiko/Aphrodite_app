@@ -4,9 +4,16 @@ Procédure de déploiement en production. Cible : un serveur Windows ou Linux av
 Python 3.12, derrière un reverse proxy qui termine le HTTPS.
 
 L'application se sert elle-même ses fichiers statiques (CSS, images d'interface)
-grâce à **WhiteNoise** : le proxy n'a pas besoin de connaître `/static/`. Les
-**médias envoyés par les membres** (avatars, bannières, aperçus d'articles) ne
-sont pas gérés par Django en production : c'est le proxy qui doit les servir.
+grâce à **WhiteNoise** : le proxy n'a pas besoin de connaître `/static/`.
+
+Les médias sont séparés en deux :
+
+- `/media/` : aperçus d'articles, images d'offrandes, produits non payants.
+  C'est le proxy qui les sert, comme avant.
+- `private_media/` : originaux payants, avatars et bannières. Jamais exposé par
+  le proxy : Django les sert après contrôle d'accès (`/membre/<id>/photo/…`,
+  `/article/<id>/lire/`). Les photos marquées mature sont refusées aux
+  visiteurs qui n'ont pas accepté ce contenu.
 
 ---
 
@@ -37,9 +44,18 @@ refuse de démarrer, volontairement.
 | `DJANGO_ALLOWED_HOSTS` | `aphrodite.example.com,www.aphrodite.example.com` | séparés par des virgules |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://aphrodite.example.com,https://www.aphrodite.example.com` | avec le `https://` |
 | `DJANGO_SECURE_SSL_REDIRECT` | `1` (défaut) | laisser à `1` derrière le proxy |
+| `DJANGO_USE_X_FORWARDED_FOR` | `0` | passer à `1` **uniquement** derrière un proxy de confiance : sinon la limitation de débit se contourne en falsifiant l'en-tête |
 | `DJANGO_SAUVEGARDES_DIR` | `D:\sauvegardes\aphrodite` | **hors du dossier du projet** |
 | `DJANGO_BONUS_PLAFOND_APPAREIL` | `3` | bonus quotidiens par appareil |
+| `DJANGO_LIMITE_ENVOI_GARDIENNE` | `5000` | plafond d'un envoi du Trésor (hors Safir) |
+| `DJANGO_PLAFOND_JOURNALIER_TRESOR` | `50000` | plafond quotidien du Trésor (hors Safir) |
 | `DJANGO_DB_ENGINE` | *(vide = SQLite)* | voir `docs/migration-postgres.md` |
+
+Avec `DJANGO_USE_X_FORWARDED_FOR=1`, la limitation de débit lit la **dernière**
+valeur de `X-Forwarded-For`, celle ajoutée par le proxy. La configuration
+nginx donnée plus bas utilise `$proxy_add_x_forwarded_for`, qui produit
+« client, proxy » : le client fourni par l'utilisateur est ignoré. Ne jamais
+activer ce réglage si le serveur est joignable directement.
 
 Le HTTPS doit être détecté : le proxy envoie `X-Forwarded-Proto: https`, et
 Django le lit déjà (`SECURE_PROXY_SSL_HEADER`). Si ce n'est pas fait, les
@@ -131,14 +147,16 @@ server {
         proxy_set_header X-Forwarded-Proto https;   # indispensable
     }
 
-    # Médias publics : avatars, bannières, aperçus d'articles.
+    # Médias publics : aperçus d'articles, offrandes, produits non payants.
+    # Les avatars et bannières ne sont PLUS ici : ils passent par Django.
     location /media/ {
         alias /srv/aphrodite/media/;
         expires 7d;
         add_header Cache-Control "public";
     }
 
-    # private_media/ n'apparaît JAMAIS ici : originaux et fichiers payants.
+    # private_media/ n'apparaît JAMAIS ici : originaux, fichiers payants,
+    # avatars et bannières (servis par Django, avec contrôle d'accès).
 }
 ```
 
@@ -151,7 +169,9 @@ Ne pas créer de répertoire virtuel pour `private_media`.
 
 **À retenir** : `/static/` n'a pas besoin de règle (WhiteNoise s'en charge).
 `/media/` doit être servi par le proxy, sinon les avatars et les aperçus
-d'articles répondent 404. `/private_media/` ne doit **jamais** être exposé.
+d'articles répondent 404. `/private_media/` ne doit **jamais** être exposé : c'est Django, et lui seul,
+qui sert les avatars, les bannières, les originaux et les fichiers payants
+après vérification des droits.
 
 ---
 
@@ -191,14 +211,17 @@ une sauvegarde sur le même disque que la base ne protège pas d'une panne disqu
 4. `manage.py collectstatic --noinput` exécuté **après** le dernier `git pull`.
 5. `createsuperuser` fait, compte propriétaire en `is_superuser` (seule à pouvoir réduire des Cubis et retirer un statut Créateur).
 6. `installer_catalogue --proprietaire=…` : 10 offrandes + cadre noir.
-7. Comptes et articles de test supprimés : `manage.py purger_demonstration`
+   Puis `manage.py normaliser_cadres` si des cadres existaient déjà.
+7. Vérifier que `private_media/` n'est pas lisible par le serveur web et que
+   le compte du service y a accès en lecture.
+8. Comptes et articles de test supprimés : `manage.py purger_demonstration`
    (liste d'abord, puis `--supprimer` pour agir). Les articles officiels
    partent avec les comptes de démo : relancer ensuite
    `installer_catalogue --proprietaire=<compte réel>`.
-8. `waitress` lancé et supervisé (redémarrage automatique).
-9. Proxy en HTTPS, `X-Forwarded-Proto` transmis, `/media/` servi, `/private_media/` absent.
-10. Les deux tâches planifiées actives, une sauvegarde déclenchée à la main pour vérifier.
-11. HSTS : commencer à `3600`, monter à un an seulement quand tout est stable.
+9. `waitress` lancé et supervisé (redémarrage automatique).
+10. Proxy en HTTPS, `X-Forwarded-Proto` transmis, `/media/` servi, `/private_media/` absent.
+11. Les deux tâches planifiées actives, une sauvegarde déclenchée à la main pour vérifier.
+12. HSTS : commencer à `3600`, monter à un an seulement quand tout est stable.
 
 ---
 

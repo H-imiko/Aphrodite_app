@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
+from apps.commun.limites import depasse
 from apps.economy.services import ErreurEconomie
 from . import services
 from .forms import OffrandeForm
@@ -33,6 +34,9 @@ def envoyer(request, pk):
             offrande_id = None
         if offrande_id is None:
             erreur = "Choisis une offrande."
+        elif depasse("offrande", request):
+            erreur = ("Trop d'offrandes en peu de temps. Patiente quelques "
+                      "minutes.")
         else:
             try:
                 services.envoyer(

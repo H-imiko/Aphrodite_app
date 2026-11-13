@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import DatabaseError, IntegrityError, transaction
-from django.db.models import F, Q
+from django.db.models import F, Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 
@@ -136,9 +136,21 @@ def envoyer_par_divinite(divinite, destinataire, montant, description=""):
         raise ErreurEconomie("Seules les Divinités peuvent utiliser le Trésor.")
     if montant <= 0:
         raise ErreurEconomie("Le montant doit être positif.")
-    if not divinite.is_superuser and montant > settings.LIMITE_ENVOI_GARDIENNE:
-        raise ErreurEconomie(
-            f"Limite par envoi : {settings.LIMITE_ENVOI_GARDIENNE} Cubis.")
+    if not divinite.is_superuser:
+        if montant > settings.LIMITE_ENVOI_GARDIENNE:
+            raise ErreurEconomie(
+                f"Limite par envoi : {settings.LIMITE_ENVOI_GARDIENNE} "
+                "Cubis.")
+        plafond = getattr(settings, "PLAFOND_JOURNALIER_TRESOR", 50000)
+        deja_envoye = (Transaction.objects.filter(
+            auteur=divinite, type=Transaction.Type.ENVOI_DIVINITE,
+            date__date=timezone.localdate())
+            .aggregate(t=Sum("montant"))["t"] or 0)
+        if deja_envoye + montant > plafond:
+            raise ErreurEconomie(
+                f"Plafond quotidien du Trésor atteint : {plafond} Cubis "
+                f"(déjà envoyés aujourd'hui : {deja_envoye}). Seule Safir "
+                "peut dépasser ce plafond.")
     with transaction.atomic():
         crediter(destinataire.pk, montant)
         Transaction.objects.create(

@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from apps.notifications.models import Notification
 from apps.orders.models import Order
+from .models import DemandeAcces
 from apps.shop.models import Item
 from apps.social.models import Abonnement, Like
 
@@ -38,6 +39,8 @@ def fermer_compte(user):
             "termine-la ou annule-la avant de supprimer ton compte, sinon les "
             "Cubis bloqués restent bloqués.")
 
+    # Les demandes d'acces contiennent l'adresse email du membre.
+    DemandeAcces.objects.filter(email__iexact=user.email).delete()
     Item.objects.filter(createur=user).update(est_actif=False)
     Abonnement.objects.filter(abonne=user).delete()
     Abonnement.objects.filter(createur=user).delete()

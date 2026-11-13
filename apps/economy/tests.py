@@ -138,6 +138,24 @@ class TresorTests(TestCase):
         self.membre.refresh_from_db()
         self.assertEqual(self.membre.solde_cubis, 10_000)
 
+    def test_gardienne_plafonnee_par_jour(self):
+        with override_settings(LIMITE_ENVOI_GARDIENNE=100,
+                               PLAFOND_JOURNALIER_TRESOR=120):
+            envoyer_par_divinite(self.gardienne, self.membre, 100)
+
+            with self.assertRaises(ErreurEconomie):
+                envoyer_par_divinite(self.gardienne, self.membre, 30)
+
+        self.membre.refresh_from_db()
+        self.assertEqual(self.membre.solde_cubis, 100)
+
+    def test_safir_depasse_le_plafond_journalier(self):
+        with override_settings(PLAFOND_JOURNALIER_TRESOR=100):
+            envoyer_par_divinite(self.safir, self.membre, 5_000)
+
+        self.membre.refresh_from_db()
+        self.assertEqual(self.membre.solde_cubis, 5_000)
+
     def test_envoi_trace_et_notifie(self):
         envoyer_par_divinite(self.gardienne, self.membre, 50, "bienvenue")
 

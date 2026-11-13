@@ -1,5 +1,5 @@
 {% load static %}
 <a class="pseudo" href="{% url 'membre' u.pk %}">
-  {% if u.avatar %}<img class="mini-avatar{% if u.profil_mature and not user.afficher_mature and u.pk != user.pk %} flou-mini{% endif %}" src="{{ u.avatar.url }}" alt="">{% else %}<span class="mini-avatar">{{ u.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
+  {% if u.avatar %}<img class="mini-avatar{% if u.profil_mature and not user.afficher_mature and u.pk != user.pk %} flou-mini{% endif %}" src="{% url 'photo_membre' u.pk 'avatar' %}" alt="">{% else %}<span class="mini-avatar">{{ u.pseudo_whatsapp|slice:":1"|upper }}</span>{% endif %}
   <span>{{ u.pseudo_whatsapp }}</span>
 </a>{% if u.createur_valide %}<img class="badge-inline" src="{% static 'images/badge_createur_mini.png' %}" alt="Créateur validé" title="Créateur validé">{% endif %}{% if u.est_divinite %}<span class="tag">Divinité</span>{% endif %}

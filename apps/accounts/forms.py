@@ -40,6 +40,13 @@ class InscriptionForm(UserCreationForm):
         return d
 
 
+class MotDePasseOublieForm(forms.Form):
+    email = forms.EmailField(
+        label="Ton adresse email",
+        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
+    )
+
+
 class SuppressionCompteForm(forms.Form):
     mot_de_passe = forms.CharField(
         label="Mot de passe",

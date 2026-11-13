@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Demandes d'accès — Aphrodite{% endblock %}
+{% block content %}
+<header class="entete-page">
+  <div>
+    <h1>Demandes d'accès</h1>
+    <p class="muted">Vérifie l'identité sur WhatsApp avant de générer un mot de passe provisoire.</p>
+  </div>
+  <a class="petit" href="{% url 'panel' %}">← Panel</a>
+</header>
+
+<section class="card">
+  <h2>En attente</h2>
+  {% for d in demandes %}
+    <div class="ligne-demande">
+      <div>
+        <strong>{{ d.email }}</strong>
+        <div class="muted">{{ d.date|date:"d/m/Y à H:i" }}</div>
+      </div>
+      <form method="post" action="{% url 'traiter_demande' d.pk %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="petit">Classer et ouvrir la fiche</button>
+      </form>
+    </div>
+  {% empty %}
+    <p class="muted">Aucune demande en attente.</p>
+  {% endfor %}
+</section>
+
+{% if traitees %}
+<section class="card mt-16">
+  <h2>Dernières demandes classées</h2>
+  {% for d in traitees %}
+    <p class="muted">{{ d.email }} · {{ d.date|date:"d/m/Y" }}{% if d.traite_par %} · par {{ d.traite_par }}{% endif %}</p>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

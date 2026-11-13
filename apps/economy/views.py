@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Sum
 from django.shortcuts import render, redirect
 
+from apps.commun.limites import depasse
 from .forms import CubisForm
 from .models import Transaction
 from .services import ErreurEconomie, transferer, envoyer_par_divinite
@@ -17,7 +18,10 @@ def portefeuille(request):
     membres = (User.objects.filter(is_active=True)
                .exclude(pk=request.user.pk).order_by("pseudo_whatsapp"))
     form = CubisForm(request.POST or None, qs=membres)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST" and depasse("transfert", request):
+        form.add_error(None, "Trop de transferts en peu de temps. "
+                             "Patiente quelques minutes.")
+    elif request.method == "POST" and form.is_valid():
         try:
             transferer(request.user, form.cleaned_data["destinataire"],
                        form.cleaned_data["montant"],
@@ -47,7 +51,10 @@ def tresor(request):
         raise PermissionDenied
     membres = User.objects.filter(is_active=True).order_by("pseudo_whatsapp")
     form = CubisForm(request.POST or None, qs=membres)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST" and depasse("tresor", request):
+        form.add_error(None, "Trop d'envois en peu de temps. "
+                             "Patiente quelques minutes.")
+    elif request.method == "POST" and form.is_valid():
         try:
             envoyer_par_divinite(request.user, form.cleaned_data["destinataire"],
                                  form.cleaned_data["montant"],
