@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Créateurs du mois — Aphrodite{% endblock %}
+{% block content %}
+<header class="entete-page">
+  <div>
+    <h1>Créateurs du mois</h1>
+    <p class="muted">{{ debut|date:"F Y" }} · classement sur les Cubis réellement encaissés, puis les likes reçus.</p>
+  </div>
+</header>
+
+<section class="card">
+  <p class="muted">Chaque fin de mois, le podium reçoit une prime :
+    <strong>{{ primes.0 }}</strong>, <strong>{{ primes.1 }}</strong> et
+    <strong>{{ primes.2 }}</strong> Cubis. Pour y figurer : être Créateur validé,
+    publier au moins 5 articles actifs dans le mois, et qu'au moins une création
+    soit achetée ou aimée. Le volume seul ne suffit pas.</p>
+</section>
+
+{% if podium %}
+<section class="podium">
+  {% for ligne in podium %}
+    <article class="card podium-place podium-{{ forloop.counter }}">
+      <p class="podium-rang">{{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}e{% endif %}</p>
+      <a class="podium-avatar" href="{% url 'membre' ligne.user.pk %}">
+        {% if ligne.user.avatar %}
+          <img src="{% url 'photo_membre' ligne.user.pk 'avatar' %}" alt="">
+        {% else %}
+          <span>{{ ligne.user.pseudo_whatsapp|slice:":1"|upper }}</span>
+        {% endif %}
+      </a>
+      <h2><a href="{% url 'membre' ligne.user.pk %}">{{ ligne.user.pseudo_whatsapp }}</a></h2>
+      <p class="muted">{{ ligne.user.get_espece_display }}</p>
+      <dl class="podium-chiffres">
+        <div><dt>Cubis</dt><dd>{{ ligne.cubis }}</dd></div>
+        <div><dt>Likes</dt><dd>{{ ligne.likes }}</dd></div>
+        <div><dt>Articles</dt><dd>{{ ligne.articles }}</dd></div>
+      </dl>
+    </article>
+  {% endfor %}
+</section>
+
+{% if vedettes %}
+<section class="mt-20">
+  <h2>La vitrine du 1er</h2>
+  <div class="grille">
+    {% for a in vedettes %}
+      {% include "partials/carte_article.html" with a=a %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if classement|length > 3 %}
+<section class="card mt-20">
+  <h2>Le reste du classement</h2>
+  {% for ligne in classement|slice:"3:" %}
+    <div class="ligne">
+      <div>
+        <strong>{{ forloop.counter|add:3 }}.</strong>
+        <a href="{% url 'membre' ligne.user.pk %}">{{ ligne.user.pseudo_whatsapp }}</a>
+      </div>
+      <span class="muted">{{ ligne.cubis }} Cubis · {{ ligne.likes }} likes · {{ ligne.articles }} articles</span>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% else %}
+<section class="card">
+  <p class="muted">Le mois commence à peine : aucune vente ni aucun like pour
+     l'instant. La vitrine se remplit dès les premières créations achetées.</p>
+</section>
+{% endif %}
+
+{% if prime_precedente %}
+<section class="card mt-20">
+  <h2>Palmarès de {{ mois_precedent|date:"F Y" }}</h2>
+  <p class="muted">Primes versées par le Trésor.</p>
+  {% for prime in prime_precedente %}
+    <div class="ligne">
+      <div>
+        <strong>{{ prime.rang }}{% if prime.rang == 1 %}er{% else %}e{% endif %}</strong>
+        <a href="{% url 'membre' prime.user.pk %}">{{ prime.user.pseudo_whatsapp }}</a>
+      </div>
+      <span class="prix"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ prime.montant }}</span>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<section class="card center mt-20">
+  <h2>Tu crées ?</h2>
+  <p class="muted">Stickers, fonds, images RP, musiques : présente tes créations et
+     vends-les à la communauté.</p>
+  {% if user.is_authenticated %}
+    {% if user.createur_valide %}
+      <a class="btn lien" href="{% url 'nouvel_article' %}">Publier un article</a>
+    {% else %}
+      <a class="btn lien" href="{% url 'postuler' %}">Devenir Créateur</a>
+    {% endif %}
+  {% else %}
+    <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
+  {% endif %}
+</section>
+{% endblock %}

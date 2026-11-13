@@ -18,6 +18,7 @@ urlpatterns = [
     path("mot-de-passe-oublie/", views.mot_de_passe_oublie,
          name="mot_de_passe_oublie"),
     path("reglement/", views.reglement, name="reglement"),
+    path("confidentialite/", views.confidentialite, name="confidentialite"),
     path("membre/<int:pk>/", views.membre, name="membre"),
     path("membre/<int:pk>/photo/<str:champ>/", views.photo_membre,
          name="photo_membre"),

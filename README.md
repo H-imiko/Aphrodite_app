@@ -109,7 +109,7 @@ Panel d'administration : http://127.0.0.1:8000/admin/
 python manage.py test
 ```
 
-149 tests, doivent être verts avant chaque envoi sur GitHub. Une CI les
+157 tests, doivent être verts avant chaque envoi sur GitHub. Une CI les
 rejoue à chaque push (`.github/workflows/tests.yml`), avec
 `check --deploy`.
 
@@ -216,6 +216,18 @@ Sans `--mois`, elle traite le mois précédent. Relancer la commande ne paie
 jamais deux fois le même créateur pour le même mois (`PrimeCreateur` sert de
 verrou), et chaque prime est une transaction `BONUS_CREATEUR` notifiée et
 journalisée.
+
+La page publique `/createurs/du-mois/` affiche le podium en direct (Cubis
+encaissés, likes, articles) et le palmarès des primes déjà versées. Elle est
+accessible sans compte, depuis la page d'accueil.
+
+## Mise en ligne
+
+Le lanceur de production est `server.py`, pas `waitress` directement :
+Waitress 3 supprime par défaut les en-têtes `X-Forwarded-*`, ce qui fait
+boucler la redirection HTTPS derrière nginx. `server.py` déclare le proxy de
+confiance (`APHRODITE_TRUSTED_PROXY`, `127.0.0.1` par défaut). Voir
+`docs/deploiement.md`.
 
 ## Limites anti-abus
 

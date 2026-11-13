@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Confidentialité — Aphrodite{% endblock %}
+{% block content %}
+<h1>Confidentialité</h1>
+<p class="muted">Dernière version : novembre 2026. Cette page décrit exactement ce
+   que l'application enregistre, qui peut le voir et comment le supprimer.</p>
+
+<article class="reglement">
+  <h2>Ce que nous enregistrons</h2>
+  <ul>
+    <li><strong>Adresse email</strong> : identifiant de connexion. Jamais affichée
+        aux autres membres.</li>
+    <li><strong>Pseudo, espèce, bio RP, titre</strong> : visibles par les membres
+        connectés, comme sur ton profil.</li>
+    <li><strong>Date de naissance</strong> : sert uniquement à vérifier que tu as
+        18 ans ou plus. Elle n'est pas affichée.</li>
+    <li><strong>Numéro WhatsApp</strong> : facultatif. Il n'est transmis qu'au
+        Créateur d'une commande que tu as passée, pour la livraison.</li>
+    <li><strong>Photos de profil et bannière</strong> : stockées hors de l'espace
+        public. Une photo marquée mature n'est visible que par toi et par les
+        membres qui ont accepté ce contenu.</li>
+    <li><strong>Créations, achats, ventes, offrandes, commandes et messages de
+        commande</strong> : conservés pour que l'économie et les litiges restent
+        vérifiables.</li>
+    <li><strong>Journal de modération</strong> : sanctions, signalements traités,
+        changements de rôle. Il garde le nom du membre concerné et celui de la
+        Divinité qui a agi.</li>
+    <li><strong>Empreinte technique</strong> : un hachage de ton adresse IP et de
+        ton navigateur, pour limiter les bonus quotidiens servis à un même
+        appareil. L'adresse elle-même n'est pas conservée. Ce hachage est effacé
+        chaque jour.</li>
+  </ul>
+
+  <h2>Ce que nous ne faisons pas</h2>
+  <p>Aucun cookie publicitaire, aucun traceur tiers, aucune revente de données.
+     Seul un cookie de session sert à te garder connecté. Aucun email
+     promotionnel n'est envoyé : l'application n'a pas de service d'email.</p>
+
+  <h2>Qui peut voir quoi</h2>
+  <ul>
+    <li>Ton email et ta date de naissance : l'équipe technique uniquement.</li>
+    <li>Ton numéro WhatsApp : le Créateur de la commande concernée.</li>
+    <li>Un contenu signalé : l'équipe de modération.</li>
+    <li>Le reste : les membres connectés, selon les réglages de ton profil.</li>
+  </ul>
+
+  <h2>Combien de temps</h2>
+  <p>Les données de ton compte sont conservées tant que le compte existe. Après
+     suppression, ton profil est anonymisé immédiatement : email libéré, photos
+     effacées, pseudo remplacé. Les commandes et transactions restent
+     enregistrées sans ton identité, parce qu'elles appartiennent aussi à
+     l'autre partie et servent de preuve en cas de litige.</p>
+
+  <h2>Tes droits</h2>
+  <p>Tu peux modifier ton profil et tes photos depuis
+     <a href="{% url 'modifier_profil' %}">Modifier mon profil</a>, changer ton
+     mot de passe depuis <a href="{% url 'parametres' %}">Paramètres</a>, et
+     supprimer ton compte depuis
+     <a href="{% url 'supprimer_compte' %}">Supprimer mon compte</a>. Pour toute
+     autre demande, contacte l'équipe sur WhatsApp : c'est le canal prévu par la
+     communauté.</p>
+
+  <h2>Hébergement</h2>
+  <p>Les données sont hébergées sur le serveur choisi par l'équipe d'Aphrodite.
+     Les sauvegardes quotidiennes de la base restent sous son contrôle et ne sont
+     jamais rendues publiques.</p>
+</article>
+
+<p class="center mt-16"><a class="petit" href="{% url 'reglement' %}">← Le règlement</a></p>
+{% endblock %}

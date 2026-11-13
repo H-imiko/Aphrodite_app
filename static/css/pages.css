@@ -314,3 +314,26 @@
 .ligne-demande { display: flex; justify-content: space-between; align-items: center;
   gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 .ligne-demande:last-child { border-bottom: none; }
+
+/* ===== Podium des createurs du mois ===== */
+.podium { display: grid; gap: 14px; margin: 18px 0; }
+@media (min-width: 700px) {
+  .podium { grid-template-columns: repeat(3, 1fr); align-items: end; }
+}
+.podium-place { text-align: center; margin: 0; position: relative; }
+.podium-1 { border-color: var(--rose); box-shadow: 0 0 26px rgba(255, 46, 147, .28); }
+.podium-rang { font-family: var(--titre); font-size: 2.1em; line-height: 1;
+  margin: 0; color: var(--rose); }
+.podium-avatar { display: flex; align-items: center; justify-content: center;
+  width: 86px; height: 86px; margin: 8px auto 10px; border-radius: 50%;
+  overflow: hidden; background: linear-gradient(135deg, var(--violet), var(--neon));
+  color: #fff; font-family: var(--titre); font-size: 2em; text-decoration: none;
+  border: 2px solid rgba(255, 255, 255, .18); }
+.podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.podium-place h2 { margin: 4px 0; font-size: 1.05em; }
+.podium-chiffres { display: flex; justify-content: center; gap: 14px;
+  margin: 12px 0 0; }
+.podium-chiffres div { margin: 0; }
+.podium-chiffres dt { font-size: .68em; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(255, 255, 255, .55); }
+.podium-chiffres dd { margin: 0; font-weight: 700; }

@@ -225,3 +225,22 @@ class PhotoProfilTests(TestCase):
             reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
 
         self.assertEqual(reponse.status_code, 200)
+
+
+class PagesPubliquesTests(TestCase):
+    def test_confidentialite_publique(self):
+        reponse = Client().get(reverse("confidentialite"))
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "Ce que nous enregistrons")
+        self.assertContains(reponse, "Numéro WhatsApp")
+
+    def test_lien_confidentialite_dans_le_reglement(self):
+        reponse = Client().get(reverse("reglement"))
+
+        self.assertContains(reponse, reverse("confidentialite"))
+
+    def test_lien_confidentialite_dans_l_inscription(self):
+        reponse = Client().get(reverse("inscription"))
+
+        self.assertContains(reponse, reverse("confidentialite"))

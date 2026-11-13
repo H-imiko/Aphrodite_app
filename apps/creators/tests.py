@@ -2,7 +2,7 @@ from datetime import datetime
 from io import StringIO
 
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.utils import timezone
 
 from apps.accounts.models import User
@@ -157,3 +157,66 @@ class PrimeCreateurTests(TestCase):
         sortie = self.lancer("--appliquer")
 
         self.assertIn("Aucun createur eligible", sortie)
+
+
+class PageCreateursDuMoisTests(TestCase):
+    """Podium public : reconnaissance, pas classement au volume."""
+
+    def setUp(self):
+        from datetime import timedelta
+        from django.urls import reverse
+        self.reverse = reverse
+        self.createur = compte("createur@test.cg", createur_valide=True)
+        self.autre = compte("autre@test.cg", createur_valide=True)
+        self.divinite = compte("divinite@test.cg", createur_valide=True,
+                               est_divinite=True)
+        self.membre = compte("membre@test.cg")
+        self.mois_precedent = (
+            timezone.localdate().replace(day=1) - timedelta(days=1)
+        ).strftime("%Y-%m")
+
+    def page(self):
+        return Client().get(self.reverse("createurs_du_mois"))
+
+    def test_page_publique_accessible(self):
+        reponse = self.page()
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "Créateurs du mois")
+
+    def test_classement_par_cubis_encaisse(self):
+        for rang in range(5):
+            article(self.createur, titre=f"Vente {rang}")
+            article(self.autre, titre=f"Autre {rang}")
+        vente(self.createur, 100)
+        vente(self.autre, 300)
+
+        reponse = self.page()
+
+        self.assertEqual(reponse.context["podium"][0]["user"], self.autre)
+        self.assertEqual(reponse.context["podium"][1]["user"], self.createur)
+
+    def test_divinite_absente_du_podium(self):
+        for rang in range(5):
+            article(self.divinite, titre=f"Officiel {rang}")
+        vente(self.divinite, 900)
+
+        reponse = self.page()
+
+        self.assertEqual(reponse.context["podium"], [])
+        self.assertNotContains(reponse, "divinite")
+
+    def test_mois_vide_affiche_un_message(self):
+        reponse = self.page()
+
+        self.assertContains(reponse, "Le mois commence")
+
+    def test_palmares_du_mois_precedent_affiche(self):
+        PrimeCreateur.objects.create(
+            mois=self.mois_precedent, user=self.createur, rang=1,
+            montant=5000, nb_articles=6, ventes_cubis=400, nb_likes=12)
+
+        reponse = self.page()
+
+        self.assertContains(reponse, "Palmarès")
+        self.assertContains(reponse, "5000")

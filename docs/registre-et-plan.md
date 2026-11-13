@@ -135,7 +135,7 @@ Les packs de stickers, eux, sont une nouveauté → version 1 = ZIP + tutoriel.
 ## État au 12 novembre 2026 — corrections avant lancement
 
 Les points ci-dessous ont été corrigés et vérifiés par des tests
-(`python manage.py test` : 149 tests verts, `check --deploy` propre).
+(`python manage.py test` : 157 tests verts, `check --deploy` propre).
 
 | Point | Correctif | Preuve |
 |---|---|---|
@@ -205,3 +205,21 @@ Autres points trouvés pendant le même audit :
   base : elles sont désormais effacées ;
 - la commande des primes pouvait planter sur deux lancements simultanés
   (`IntegrityError`) : l'erreur est absorbée, une seule prime est versée.
+
+### Avant mise en ligne — 13 novembre 2026
+
+- **Page publique « Créateurs du mois »** (`/createurs/du-mois/`) : podium
+  calculé sur les Cubis encaissés puis les likes, vitrine du 1er, palmarès des
+  primes versées, accessible sans compte. 5 tests.
+- **Page Confidentialité** (`/confidentialite/`) : décrit les données réellement
+  stockées, qui les voit, la durée de conservation et les droits. Liée depuis le
+  règlement et la case d'inscription. 3 tests.
+- **Pages 404 et 500** lisibles en production (le mode debug ne les sert plus).
+- **Bloqueur de déploiement trouvé par un test réel** : Waitress 3 supprime par
+  défaut `X-Forwarded-*`. Lancé comme le documentait `docs/deploiement.md`,
+  Django ne voyait jamais le HTTPS et redirigeait en boucle, et toutes les
+  requêtes portaient l'adresse du proxy — donc limitation de débit faussée.
+  Corrigé par `server.py`, qui déclare le proxy de confiance à Waitress.
+  Vérifié de bout en bout : collectstatic, waitress, 200 sur les pages, CSS
+  avec empreinte servi, 404 personnalisée, `X-Forwarded-For` pris en compte
+  uniquement depuis le proxy.

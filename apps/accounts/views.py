@@ -104,6 +104,10 @@ def reglement(request):
     return render(request, "reglement.html")
 
 
+def confidentialite(request):
+    return render(request, "confidentialite.html")
+
+
 def mot_de_passe_oublie(request):
     """Enregistre une demande ; l'equipe la traite depuis le panel.
 

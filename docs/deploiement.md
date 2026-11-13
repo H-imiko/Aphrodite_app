@@ -44,18 +44,19 @@ refuse de démarrer, volontairement.
 | `DJANGO_ALLOWED_HOSTS` | `aphrodite.example.com,www.aphrodite.example.com` | séparés par des virgules |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://aphrodite.example.com,https://www.aphrodite.example.com` | avec le `https://` |
 | `DJANGO_SECURE_SSL_REDIRECT` | `1` (défaut) | laisser à `1` derrière le proxy |
-| `DJANGO_USE_X_FORWARDED_FOR` | `0` | passer à `1` **uniquement** derrière un proxy de confiance : sinon la limitation de débit se contourne en falsifiant l'en-tête |
+| `DJANGO_USE_X_FORWARDED_FOR` | `0` | laisser à `0` avec `server.py` (waitress fait le travail). Passer à `1` seulement avec un autre serveur qui ne traite pas lui-même l'en-tête |
+| `APHRODITE_TRUSTED_PROXY` | `127.0.0.1,::1` | adresses des proxys autorisés à fournir `X-Forwarded-*` |
 | `DJANGO_SAUVEGARDES_DIR` | `D:\sauvegardes\aphrodite` | **hors du dossier du projet** |
 | `DJANGO_BONUS_PLAFOND_APPAREIL` | `3` | bonus quotidiens par appareil |
 | `DJANGO_LIMITE_ENVOI_GARDIENNE` | `5000` | plafond d'un envoi du Trésor (hors Safir) |
 | `DJANGO_PLAFOND_JOURNALIER_TRESOR` | `50000` | plafond quotidien du Trésor (hors Safir) |
 | `DJANGO_DB_ENGINE` | *(vide = SQLite)* | voir `docs/migration-postgres.md` |
 
-Avec `DJANGO_USE_X_FORWARDED_FOR=1`, la limitation de débit lit la **dernière**
-valeur de `X-Forwarded-For`, celle ajoutée par le proxy. La configuration
-nginx donnée plus bas utilise `$proxy_add_x_forwarded_for`, qui produit
-« client, proxy » : le client fourni par l'utilisateur est ignoré. Ne jamais
-activer ce réglage si le serveur est joignable directement.
+Avec `server.py`, `X-Forwarded-Proto` et `X-Forwarded-For` ne sont lus que
+s'ils viennent de `APHRODITE_TRUSTED_PROXY`. La configuration nginx donnée
+plus bas utilise `$proxy_add_x_forwarded_for`, qui produit « client, proxy » :
+la valeur fournie par l'utilisateur est ignorée. Ne jamais lancer `server.py`
+avec un proxy de confiance si le serveur est joignable directement.
 
 Le HTTPS doit être détecté : le proxy envoie `X-Forwarded-Proto: https`, et
 Django le lit déjà (`SECURE_PROXY_SSL_HEADER`). Si ce n'est pas fait, les
@@ -92,15 +93,29 @@ Puis, dans l'ordre :
 ## 4. Lancer le serveur
 
 ```bash
-.venv/bin/python -m waitress --listen=0.0.0.0:8000 config.wsgi:application
+.venv/bin/python server.py
 ```
+
+`server.py` remplace l'appel direct à waitress, pour une raison précise :
+**Waitress 3 supprime par défaut les en-têtes `X-Forwarded-*`** (protection
+contre l'usurpation). Lancé à la main derrière nginx, Django ne voit jamais
+le HTTPS, répond `301` vers lui-même, et la boucle est infinie. Le lanceur
+déclare le proxy de confiance (`APHRODITE_TRUSTED_PROXY`, `127.0.0.1,::1` par
+défaut), ce qui suffit : `request.is_secure()` devient vrai et `REMOTE_ADDR`
+reprend l'adresse réelle du membre, donc la limitation de débit compte juste.
+
+Si le site est exposé **sans** proxy, lancer avec
+`APHRODITE_TRUSTED_PROXY= python server.py`.
+
+Pour écouter sur toutes les interfaces (déconseillé derrière un proxy) :
+`PORT=8000` ne change que le port ; modifier `server.py` pour l'adresse.
 
 En service permanent :
 
 **Windows** (NSSM, le plus simple) :
 ```
 nssm install Aphrodite "C:\aphrodite\.venv\Scripts\python.exe"
-nssm set Aphrodite AppParameters "-m waitress --listen=127.0.0.1:8000 config.wsgi:application"
+nssm set Aphrodite AppParameters "server.py"
 nssm set Aphrodite AppDirectory "C:\aphrodite"
 nssm set Aphrodite AppStdout "C:\aphrodite\logs\waitress.log"
 nssm set Aphrodite AppStderr "C:\aphrodite\logs\waitress.err.log"
@@ -119,7 +134,8 @@ After=network.target
 User=aphrodite
 WorkingDirectory=/srv/aphrodite
 EnvironmentFile=/srv/aphrodite/.env
-ExecStart=/srv/aphrodite/.venv/bin/python -m waitress --listen=127.0.0.1:8000 config.wsgi:application
+Environment=APHRODITE_TRUSTED_PROXY=127.0.0.1,::1
+ExecStart=/srv/aphrodite/.venv/bin/python server.py
 Restart=always
 RestartSec=5
 

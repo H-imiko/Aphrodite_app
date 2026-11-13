@@ -8,7 +8,8 @@
      une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes
      pour remercier ceux qui font vivre le RP.</p>
   <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
-  <p class="hero-second"><a href="{% url 'connexion' %}">J'ai déjà un compte</a></p>
+  <p class="hero-second"><a href="{% url 'connexion' %}">J'ai déjà un compte</a>
+     · <a href="{% url 'createurs_du_mois' %}">Les créateurs du mois</a></p>
 </section>
 
 <section class="chiffres">
@@ -50,6 +51,7 @@
       <h3>Tes créations</h3>
       <p class="muted">Stickers, fonds d'écran, images RP, musiques : les créateurs
          valident leur place et vendent leurs œuvres à la communauté.</p>
+      <p><a href="{% url 'createurs_du_mois' %}">Voir les créateurs du mois →</a></p>
     </div>
   </div>
 </section>

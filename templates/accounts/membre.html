@@ -11,6 +11,7 @@
   <a class="petit" href="{% url 'cadeaux' %}"> Cadeaux</a>
   <a class="petit" href="{% url 'favoris' %}"> Favoris</a>
   <a class="petit" href="{% url 'fil' %}"> Mon fil</a>
+  <a class="petit" href="{% url 'createurs_du_mois' %}">Créateurs du mois</a>
   {% if equip and equip.musique %}
   <form method="post" action="{% url 'musique_retirer' %}" class="inline">
     {% csrf_token %}<button type="submit" class="petit"> Retirer ma musique</button>

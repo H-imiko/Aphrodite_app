@@ -23,7 +23,8 @@ class InscriptionForm(UserCreationForm):
         # texte constant, avec une URL produite par reverse().
         self.fields["accepte_cgu"].label = mark_safe(
             "J'ai 18 ans ou plus et j'accepte "
-            f'<a href="{reverse("reglement")}">le règlement</a>')
+            f'<a href="{reverse("reglement")}">le règlement</a> et la '
+            f'<a href="{reverse("confidentialite")}">confidentialité</a>')
 
     class Meta(UserCreationForm.Meta):
         model = User

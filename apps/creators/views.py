@@ -1,17 +1,27 @@
 import os
+from datetime import date, datetime, time as heure, timedelta
 
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from apps.economy.models import Transaction
 from apps.economy.services import ErreurEconomie
+from apps.shop.models import Item
+from apps.social.models import Like
 from . import services
 from .forms import CandidatureForm
-from .models import Candidature, ExempleCandidature
+from .models import Candidature, ExempleCandidature, PrimeCreateur
+
+User = get_user_model()
 
 
 def _divinites_seulement(user):
@@ -88,6 +98,79 @@ def candidature_refuser(request, pk):
     except ErreurEconomie as e:
         messages.error(request, str(e))
     return redirect("candidatures")
+
+
+def _bornes(date_reference):
+    debut = date_reference.replace(day=1)
+    if debut.month == 12:
+        fin = debut.replace(year=debut.year + 1, month=1)
+    else:
+        fin = debut.replace(month=debut.month + 1)
+    return debut, fin
+
+
+def createurs_du_mois(request):
+    """Podium public des createurs, calcule sur les ventes du mois.
+
+    Page de reconnaissance : elle montre ce que la communaute a achete et
+    aime, pas le nombre d'articles publies. Les primes ne sont annoncees
+    qu'une fois versees (commande primes_createurs).
+    """
+    aujourd_hui = timezone.localdate()
+    debut, fin = _bornes(aujourd_hui)
+    # Les champs compares sont des DateTimeField : on filtre avec des bornes
+    # conscientes du fuseau, sinon la comparaison part d'un minuit naif.
+    debut_dt = timezone.make_aware(datetime.combine(debut, heure.min))
+    fin_dt = timezone.make_aware(datetime.combine(fin, heure.min))
+    mois_precedent = debut - timedelta(days=1)
+    debut_precedent, _ = _bornes(mois_precedent)
+
+    lignes = []
+    createurs = (User.objects.filter(createur_valide=True, is_active=True,
+                                     est_divinite=False, est_suspendu=False)
+                 .order_by("pseudo_whatsapp"))
+    for createur in createurs:
+        nb_articles = Item.objects.filter(
+            createur=createur, est_actif=True,
+            date_creation__gte=debut_dt, date_creation__lt=fin_dt).count()
+        ventes = Transaction.objects.filter(
+            destinataire=createur, type=Transaction.Type.ACHAT,
+            date__gte=debut_dt, date__lt=fin_dt)
+        cubis = ventes.aggregate(t=Sum("montant"))["t"] or 0
+        likes = Like.objects.filter(
+                            item__createur=createur,
+                date__gte=debut_dt, date__lt=fin_dt).count()
+        if not nb_articles and not cubis and not likes:
+            continue
+        lignes.append({"user": createur, "articles": nb_articles,
+                       "cubis": cubis, "likes": likes})
+
+    lignes.sort(key=lambda l: (l["cubis"], l["likes"], l["articles"]),
+                reverse=True)
+    podium = lignes[:3]
+    prime_precedente = (PrimeCreateur.objects
+                        .filter(mois=debut_precedent.strftime("%Y-%m"))
+                        .select_related("user")
+                        .order_by("rang"))
+    vedettes = []
+    if podium:
+        vedettes = list(Item.objects.filter(
+            createur=podium[0]["user"], est_actif=True,
+            masque_moderation=False
+        ).select_related("createur").order_by("-date_creation")[:3])
+
+    return render(request, "creators/du_mois.html", {
+        "debut": debut,
+        "podium": podium,
+        "classement": lignes,
+        "vedettes": vedettes,
+        "primes": list(getattr(settings, "PRIMES_CREATEURS",
+                                (5000, 2000, 1000))),
+        "prime_precedente": prime_precedente,
+        "mois_precedent": debut_precedent,
+        "possedes": set(),
+        "aimes": set(),
+    })
 
 
 @login_required
