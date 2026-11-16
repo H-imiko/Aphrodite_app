@@ -78,6 +78,12 @@ class ArticleForm(forms.ModelForm):
         ]
         self.fields["prix_cubis"].help_text = (
             "Prix conseillés (en Cubis) : " + " · ".join(conseils))
+        # Un cadre entoure la photo ; un décor couvre toute la carte. Publier
+        # une image en forme de cadre dans « Décors » la fait apparaitre en
+        # plein cadre, bien plus grande qu'un cadre de profil.
+        self.fields["categorie"].help_text = (
+            "« Cadres » entoure la photo de profil et reste aligne sur elle. "
+            "« Décors » couvre toute la carte de profil.")
         for nom in ("fichier", "extrait"):
             self.fields[nom].required = False
         if not (user and user.est_divinite):
