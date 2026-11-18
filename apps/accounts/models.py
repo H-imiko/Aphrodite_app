@@ -10,9 +10,8 @@ from django.utils import timezone
 def stockage_prive():
     """Photos de profil hors de /media/ : elles ne sont plus publiques.
 
-    Une photo marquee mature ne doit pas etre accessible par sa seule URL :
-    le flou du navigateur se desactive en un clic. Le fichier est donc servi
-    par une vue qui verifie qui regarde.
+    Une photo de profil ne doit pas etre accessible par sa seule URL : le
+    fichier est servi par une vue qui verifie qui regarde et pose noindex.
     """
     return FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
 
@@ -74,8 +73,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     serie_connexion = models.PositiveIntegerField(default=0)
     derniere_connexion_bonus = models.DateField(null=True, blank=True)
 
-    profil_mature = models.BooleanField(default=False)
-    afficher_mature = models.BooleanField(default=False)
     # Passe a True quand une Divinite genere un mot de passe provisoire :
     # le membre doit en choisir un autre avant de pouvoir utiliser le site.
     doit_changer_mot_de_passe = models.BooleanField(default=False)

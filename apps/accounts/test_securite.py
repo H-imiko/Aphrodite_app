@@ -185,46 +185,38 @@ class DemandeAccesTests(TestCase):
 
 class PhotoProfilTests(TestCase):
     def setUp(self):
-        self.proprietaire = compte("mature@test.cg")
+        self.proprietaire = compte("proprio@test.cg")
         self.proprietaire.avatar.save("avatar.jpg", photo(), save=True)
-        self.proprietaire.profil_mature = True
-        self.proprietaire.save(update_fields=["profil_mature"])
         self.visiteur = compte("visiteur@test.cg")
         self.client.force_login(self.visiteur)
 
-    def test_photo_mature_refusee_par_defaut(self):
-        reponse = self.client.get(
-            reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
-
-        self.assertEqual(reponse.status_code, 403)
-
-    def test_photo_mature_visible_apres_acceptation(self):
-        self.visiteur.afficher_mature = True
-        self.visiteur.save(update_fields=["afficher_mature"])
-
+    def test_photo_lisible_par_un_membre_connecte(self):
         reponse = self.client.get(
             reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
 
         self.assertEqual(reponse.status_code, 200)
         self.assertEqual(reponse["X-Robots-Tag"], "noindex")
+        self.assertEqual(reponse["X-Content-Type-Options"], "nosniff")
 
-    def test_proprietaire_voit_toujours_sa_photo(self):
-        self.client.force_login(self.proprietaire)
+    def test_photo_lisible_sans_connexion(self):
+        reponse = Client().get(
+            reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
+
+        self.assertEqual(reponse.status_code, 200)
+
+    def test_membre_sans_photo_renvoie_404(self):
+        sans_photo = compte("sansphoto@test.cg")
 
         reponse = self.client.get(
-            reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
+            reverse("photo_membre", args=[sans_photo.pk, "avatar"]))
 
-        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.status_code, 404)
 
-    def test_photo_non_mature_lisible_par_tous(self):
-        self.proprietaire.profil_mature = False
-        self.proprietaire.save(update_fields=["profil_mature"])
-        anonyme = Client()
+    def test_champ_inconnu_renvoie_404(self):
+        reponse = self.client.get(
+            reverse("photo_membre", args=[self.proprietaire.pk, "secret"]))
 
-        reponse = anonyme.get(
-            reverse("photo_membre", args=[self.proprietaire.pk, "avatar"]))
-
-        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.status_code, 404)
 
 
 class PagesPubliquesTests(TestCase):

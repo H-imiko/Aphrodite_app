@@ -1,6 +1,6 @@
 # Aphrodite — consignes de travail
 
-Application Django de communauté WhatsApp RP (18+) avec une monnaie virtuelle,
+Application Django de communauté WhatsApp RP avec une monnaie virtuelle,
 les Cubis. Interface et messages en français. Base SQLite.
 
 ## Commandes

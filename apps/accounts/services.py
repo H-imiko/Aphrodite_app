@@ -63,8 +63,6 @@ def fermer_compte(user):
     user.banniere = None
     user.solde_cubis = 0
     user.serie_connexion = 0
-    user.profil_mature = False
-    user.afficher_mature = False
     user.is_active = False
     user.est_suspendu = True
     user.set_unusable_password()

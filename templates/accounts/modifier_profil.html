@@ -43,13 +43,6 @@
     </div>
   </section>
 
-  <section class="card form-bloc">
-    <h2>Contenu mature</h2>
-    <p class="muted">Ces réglages protègent ta photo quand d'autres consultent ton profil.</p>
-    {% include "partials/champ.html" with champ=form.profil_mature %}
-    {% include "partials/champ.html" with champ=form.afficher_mature %}
-  </section>
-
   <div class="barre-enregistrer">
     <button type="submit" class="btn">Enregistrer</button>
     <a class="petit" href="{% url 'membre' user.pk %}">Annuler</a>
