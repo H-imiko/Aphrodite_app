@@ -98,16 +98,6 @@
   margin: 4px 0; color: var(--soft); }
 .liens-panel { display: grid; gap: 4px; }
 
-/* ----- Contenu mature ----- */
-.voile-mature { display: none; }
-.flou-mature { overflow: hidden; }
-.flou-mature .banniere, .flou-mature .avatar { filter: blur(22px); }
-.flou-mature .voile-mature { display: block; position: absolute; inset: 0;
-  z-index: 5; width: 100%; background: rgba(10, 7, 16, .6); color: white;
-  border: none; border-radius: 18px; cursor: pointer; font-size: var(--t-lg);
-  font-family: inherit; }
-.flou-mini { filter: blur(5px); }
-
 /* ----- Grand écran ----- */
 @media (min-width: 900px) {
   main { max-width: 980px; }

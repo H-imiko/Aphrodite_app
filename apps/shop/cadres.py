@@ -13,6 +13,9 @@ quelques milliers de pixels et ne peut pas faire expirer un envoi.
 
 TROU_MIN = 0.40
 TROU_MAX = 0.85
+# Bornes de la largeur affichee, en % de la photo de profil.
+LARGEUR_MIN = 100
+LARGEUR_MAX = 200
 ECART_CENTRE_MAX = 0.04
 SEUIL_ALPHA = 16
 
@@ -91,7 +94,12 @@ def problemes_cadre(img):
 
 
 def largeur_affichage(ratio):
-    """Largeur du cadre en % de l'avatar, pour que le trou fasse 100 %."""
+    """Largeur du cadre en % de l'avatar, pour que le trou fasse 100 %.
+
+    La valeur est bornee : un trou tres petit (0,15) donnerait 667 %, soit un
+    cadre de 600 px au milieu du profil. Une image bricolee ou une mesure
+    aberrante ne doit pas pouvoir casser la mise en page.
+    """
     if not ratio:
         return None
-    return round(100 / ratio, 2)
+    return round(min(max(100 / ratio, LARGEUR_MIN), LARGEUR_MAX), 2)

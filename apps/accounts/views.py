@@ -130,9 +130,8 @@ def mot_de_passe_oublie(request):
 def photo_membre(request, pk, champ):
     """Sert une photo de profil depuis le stockage prive.
 
-    Une photo marquee mature n'est visible que par son proprietaire et par
-    les membres qui ont accepte le contenu mature. Le flou du navigateur
-    n'est plus la seule protection.
+    Le fichier n'est jamais expose en direct : cette vue verifie que la
+    photo existe et pose les en-tetes de cache et de non-indexation.
     """
     if champ not in ("avatar", "banniere"):
         raise Http404
@@ -140,11 +139,6 @@ def photo_membre(request, pk, champ):
     fichier = getattr(m, champ)
     if not fichier:
         raise Http404
-    if m.profil_mature:
-        if not request.user.is_authenticated:
-            raise PermissionDenied
-        if m.pk != request.user.pk and not request.user.afficher_mature:
-            raise PermissionDenied
     extension = os.path.splitext(fichier.name)[1].lower()
     reponse = FileResponse(
         fichier.storage.open(fichier.name, "rb"),

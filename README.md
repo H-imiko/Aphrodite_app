@@ -1,6 +1,6 @@
 # Aphrodite
 
-Réseau social 18+ de la communauté WhatsApp RP : profils, Cubis (monnaie de jeu,
+Réseau social de la communauté WhatsApp RP : profils, Cubis (monnaie de jeu,
 sans valeur réelle), boutique, inventaire, offrandes, créations.
 
 ## Prérequis
@@ -132,7 +132,7 @@ rejoue à chaque push (`.github/workflows/tests.yml`), avec
 Les tests couvrent ce qui peut coûter cher : séquestre et paiement des
 commandes (dont les doubles validations simultanées), achats, offrandes
 (plafonds et blocages), likes et abonnements, cadres, limitation de débit,
-mots de passe provisoires et photos matures.
+mots de passe provisoires et accès aux photos privées.
 
 ## Sauvegardes
 
@@ -190,12 +190,10 @@ noir livré a un trou de 60 %, d'où son affichage à 166,67 %.
 ## Photos de profil protégées
 
 Les avatars et bannières ne sont plus dans `media/` : ils sont stockés dans
-`private_media/` et servis par `/membre/<id>/photo/<avatar|banniere>/`. Une
-photo marquée « mature » n'est visible que par son propriétaire et par les
-membres qui ont coché « Afficher le contenu mature ». Le flou du navigateur
-n'est plus la seule barrière : le fichier n'est pas accessible par sa seule
-URL. Cela vaut aussi pour les photos anciennes, déplacées automatiquement par
-la migration.
+`private_media/` et servis par `/membre/<id>/photo/<avatar|banniere>/`. Le
+fichier n'est pas accessible par sa seule URL en `/media/`, et la vue pose
+`X-Robots-Tag: noindex`. Cela vaut aussi pour les photos anciennes, déplacées
+automatiquement par la migration.
 
 ## Mot de passe oublié et comptes
 

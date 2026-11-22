@@ -36,13 +36,20 @@ class InscriptionTests(TestCase):
 
         self.assertContains(reponse, '<a href="/reglement/">le règlement</a>')
 
-    def test_mineur_refuse(self):
-        data = donnees_inscription(date_naissance=annee_ecartee(17).isoformat())
+    def test_inscription_sans_limite_d_age(self):
+        data = donnees_inscription(date_naissance=annee_ecartee(15).isoformat())
         reponse = self.client.post(reverse("inscription"), data)
 
-        self.assertEqual(reponse.status_code, 200)
-        self.assertIn("date_naissance", reponse.context["form"].errors)
-        self.assertFalse(User.objects.filter(email=data["email"]).exists())
+        self.assertRedirects(reponse, reverse("modifier_profil"))
+        self.assertTrue(User.objects.filter(email=data["email"]).exists())
+
+    def test_inscription_sans_date_de_naissance(self):
+        data = donnees_inscription()
+        data.pop("date_naissance")
+        reponse = self.client.post(reverse("inscription"), data)
+
+        self.assertRedirects(reponse, reverse("modifier_profil"))
+        self.assertIsNone(User.objects.get(email=data["email"]).date_naissance)
 
     def test_adulte_inscrit_et_connecte(self):
         data = donnees_inscription()
@@ -128,13 +135,11 @@ class ProfilTests(TestCase):
             "titre": "Reine des ombres",
             "bio_rp": "Une bio",
             "numero_whatsapp": "+242000000000",
-            "afficher_mature": "on",
         })
 
         self.assertRedirects(reponse, reverse("membre", args=[self.user.pk]))
         self.user.refresh_from_db()
         self.assertEqual(self.user.pseudo_whatsapp, "NouveauPseudo")
-        self.assertTrue(self.user.afficher_mature)
 
     def test_profil_public_accessible_aux_membres(self):
         autre = User.objects.create_user(
@@ -167,7 +172,7 @@ class CompteTests(TestCase):
         reponse = Client().get(reverse("reglement"))
 
         self.assertEqual(reponse.status_code, 200)
-        self.assertContains(reponse, "18 ans")
+        self.assertContains(reponse, "sans condition d'âge")
 
     def test_mauvais_mot_de_passe_ne_supprime_rien(self):
         reponse = self.client.post(

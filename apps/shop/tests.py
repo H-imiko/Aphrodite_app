@@ -2,11 +2,12 @@ from io import BytesIO
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.urls import reverse
 from PIL import Image, ImageDraw
 
 from apps.accounts.models import User
 from apps.economy.services import ErreurEconomie
-from apps.inventory.models import InventoryItem
+from apps.inventory.models import Equipement, InventoryItem
 from .forms import ArticleForm
 from .models import Item
 from .services import acheter
@@ -55,6 +56,32 @@ class CadreTests(TestCase):
         self.assertAlmostEqual(item.ratio_trou, 0.60, places=2)
         # 100 / 0.60 = 166,67 % : le trou fait la taille de l'avatar.
         self.assertAlmostEqual(item.largeur_cadre_pct, 166.67, places=2)
+
+    def test_largeur_bornee_si_le_trou_est_aberrant(self):
+        """Un ratio minuscule ne doit pas envoyer le cadre a 600 px."""
+        item = Item(titre="Trou minuscule", prix_cubis=0, categorie="cadre",
+                    createur=self.safir)
+        item.image.save("trou.png", upload("trou.png", png(trou=0.60)), save=True)
+        Item.objects.filter(pk=item.pk).update(ratio_trou=0.15)
+        item.refresh_from_db()
+
+        self.assertEqual(item.largeur_cadre_pct, 200)
+
+    def test_le_profil_affiche_une_largeur_css_valide(self):
+        """Le HTML doit porter un point decimal, pas une virgule francaise."""
+        cadre = Item(titre="Cadre 60", prix_cubis=0, categorie="cadre",
+                     createur=self.safir)
+        cadre.image.save("cadre60.png", upload("cadre60.png", png(trou=0.60)),
+                         save=True)
+        InventoryItem.objects.create(proprietaire=self.safir, item=cadre)
+        Equipement.objects.create(user=self.safir, cadre=cadre)
+        self.client.force_login(self.safir)
+
+        reponse = self.client.get(reverse("membre", args=[self.safir.pk]))
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "--cadre-l: 166.67%;")
+        self.assertNotContains(reponse, "--cadre-l: 166,67%;")
 
     def test_sans_trou_aucune_largeur_inventee(self):
         item = Item(titre="Pleine", prix_cubis=0, categorie="cadre",
