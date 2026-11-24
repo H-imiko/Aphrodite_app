@@ -47,7 +47,7 @@ pip freeze > requirements.txt      # ou ajoute la ligne psycopg à la main
 
 ```bash
 sudo -u postgres psql <<'SQL'
-CREATE USER aphrodite WITH PASSWORD 'un-mot-de-passe-long';
+CREATE USER aphrodite WITH PASSWORD '<ton-mot-de-passe>';
 CREATE DATABASE aphrodite OWNER aphrodite;
 SQL
 ```
@@ -58,7 +58,7 @@ SQL
 DJANGO_DB_ENGINE=postgres
 POSTGRES_DB=aphrodite
 POSTGRES_USER=aphrodite
-POSTGRES_PASSWORD=le-mot-de-passe
+POSTGRES_PASSWORD=<le-meme-mot-de-passe-qu-a-l-etape-2>
 POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5432
 ```

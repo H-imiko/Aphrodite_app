@@ -104,20 +104,33 @@ principal), en local :
 python manage.py createsuperuser
 ```
 
-Ou sans saisie interactive, avec le mot de passe fourni par l'environnement :
+Sur un serveur, sans saisie interactive, le mot de passe est lu dans
+l'environnement — jamais écrit dans un fichier du dépôt, jamais recopié d'un
+exemple de documentation :
 
 ```bash
-DJANGO_SUPERUSER_PASSWORD='...' python manage.py createsuperuser \
-  --noinput --username safir --email safir@exemple.cg
+read -rsp "Mot de passe de Safir : " DJANGO_SUPERUSER_PASSWORD; echo
+export DJANGO_SUPERUSER_PASSWORD
+DJANGO_SUPERUSER_PSEUDO_WHATSAPP='Safir' \
+  python manage.py createsuperuser --noinput --email safir@exemple.cg
+unset DJANGO_SUPERUSER_PASSWORD
 ```
 
-Panel d'administration : http://127.0.0.1:8000/admin/
+`--email` et non `--username` : ce projet se connecte par email
+(`USERNAME_FIELD = "email"`), et le pseudo WhatsApp est obligatoire en mode
+`--noinput`, d'où `DJANGO_SUPERUSER_PSEUDO_WHATSAPP`.
 
-> Les identifiants de démonstration qui figuraient ici ont été retirés : ce
-> dépôt est public, et un mot de passe publié reste lisible dans l'historique
-> Git même après suppression. Si un compte a déjà utilisé un mot de passe
-> présent dans l'historique, change-le :
-> `python manage.py changepassword <identifiant>`.
+Panel d'administration : http://127.0.0.1:8000/admin/ (connexion par email).
+
+> **Ne recopie jamais un mot de passe d'exemple.** Une valeur comme `...` ou
+> `le-mot-de-passe` est un texte à remplacer, pas un mot de passe : une
+> commande lancée telle quelle crée un vrai compte avec ce mot de passe.
+>
+> Les identifiants de démonstration qui figuraient autrefois dans ce fichier
+> ont été retirés, mais ce dépôt est public : un mot de passe publié reste
+> lisible dans l'historique Git même après suppression. Si un compte a utilisé
+> un mot de passe ayant figuré ici, change-le dès maintenant :
+> `python manage.py changepassword <email>`.
 
 ## Tests
 
