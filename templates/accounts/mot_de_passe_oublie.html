@@ -6,16 +6,16 @@
 
   {% if envoye %}
     <div class="msg">
-      Demande enregistrée. L'équipe la voit dans son panel et te recontacte
-      sur WhatsApp pour vérifier que c'est bien toi, puis te remet un mot de
-      passe provisoire. Tu devras en choisir un nouveau dès ta connexion.
+      Demande enregistrée. L'équipe te contacte sur WhatsApp pour vérifier ton
+      identité, puis te remet un mot de passe provisoire à remplacer dès ta
+      prochaine connexion.
     </div>
-    <p class="muted">Une demande ne donne pas d'accès immédiat : c'est le prix
-       d'un site sans email.</p>
+    <p class="muted">La vérification se fait manuellement : ta demande sera
+       traitée dès que possible.</p>
     <p><a class="btn lien" href="{% url 'connexion' %}">Retour à la connexion</a></p>
   {% else %}
-    <p class="muted">Indique l'adresse de ton compte. L'équipe reçoit la demande
-       et te répond en privé sur WhatsApp.</p>
+    <p class="muted">Indique l'adresse email de ton compte. L'équipe te répondra
+       en privé sur WhatsApp.</p>
     {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
     <form method="post">
       {% csrf_token %}
