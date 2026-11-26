@@ -1,5 +1,7 @@
+import re
 from io import BytesIO
 
+from django.core import mail
 from django.core.cache import cache
 from django.core.files.base import ContentFile
 from django.test import Client, TestCase, override_settings
@@ -143,7 +145,7 @@ class DemandeAccesTests(TestCase):
         cache.clear()
 
     def test_demande_publique_enregistree(self):
-        reponse = self.other.post(reverse("mot_de_passe_oublie"),
+        reponse = self.other.post(reverse("mot_de_passe_sans_email"),
                                   {"email": "oubli@test.cg"})
 
         self.assertEqual(reponse.status_code, 200)
@@ -151,7 +153,7 @@ class DemandeAccesTests(TestCase):
             email="oubli@test.cg").exists())
 
     def test_adresse_inconnue_meme_reponse(self):
-        reponse = self.other.post(reverse("mot_de_passe_oublie"),
+        reponse = self.other.post(reverse("mot_de_passe_sans_email"),
                                   {"email": "inconnu@nulle.part"})
 
         self.assertEqual(reponse.status_code, 200)
@@ -181,6 +183,70 @@ class DemandeAccesTests(TestCase):
                                              args=[self.membre.pk]))
         demande.refresh_from_db()
         self.assertTrue(demande.traite)
+
+
+class ReinitialisationParEmailTests(TestCase):
+    """Le mot de passe se récupère seul, par email, sans passer par l'équipe."""
+
+    def setUp(self):
+        cache.clear()
+        self.membre = compte("reset@test.cg")
+        self.anonyme = Client()
+
+    def tearDown(self):
+        cache.clear()
+
+    def _lien_recu(self):
+        self.anonyme.post(reverse("mot_de_passe_oublie"),
+                          {"email": "reset@test.cg"})
+        self.assertEqual(len(mail.outbox), 1)
+        trouve = re.search(r"http://testserver(\S+)", mail.outbox[0].body)
+        self.assertIsNotNone(trouve)
+        return trouve.group(1)
+
+    def test_email_avec_lien_envoye(self):
+        reponse = self.anonyme.post(reverse("mot_de_passe_oublie"),
+                                    {"email": "reset@test.cg"})
+
+        self.assertRedirects(reponse, reverse("mot_de_passe_envoye"))
+        self.assertEqual(mail.outbox[0].to, ["reset@test.cg"])
+        self.assertIn("/reinitialiser/", mail.outbox[0].body)
+
+    def test_adresse_inconnue_meme_reponse_sans_email(self):
+        reponse = self.anonyme.post(reverse("mot_de_passe_oublie"),
+                                    {"email": "inconnu@nulle.part"})
+
+        self.assertRedirects(reponse, reverse("mot_de_passe_envoye"))
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_lien_permet_de_choisir_un_mot_de_passe(self):
+        User.objects.filter(pk=self.membre.pk).update(
+            doit_changer_mot_de_passe=True)
+        lien = self._lien_recu()
+
+        # Django remplace le jeton du lien par « set-password » dans l'URL
+        # avant d'afficher le formulaire : le jeton ne reste pas a l'ecran.
+        redirection = self.anonyme.get(lien)
+        self.assertEqual(redirection.status_code, 302)
+        cible = redirection["Location"]
+        self.assertEqual(self.anonyme.get(cible).status_code, 200)
+
+        reponse = self.anonyme.post(cible, {
+            "new_password1": "NouveauMotDePasse!2026",
+            "new_password2": "NouveauMotDePasse!2026"})
+
+        self.assertRedirects(reponse, reverse("connexion"))
+        self.membre.refresh_from_db()
+        self.assertTrue(self.membre.check_password("NouveauMotDePasse!2026"))
+        self.assertFalse(self.membre.doit_changer_mot_de_passe)
+
+    def test_lien_invalide_refuse(self):
+        page = self.anonyme.get(reverse("reinitialiser_mot_de_passe",
+                                        kwargs={"uidb64": "bad",
+                                                "token": "bad-token"}))
+
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, "plus valide")
 
 
 class PhotoProfilTests(TestCase):

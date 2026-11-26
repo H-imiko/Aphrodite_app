@@ -34,8 +34,8 @@ Rien n'est servi par `runserver --insecure` : ce mode n'existe que pour les test
 ## 2. Variables d'environnement
 
 À mettre dans `.env` (non versionné) ou dans l'environnement du service.
-`DJANGO_DEBUG=0` rend les trois premières obligatoires : sans elles, l'application
-refuse de démarrer, volontairement.
+`DJANGO_DEBUG=0` rend obligatoires la clé secrète, `ALLOWED_HOSTS` et le bloc
+email : sans elles, l'application refuse de démarrer, volontairement.
 
 | Variable | Exemple | Notes |
 |---|---|---|
@@ -45,6 +45,13 @@ refuse de démarrer, volontairement.
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://aphrodite.example.com,https://www.aphrodite.example.com` | avec le `https://` |
 | `DJANGO_SECURE_SSL_REDIRECT` | `1` (défaut) | laisser à `1` derrière le proxy |
 | `DJANGO_HSTS_SECONDS` | `3600` | monter progressivement (86400, puis un an) quand tout est stable |
+| `EMAIL_HOST` | `smtp.gmail.com` | **obligatoire en production** : sans lui, aucun lien de réinitialisation ne part |
+| `EMAIL_PORT` | `587` | `587` = TLS, `465` = SSL |
+| `EMAIL_HOST_USER` | `ton.adresse@gmail.com` | compte d'envoi |
+| `EMAIL_HOST_PASSWORD` | *(mot de passe d'application)* | jamais la clé principale du compte : créer un mot de passe d'application |
+| `EMAIL_USE_TLS` | `1` (défaut) | mettre `0` avec `EMAIL_USE_SSL=1` |
+| `DEFAULT_FROM_EMAIL` | `Aphrodite <ton.adresse@gmail.com>` | adresse affichée comme expéditeur |
+| `DJANGO_RESET_TIMEOUT` | `3600` | validité du lien de réinitialisation, en secondes |
 | `DJANGO_USE_X_FORWARDED_FOR` | `0` | laisser à `0` avec `server.py` (waitress fait le travail). Passer à `1` seulement avec un autre serveur qui ne traite pas lui-même l'en-tête |
 | `APHRODITE_TRUSTED_PROXY` | `127.0.0.1,::1` | adresses des proxys autorisés à fournir `X-Forwarded-*` |
 | `DJANGO_SAUVEGARDES_DIR` | `D:\sauvegardes\aphrodite` | **hors du dossier du projet** |
@@ -239,6 +246,9 @@ une sauvegarde sur le même disque que la base ne protège pas d'une panne disqu
 10. Proxy en HTTPS, `X-Forwarded-Proto` transmis, `/media/` servi, `/private_media/` absent.
 11. Les deux tâches planifiées actives, une sauvegarde déclenchée à la main pour vérifier.
 12. HSTS : commencer à `3600`, monter à un an seulement quand tout est stable.
+13. Email testé : `/mot-de-passe-oublie/` avec une adresse réelle, lien reçu et
+    changement de mot de passe effectué. Si le message n'arrive pas, vérifier
+    les indésirables et les journaux du service.
 
 ---
 
@@ -263,5 +273,5 @@ Puis dans un navigateur, en navigation privée :
 ## 9. Limites connues avant lancement
 
 - **SQLite** : un seul écrivain. Convient au lancement ; voir `docs/migration-postgres.md` si la fréquentation monte.
-- **Mot de passe oublié** : il n'y a pas d'email, donc pas de lien de réinitialisation. La procédure est manuelle et assumée : le membre prévient l'équipe, une Divinité ouvre `/divinites/membres/<id>/` et génère un mot de passe provisoire, qu'elle transmet en privé (WhatsApp). Le membre le remplace ensuite dans Paramètres → Mot de passe. L'action est inscrite au journal des actions.
+- **Mot de passe oublié** : le membre saisit son adresse sur `/mot-de-passe-oublie/` et reçoit un lien valable une heure pour choisir un nouveau mot de passe. Cela suppose un serveur SMTP configuré (voir section 2) : sans lui, l'application refuse de démarrer en production. Repli manuel conservé sur `/mot-de-passe-oublie/sans-email/` pour un membre qui n'a plus accès à son adresse : une Divinité génère un mot de passe provisoire depuis `/divinites/membres/<id>/` et le transmet en privé (WhatsApp). L'action est inscrite au journal.
 - **Litiges** : une commande en litige bloque la suppression de compte de ses deux parties jusqu'à décision. Vider les litiges avant d'annoncer la fonction de suppression.

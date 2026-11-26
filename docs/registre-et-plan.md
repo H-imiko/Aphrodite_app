@@ -135,7 +135,7 @@ Les packs de stickers, eux, sont une nouveauté → version 1 = ZIP + tutoriel.
 ## État au 12 novembre 2026 — corrections avant lancement
 
 Les points ci-dessous ont été corrigés et vérifiés par des tests
-(`python manage.py test` : 157 tests verts, `check --deploy` propre).
+(`python manage.py test` : 164 tests verts, `check --deploy` propre).
 
 | Point | Correctif | Preuve |
 |---|---|---|

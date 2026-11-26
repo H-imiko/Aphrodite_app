@@ -138,7 +138,7 @@ Panel d'administration : http://127.0.0.1:8000/admin/ (connexion par email).
 python manage.py test
 ```
 
-157 tests, doivent être verts avant chaque envoi sur GitHub. Une CI les
+164 tests, doivent être verts avant chaque envoi sur GitHub. Une CI les
 rejoue à chaque push (`.github/workflows/tests.yml`), avec
 `check --deploy`.
 

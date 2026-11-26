@@ -76,6 +76,44 @@ CSRF_TRUSTED_ORIGINS = _liste("DJANGO_CSRF_TRUSTED_ORIGINS")
 USE_X_FORWARDED_FOR = _drapeau("DJANGO_USE_X_FORWARDED_FOR", "0")
 
 
+# Email : indispensable a la reinitialisation de mot de passe.
+# En local, les messages s'affichent dans la console ; en ligne, sans serveur
+# SMTP configure, aucun membre ne recevrait son lien : on refuse de demarrer
+# plutot que de laisser croire que la fonction marche.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "").strip()
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT") or 587)
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "").strip()
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = _drapeau("EMAIL_USE_TLS", "1")
+EMAIL_USE_SSL = _drapeau("EMAIL_USE_SSL", "0")
+EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT") or 10)
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL", "Aphrodite <no-reply@localhost>").strip()
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    if EMAIL_USE_SSL and EMAIL_USE_TLS:
+        raise ImproperlyConfigured(
+            "EMAIL_USE_SSL et EMAIL_USE_TLS ne peuvent pas etre actifs en "
+            "meme temps : choisir l'un ou l'autre selon le port "
+            "(465 = SSL, 587 = TLS).")
+elif DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    raise ImproperlyConfigured(
+        "EMAIL_HOST est obligatoire quand DJANGO_DEBUG=0 : sans serveur "
+        "SMTP, les membres ne recoivent jamais le lien de reinitialisation "
+        "de mot de passe.\nExemple :\n"
+        "  EMAIL_HOST=smtp.gmail.com\n  EMAIL_PORT=587\n"
+        "  EMAIL_HOST_USER=ton.adresse@gmail.com\n"
+        "  EMAIL_HOST_PASSWORD=mot-de-passe-d-application\n"
+        '  DEFAULT_FROM_EMAIL="Aphrodite <ton.adresse@gmail.com>"')
+
+# Duree de validite d'un lien de reinitialisation, en secondes (1 heure).
+PASSWORD_RESET_TIMEOUT = int(os.environ.get("DJANGO_RESET_TIMEOUT") or 3600)
+
+
 # Application definition
 
 INSTALLED_APPS = [

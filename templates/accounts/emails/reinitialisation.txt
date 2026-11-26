@@ -1,0 +1,14 @@
+Bonjour,
+
+Tu as demandé à réinitialiser le mot de passe de ton compte Aphrodite.
+
+Clique sur ce lien pour choisir un nouveau mot de passe :
+
+{{ protocol }}://{{ domain }}{% url 'reinitialiser_mot_de_passe' uidb64=uid token=token %}
+
+Le lien est valable une heure et ne peut servir qu'une fois.
+
+Si tu n'es pas à l'origine de cette demande, ignore ce message : ton mot de
+passe actuel reste valable.
+
+L'équipe Aphrodite

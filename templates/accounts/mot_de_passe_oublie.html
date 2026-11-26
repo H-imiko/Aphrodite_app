@@ -3,27 +3,19 @@
 {% block content %}
 <section class="card">
   <h1>Mot de passe oublié</h1>
+  <p class="muted">Indique l'adresse email de ton compte : tu recevras un lien
+     pour choisir un nouveau mot de passe.</p>
 
-  {% if envoye %}
-    <div class="msg">
-      Demande enregistrée. L'équipe te contacte sur WhatsApp pour vérifier ton
-      identité, puis te remet un mot de passe provisoire à remplacer dès ta
-      prochaine connexion.
-    </div>
-    <p class="muted">La vérification se fait manuellement : ta demande sera
-       traitée dès que possible.</p>
-    <p><a class="btn lien" href="{% url 'connexion' %}">Retour à la connexion</a></p>
-  {% else %}
-    <p class="muted">Indique l'adresse email de ton compte. L'équipe te répondra
-       en privé sur WhatsApp.</p>
-    {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
-    <form method="post">
-      {% csrf_token %}
-      <div class="formulaire">{% include "partials/champs.html" %}</div>
-      <button type="submit" class="btn">Envoyer la demande</button>
-    </form>
-    <p class="muted mt-12">Tu te souviens de ton mot de passe ?
-       <a href="{% url 'connexion' %}">Se connecter</a></p>
-  {% endif %}
+  {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="formulaire">{% include "partials/champs.html" %}</div>
+    <button type="submit" class="btn">Recevoir le lien</button>
+  </form>
+
+  <p class="muted mt-12">Tu te souviens de ton mot de passe ?
+     <a href="{% url 'connexion' %}">Se connecter</a></p>
+  <p class="muted">Plus d'accès à cette adresse ?
+     <a href="{% url 'mot_de_passe_sans_email' %}">Demander l'aide de l'équipe</a></p>
 </section>
 {% endblock %}

@@ -10,6 +10,7 @@ from django.contrib.auth import views as auth_views
 from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 
 from apps.commun.limites import depasse
 from apps.creators.models import Candidature
@@ -18,7 +19,7 @@ from apps.offrandes.models import Offrande, OffrandeEnvoyee
 from apps.shop.models import Item
 from apps.social.models import Abonnement
 from .forms import (InscriptionForm, MotDePasseOublieForm, ProfilForm,
-                    SuppressionCompteForm)
+                    ReinitialisationMotDePasseForm, SuppressionCompteForm)
 from .models import DemandeAcces
 from .services import (SuppressionRefusee, commandes_bloquantes,
                        fermer_compte)
@@ -108,23 +109,62 @@ def confidentialite(request):
     return render(request, "confidentialite.html")
 
 
-def mot_de_passe_oublie(request):
-    """Enregistre une demande ; l'equipe la traite depuis le panel.
+class MotDePasseOublieVue(auth_views.PasswordResetView):
+    """Envoie par email un lien pour choisir un nouveau mot de passe.
 
-    Aucun email n'est envoye (le projet n'a pas de service d'email) : la
-    reponse est la meme que l'adresse existe ou non, pour ne pas reveler
-    qui est inscrit.
+    La confirmation est la meme que l'adresse existe ou non : la page ne
+    revele pas qui est inscrit.
+    """
+
+    template_name = "accounts/mot_de_passe_oublie.html"
+    email_template_name = "accounts/emails/reinitialisation.txt"
+    subject_template_name = "accounts/emails/reinitialisation_sujet.txt"
+    form_class = ReinitialisationMotDePasseForm
+    success_url = reverse_lazy("mot_de_passe_envoye")
+
+    def post(self, request, *args, **kwargs):
+        if depasse("mot_de_passe_oublie", request):
+            return render(request, self.template_name, {
+                "form": self.get_form(),
+                "erreur_limite": ("Trop de demandes depuis ce réseau. "
+                                  "Réessaie plus tard.")}, status=429)
+        return super().post(request, *args, **kwargs)
+
+
+class ReinitialiserMotDePasseVue(auth_views.PasswordResetConfirmView):
+    """Le lien reçu par email permet de choisir un nouveau mot de passe."""
+
+    template_name = "accounts/reinitialiser_mot_de_passe.html"
+    success_url = reverse_lazy("connexion")
+
+    def form_valid(self, form):
+        reponse = super().form_valid(form)
+        # Le mot de passe choisi par le membre n'est plus provisoire.
+        User.objects.filter(pk=form.user.pk).update(
+            doit_changer_mot_de_passe=False)
+        messages.success(self.request,
+                         "Mot de passe changé. Tu peux te connecter.")
+        return reponse
+
+
+def demande_acces(request):
+    """Demande manuelle, pour un membre qui n'a plus acces a son email.
+
+    L'equipe verifie l'identite sur WhatsApp depuis le panel, puis genere
+    un mot de passe provisoire. La reponse est la meme que l'adresse existe
+    ou non, pour ne pas reveler qui est inscrit.
     """
     if request.method == "POST" and depasse("mot_de_passe_oublie", request):
-        return render(request, "accounts/mot_de_passe_oublie.html", {
+        return render(request, "accounts/mot_de_passe_demande.html", {
             "erreur_limite": ("Trop de demandes depuis ce réseau. "
                               "Réessaie plus tard.")}, status=429)
     form = MotDePasseOublieForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         DemandeAcces.objects.create(email=form.cleaned_data["email"])
-        return render(request, "accounts/mot_de_passe_oublie.html",
+        return render(request, "accounts/mot_de_passe_demande.html",
                       {"envoye": True})
-    return render(request, "accounts/mot_de_passe_oublie.html", {"form": form})
+    return render(request, "accounts/mot_de_passe_demande.html",
+                  {"form": form})
 
 
 def photo_membre(request, pk, champ):

@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import (PasswordResetForm, UserCreationForm)
 from django.core.files.uploadedfile import UploadedFile
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -37,6 +37,16 @@ class InscriptionForm(UserCreationForm):
 class MotDePasseOublieForm(forms.Form):
     email = forms.EmailField(
         label="Ton adresse email",
+        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
+    )
+
+
+class ReinitialisationMotDePasseForm(PasswordResetForm):
+    """Formulaire du lien envoye par email (Django gere l'envoi)."""
+
+    email = forms.EmailField(
+        label="Ton adresse email",
+        max_length=254,
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
 
