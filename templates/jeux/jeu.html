@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ infos.nom }} · Aphrodite{% endblock %}
+{% block content %}
+<section class="card center">
+  <h1>{{ infos.nom }}</h1>
+  <p class="muted">{{ infos.resume }}</p>
+  <p class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ user.solde_cubis }} Cubis</p>
+</section>
+
+{% if resultat %}
+<section class="card mt-16 resultat {% if resultat.gagne %}resultat-gagne{% else %}resultat-perdu{% endif %}">
+  {% if resultat.gagne %}
+    <h2>Gagné : +{{ resultat.gain }} Cubis</h2>
+    <p class="muted">Mise {{ resultat.mise }} · {{ resultat.detail }} · {{ resultat.date|date:"H:i" }}</p>
+  {% else %}
+    <h2>Perdu : -{{ resultat.mise }} Cubis</h2>
+    <p class="muted">Mise {{ resultat.mise }} · {{ resultat.detail }} · {{ resultat.date|date:"H:i" }}</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="card mt-16">
+  <h2>Miser</h2>
+  <p class="alerte-jeu">Jeu de hasard : tu peux gagner ou tout perdre.</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="jeu-form">
+      <div class="champ">
+        <label for="mise">Mise ({{ mise_min }} à {{ mise_max }} Cubis)</label>
+        <input type="number" id="mise" name="mise" min="{{ mise_min }}" max="{{ mise_max }}" step="1" value="{{ mise_min }}" required inputmode="numeric">
+      </div>
+      {% if jeu == "braquage" %}
+      <div class="champ">
+        <label for="niveau">Risque</label>
+        <select id="niveau" name="niveau">
+          {% for cle, reglage in niveaux.items %}
+          <option value="{{ cle }}">{{ reglage.nom }} · x{{ reglage.multiplicateur }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <button type="submit" class="btn">Jouer</button>
+    </div>
+  </form>
+  <p class="muted">Gain maximum : {{ infos.gain_max }} la mise.</p>
+</section>
+
+<p class="mt-16"><a class="petit" href="{% url 'jeux' %}">← Tous les mini-jeux</a></p>
+{% endblock %}

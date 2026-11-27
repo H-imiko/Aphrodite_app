@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Déminer · Aphrodite{% endblock %}
+{% block content %}
+<section class="card center">
+  <h1>Déminer</h1>
+  <p class="muted">Neuf cases, deux mines. Ouvre des cases pour multiplier ta mise, encaisse avant d'exploser.</p>
+  <p class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ user.solde_cubis }} Cubis</p>
+</section>
+
+{% if resultat and not en_cours %}
+<section class="card mt-16 resultat {% if resultat.gagne %}resultat-gagne{% else %}resultat-perdu{% endif %}">
+  {% if resultat.gagne %}
+    <h2>Encaissé : +{{ resultat.gain }} Cubis</h2>
+  {% else %}
+    <h2>Perdu : -{{ resultat.mise }} Cubis</h2>
+  {% endif %}
+  <p class="muted">Mise {{ resultat.mise }} · {{ resultat.detail }}</p>
+</section>
+{% endif %}
+
+{% if en_cours %}
+<section class="card mt-16">
+  <h2>Ta partie · {{ en_cours.mise }} Cubis engagés</h2>
+  <p class="alerte-jeu">Une mine et la mise est perdue.</p>
+  <div class="grille-mines" role="group" aria-label="Neuf cases">
+    {% for case in grille %}
+      {% if case.cliquable %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="ouvrir">
+        <input type="hidden" name="case" value="{{ case.index }}">
+        <button type="submit" class="case-mine" aria-label="Ouvrir la case {{ case.index|add:1 }}">?</button>
+      </form>
+      {% else %}
+      <div class="case-mine{% if case.mine %} mine{% elif case.ouverte %} ouverte{% endif %}" aria-hidden="true">
+        {% if case.mine %}💣{% elif case.ouverte %}✦{% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if gain_potentiel %}
+  <form method="post" class="mt-16">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="encaisser">
+    <button type="submit" class="btn">Encaisser {{ gain_potentiel }} Cubis</button>
+  </form>
+  {% else %}
+  <p class="muted">Ouvre une case pour débloquer l'encaissement.</p>
+  {% endif %}
+</section>
+{% else %}
+<section class="card mt-16">
+  <h2>Nouvelle partie</h2>
+  <p class="alerte-jeu">Jeu de hasard : tu peux gagner ou tout perdre.</p>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="nouvelle">
+    <div class="jeu-form">
+      <div class="champ">
+        <label for="mise">Mise ({{ mise_min }} à {{ mise_max }} Cubis)</label>
+        <input type="number" id="mise" name="mise" min="{{ mise_min }}" max="{{ mise_max }}" step="1" value="{{ mise_min }}" required inputmode="numeric">
+      </div>
+      <button type="submit" class="btn">Lancer la partie</button>
+    </div>
+  </form>
+  <p class="muted">Gain maximum : x2 la mise.</p>
+</section>
+{% endif %}
+
+<p class="mt-16"><a class="petit" href="{% url 'jeux' %}">← Tous les mini-jeux</a></p>
+{% endblock %}

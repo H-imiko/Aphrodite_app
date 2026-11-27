@@ -327,3 +327,40 @@
 .podium-chiffres dt { font-size: .68em; letter-spacing: .08em;
   text-transform: uppercase; color: rgba(255, 255, 255, .55); }
 .podium-chiffres dd { margin: 0; font-weight: 700; }
+
+/* ===== Mini-jeux ===== */
+.alerte-jeu { font-size: .86em; letter-spacing: .03em; color: var(--soft);
+  border-left: 3px solid var(--rose); padding-left: 10px; margin: 8px 0 14px; }
+.jeux-grille { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 760px) { .jeux-grille { grid-template-columns: repeat(3, 1fr); } }
+.jeu-carte { display: flex; flex-direction: column; gap: 6px; padding: 16px;
+  border-radius: 16px; border: 1px solid var(--line); background: var(--card);
+  color: var(--text); text-decoration: none; transition: transform .2s, border-color .2s; }
+.jeu-carte:hover, .jeu-carte:focus-visible { transform: translateY(-2px);
+  border-color: var(--line-fort); }
+.jeu-carte strong { font-family: var(--titre); font-size: 1.05em; }
+.jeu-carte .muted { font-size: .82em; line-height: 1.35; }
+.jeu-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 8px; }
+.jeu-tags span { font-size: .72em; text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--muted); }
+.jeu-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.jeu-form .champ { flex: 1 1 160px; }
+.jeu-form input[type="number"], .jeu-form select { width: 100%; }
+.jeu-form .btn { flex: 0 0 auto; }
+.resultat { border-color: var(--line-fort); }
+.resultat-gagne { border-color: rgba(120, 255, 190, .45); }
+.resultat-gagne h2 { color: #8ff0c0; }
+.resultat-perdu h2 { color: var(--soft); }
+.perdu { font-weight: 700; color: var(--soft); }
+.grille-mines { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin: 14px 0 0; }
+.grille-mines form { margin: 0; }
+.case-mine { display: flex; align-items: center; justify-content: center;
+  width: 100%; aspect-ratio: 1; border-radius: 14px; font-size: 1.5em;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, .04);
+  color: var(--text); }
+.case-mine[type="submit"], button.case-mine { cursor: pointer; }
+button.case-mine:hover { border-color: var(--line-fort); background: rgba(255, 46, 147, .12); }
+.case-mine.ouverte { background: rgba(255, 46, 147, .14); border-color: var(--line-fort); }
+.case-mine.mine { background: rgba(255, 80, 80, .22); border-color: rgba(255, 80, 80, .5); }

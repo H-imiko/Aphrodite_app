@@ -223,3 +223,17 @@ Autres points trouvés pendant le même audit :
   Vérifié de bout en bout : collectstatic, waitress, 200 sur les pages, CSS
   avec empreinte servi, 404 personnalisée, `X-Forwarded-For` pris en compte
   uniquement depuis le proxy.
+
+### Mini-jeux — 27 novembre 2026
+
+- **Cinq mini-jeux** (`/jeux/`) : Pile ou Face, Roue de la Fortune, Poker Bot,
+  Braquage (trois niveaux de risque), Déminer (9 cases, 2 mines, encaissement
+  possible à tout moment). Tirages et règlement **côté serveur uniquement**.
+- **Garde-fous** : mise de 5 à 30 Cubis, 8 parties par jour, perte plafonnée à
+  100 Cubis par jour, consolation de 5 à 10 Cubis à la 3e perte d'affilée,
+  une seule partie de Déminer en cours à la fois.
+- **Espérance sous 1** sur les cinq jeux (45 à 55 % de chance de gain) : les
+  Cubis perdus sont détruits, le Trésor ne se vide pas. Réglages :
+  `JEU_MISE_MIN`, `JEU_MISE_MAX`, `JEU_PARTIES_PAR_JOUR`, `JEU_PERTE_JOUR_MAX`.
+- Nouveau type de transaction `jeu` (`Transaction.Type.JEU`) : chaque partie
+  laisse une ligne dans l'historique des Cubis. 24 tests.

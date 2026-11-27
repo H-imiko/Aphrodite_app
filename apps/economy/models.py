@@ -16,6 +16,7 @@ class Transaction(models.Model):
         SEQUESTRE = "sequestre", "Cubis bloqués (commande)"
         LIBERATION = "liberation", "Paiement d'une commande"
         OFFRANDE = "offrande", "Offrande (Cubis détruits)"
+        JEU = "jeu", "Mini-jeu"
 
     # expediteur vide = Trésor (système)
     expediteur = models.ForeignKey(

@@ -15,4 +15,5 @@ urlpatterns = [
     path('', include('apps.notifications.urls')),
     path('', include('apps.social.urls')),
     path('', include('apps.offrandes.urls')),
+    path('', include('apps.jeux.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

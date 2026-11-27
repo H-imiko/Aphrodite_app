@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'apps.notifications',
     'apps.social',
     'apps.offrandes',
+    'apps.jeux',
     'apps.maintenance',
 ]
 
@@ -305,6 +306,14 @@ PRIME_MIN_LIKES = 5
 # 0 desactive le plafond (deconseille).
 BONUS_PLAFOND_APPAREIL = int(os.environ.get("DJANGO_BONUS_PLAFOND_APPAREIL", "3"))
 
+# Mini-jeux : bornes de mise et garde-fous. Les tirages sont regles pour que
+# l'esperance reste sous 1 (le Tresor ne s'epuise pas) et la perte du jour
+# plafonnee, pour qu'un membre ne puisse pas tout perdre d'un coup.
+JEU_MISE_MIN = int(os.environ.get("DJANGO_JEU_MISE_MIN", "5"))
+JEU_MISE_MAX = int(os.environ.get("DJANGO_JEU_MISE_MAX", "30"))
+JEU_PARTIES_PAR_JOUR = int(os.environ.get("DJANGO_JEU_PARTIES_PAR_JOUR", "8"))
+JEU_PERTE_JOUR_MAX = int(os.environ.get("DJANGO_JEU_PERTE_JOUR_MAX", "100"))
+
 # Limitation de debit : (nombre d'essais, duree en secondes). Voir
 # apps/commun/limites.py. Un cache partage (Redis) est conseille si le site
 # tourne sur plusieurs processus.
@@ -318,6 +327,7 @@ LIMITES = {
     "signalement": (10, 600),
     "transfert": (20, 600),
     "tresor": (30, 600),
+    "jeu": (30, 600),
     "mot_de_passe_oublie": (5, 900),
 }
 PRIX_CONSEILLES = {

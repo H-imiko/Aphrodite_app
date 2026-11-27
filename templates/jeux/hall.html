@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Mini-jeux · Aphrodite{% endblock %}
+{% block content %}
+<section class="card center">
+  <h1>Mini-jeux</h1>
+  <p class="alerte-jeu">Jeu de hasard : tu peux gagner ou tout perdre.</p>
+  <h2 class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ user.solde_cubis }} Cubis</h2>
+  <p class="muted">
+    Mise de {{ mise_min }} à {{ mise_max }} Cubis ·
+    {{ parties_restantes }} partie(s) restante(s) aujourd'hui ·
+    pertes du jour : {{ pertes }}/{{ perte_max }}
+  </p>
+</section>
+
+{% if en_cours %}
+<section class="card mt-16">
+  <h2>Déminer en cours</h2>
+  <p class="muted">{{ en_cours.mise }} Cubis engagés. Termine cette partie avant d'en lancer une autre.</p>
+  <a class="btn" href="{% url 'demineur' %}">Reprendre la partie</a>
+</section>
+{% endif %}
+
+<section class="jeux-grille mt-16">
+  {% for cle, infos in jeux.items %}
+  <a class="jeu-carte" href="{% url 'jeu' cle %}">
+    <strong>{{ infos.nom }}</strong>
+    <span class="muted">{{ infos.resume }}</span>
+    <span class="jeu-tags"><span>{{ infos.risque }}</span><span>{{ infos.gain_max }}</span></span>
+  </a>
+  {% endfor %}
+</section>
+
+<section class="card mt-16">
+  <h2>Mes dernières parties</h2>
+  {% for partie in historique %}
+  <div class="ligne">
+    <div>
+      <strong>{{ partie.get_jeu_display }}</strong><br>
+      <span class="muted">mise {{ partie.mise }} · {{ partie.date|date:"d/m/Y H:i" }}{% if partie.detail %} · {{ partie.detail }}{% endif %}</span>
+    </div>
+    <div class="{% if partie.gagne %}plus{% else %}perdu{% endif %}">
+      {% if partie.gagne %}+{{ partie.gain }}{% else %}-{{ partie.mise }}{% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <p class="muted">Aucune partie pour l'instant. La mise minimale est de {{ mise_min }} Cubis.</p>
+  {% endfor %}
+</section>
+{% endblock %}
