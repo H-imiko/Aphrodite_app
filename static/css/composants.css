@@ -135,6 +135,23 @@ input[type=file] { padding: 9px; }
   transition: background .2s, color .2s; }
 .icone-nav:hover { background: rgba(255, 46, 147, .16); color: var(--text); }
 .icone-nav svg { width: 21px; height: 21px; }
+.icone-nav .manette-nav { display: block; width: 26px; height: 26px;
+  filter: drop-shadow(0 0 5px rgba(255, 46, 147, .45)); transition: filter .2s; }
+.icone-nav:hover .manette-nav { filter: drop-shadow(0 0 9px rgba(255, 46, 147, .9)); }
+.manette-carte { display: block; width: 96px; height: 96px;
+  margin: 0 auto var(--e-2); filter: drop-shadow(0 0 20px rgba(255, 46, 147, .35)); }
+/* En-tete compact sur telephone : les cinq icones et le solde tiennent
+   sans deborder horizontalement (le solde reste accessible par la barre). */
+@media (max-width: 600px) {
+  .nav { padding: var(--e-2) 10px; }
+  .nav nav { gap: var(--e-1); }
+  .logo { font-size: .9rem; letter-spacing: .08em; }
+  .icone-nav { width: 32px; height: 32px; }
+  .icone-nav svg { width: 19px; height: 19px; }
+  .icone-nav .manette-nav { width: 22px; height: 22px; }
+  .solde-nav { padding: 3px 8px 3px 6px; font-size: var(--t-sm); }
+  .nav-avatar img, .nav-avatar span { width: 30px; height: 30px; }
+}
 
 /* ===== Accessibilite : cibles tactiles, focus, etats ===== */
 .lien-evitement { position: absolute; left: -9999px; top: 0; z-index: 100;

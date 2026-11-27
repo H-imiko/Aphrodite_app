@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Aphrodite{% endblock %}</title>
   {% comment %} ?v= : changer cette valeur à chaque modification du CSS, sinon les navigateurs gardent l'ancienne feuille en cache. {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261123">
-  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261123">
-  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261123">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261127">
+  <link rel="stylesheet" href="{% static 'css/composants.css' %}?v=20261127">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}?v=20261127">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}avec-nav{% endif %}">
@@ -25,6 +25,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 21 8l-9 5-9-5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
         {% if nb_commandes_a_traiter %}<span class="pastille">{{ nb_commandes_a_traiter }}</span>{% endif %}
 </a>
+      <a class="icone-nav" href="{% url 'jeux' %}" title="Mini-jeux" aria-label="Mini-jeux">
+        <img class="manette-nav" src="{% static 'images/icons/manette.svg' %}" alt="">
+      </a>
       <a class="icone-nav icone-commandes" href="{% url 'notifications' %}" title="Notifications" aria-label="Notifications">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15v-4a6 6 0 1 0-12 0v4l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
         {% if nb_notifications %}<span class="pastille">{{ nb_notifications }}</span>{% endif %}

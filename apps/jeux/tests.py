@@ -244,6 +244,14 @@ class VuesTests(TestCase):
         self.assertEqual(reponse.status_code, 200)
         self.assertContains(reponse, "Jeu de hasard")
 
+    def test_icone_manette_dans_la_navigation(self):
+        self.client.force_login(self.joueur)
+
+        reponse = self.client.get(reverse("boutique"))
+
+        self.assertContains(reponse, 'href="{}"'.format(reverse("jeux")))
+        self.assertContains(reponse, "manette.svg")
+
     def test_jouer_par_post(self):
         self.client.force_login(self.joueur)
         # La connexion sert le bonus du jour : on part du solde réel d'après

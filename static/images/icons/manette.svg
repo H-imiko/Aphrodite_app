@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img">
+  <defs>
+    <linearGradient id="corps" x1="12" y1="4" x2="12" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2c0f45"/>
+      <stop offset="1" stop-color="#12061f"/>
+    </linearGradient>
+    <linearGradient id="neon" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff9ad8"/>
+      <stop offset=".5" stop-color="#ff2e93"/>
+      <stop offset="1" stop-color="#b13bff"/>
+    </linearGradient>
+    <filter id="lueur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation=".8" result="flou"/>
+      <feMerge>
+        <feMergeNode in="flou"/>
+        <feMergeNode in="flou"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#lueur)" stroke="url(#neon)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.544-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5Z" fill="url(#corps)" stroke-width="1.25"/>
+    <path d="M6.4 10.6h3.2M8 9v3.2" stroke-width="1.4"/>
+    <g fill="url(#neon)" stroke="none">
+      <circle cx="16.6" cy="10.4" r=".78"/>
+      <circle cx="18.2" cy="12" r=".78"/>
+      <circle cx="16.6" cy="13.6" r=".78"/>
+      <circle cx="15" cy="12" r=".78"/>
+    </g>
+  </g>
+</svg>
