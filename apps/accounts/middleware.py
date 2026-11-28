@@ -1,8 +1,31 @@
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils import translation
 
 # Pages accessibles meme quand un mot de passe provisoire doit etre change.
 CHEMINS_LIBRES = ("/static/", "/media/", "/private_media/")
+
+
+class LangueUtilisateurMiddleware:
+    """Affiche le site dans la langue choisie dans les parametres.
+
+    LocaleMiddleware a deja lu la session, le cookie et l'en-tete du
+    navigateur ; la langue du profil est plus explicite, elle gagne.
+    """
+
+    CODES = {code for code, _ in settings.LANGUAGES}
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        user = getattr(request, "user", None)
+        code = getattr(user, "langue", "") if user and user.is_authenticated else ""
+        if code in self.CODES:
+            translation.activate(code)
+            request.LANGUAGE_CODE = code
+        return self.get_response(request)
 
 
 class MotDePasseProvisoireMiddleware:

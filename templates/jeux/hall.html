@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}Mini-jeux · Aphrodite{% endblock %}
+{% load static i18n %}
+{% block title %}{% translate "Mini-jeux" %} · Aphrodite{% endblock %}
 {% block content %}
 <section class="card center">
-  <h1>Mini-jeux</h1>
-  <p class="alerte-jeu">Jeu de hasard : tu peux gagner ou tout perdre.</p>
+  <h1>{% translate "Mini-jeux" %}</h1>
+  <p class="alerte-jeu">{% translate "Jeu de hasard : tu peux gagner ou tout perdre." %}</p>
   <h2 class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {{ user.solde_cubis }} Cubis</h2>
   <p class="muted">
-    Mise de {{ mise_min }} à {{ mise_max }} Cubis ·
-    {{ parties_restantes }} partie(s) restante(s) aujourd'hui ·
-    pertes du jour : {{ pertes }}/{{ perte_max }}
+    {% blocktranslate %}Mise de {{ mise_min }} à {{ mise_max }} Cubis{% endblocktranslate %} ·
+    {% blocktranslate count n=parties_restantes %}{{ n }} partie restante aujourd'hui{% plural %}{{ n }} parties restantes aujourd'hui{% endblocktranslate %} ·
+    {% translate "pertes du jour" %} : {{ pertes }}/{{ perte_max }}
   </p>
 </section>
 
 {% if en_cours %}
 <section class="card mt-16">
-  <h2>Déminer en cours</h2>
-  <p class="muted">{{ en_cours.mise }} Cubis engagés. Termine cette partie avant d'en lancer une autre.</p>
-  <a class="btn" href="{% url 'demineur' %}">Reprendre la partie</a>
+  <h2>{% translate "Déminer en cours" %}</h2>
+  <p class="muted">{% blocktranslate with mise=en_cours.mise %}{{ mise }} Cubis engagés. Termine cette partie avant d'en lancer une autre.{% endblocktranslate %}</p>
+  <a class="btn" href="{% url 'demineur' %}">{% translate "Reprendre la partie" %}</a>
 </section>
 {% endif %}
 
@@ -32,19 +32,19 @@
 </section>
 
 <section class="card mt-16">
-  <h2>Mes dernières parties</h2>
+  <h2>{% translate "Mes dernières parties" %}</h2>
   {% for partie in historique %}
   <div class="ligne">
     <div>
       <strong>{{ partie.get_jeu_display }}</strong><br>
-      <span class="muted">mise {{ partie.mise }} · {{ partie.date|date:"d/m/Y H:i" }}{% if partie.detail %} · {{ partie.detail }}{% endif %}</span>
+      <span class="muted">{% translate "mise" %} {{ partie.mise }} · {{ partie.date|date:"d/m/Y H:i" }}{% if partie.detail %} · {{ partie.detail }}{% endif %}</span>
     </div>
     <div class="{% if partie.gagne %}plus{% else %}perdu{% endif %}">
       {% if partie.gagne %}+{{ partie.gain }}{% else %}-{{ partie.mise }}{% endif %}
     </div>
   </div>
   {% empty %}
-  <p class="muted">Aucune partie pour l'instant. La mise minimale est de {{ mise_min }} Cubis.</p>
+  <p class="muted">{% blocktranslate with mise=mise_min %}Aucune partie pour l'instant. La mise minimale est de {{ mise }} Cubis.{% endblocktranslate %}</p>
   {% endfor %}
 </section>
 {% endblock %}

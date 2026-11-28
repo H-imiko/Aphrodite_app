@@ -1,26 +1,26 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
 <section class="card center">
-  <p class="muted">Ton solde</p>
+  <p class="muted">{% translate "Ton solde" %}</p>
   <h1 class="solde"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt="Cubis"> {% if user.est_divinite %}∞{% else %}{{ user.solde_cubis }}{% endif %} Cubis</h1>
-  <p class="muted">Série de connexion : {{ user.serie_connexion }} jour(s)</p>
-  <a class="petit" href="{% url 'transactions' %}"> Voir mes transactions</a>
+  <p class="muted">{% blocktranslate count n=user.serie_connexion %}Série de connexion : {{ n }} jour{% plural %}Série de connexion : {{ n }} jours{% endblocktranslate %}</p>
+  <a class="petit" href="{% url 'transactions' %}"> {% translate "Voir mes transactions" %}</a>
 </section>
 
 <section class="card center mt-16">
   <img class="manette-carte" src="{% static 'images/icons/manette.svg' %}" alt="">
-  <h2>Jeux</h2>
-  <p class="muted">Pile ou Face, Roue de la Fortune, Poker Bot, Braquage, Déminer. Jeu de hasard : tu peux gagner ou tout perdre.</p>
-  <a class="btn" href="{% url 'jeux' %}">Jouer des Cubis</a>
+  <h2>{% translate "Jeux" %}</h2>
+  <p class="muted">{% translate "Pile ou Face, Roue de la Fortune, Poker Bot, Braquage, Déminer. Jeu de hasard : tu peux gagner ou tout perdre." %}</p>
+  <a class="btn" href="{% url 'jeux' %}">{% translate "Jouer des Cubis" %}</a>
 </section>
 
 <section class="card mt-16" >
-  <h2>Offrir des Cubis</h2>
+  <h2>{% translate "Offrir des Cubis" %}</h2>
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
-    <button type="submit" class="btn">Envoyer</button>
+    <button type="submit" class="btn">{% translate "Envoyer" %}</button>
 </form>
 </section>
 {% endblock %}

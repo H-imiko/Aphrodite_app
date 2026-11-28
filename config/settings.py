@@ -142,10 +142,14 @@ MIDDLEWARE = [
     # Sert les fichiers statiques depuis le processus Django (production).
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Choix de la langue : session, cookie, puis en-tete Accept-Language.
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # La langue enregistree sur le profil prime sur celle du navigateur.
+    'apps.accounts.middleware.LangueUtilisateurMiddleware',
     'apps.accounts.middleware.MotDePasseProvisoireMiddleware',
     'apps.moderation.middleware.ModerationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -163,6 +167,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
                 'apps.orders.context.commandes_a_traiter',
             ],
         },
@@ -244,7 +249,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
+# Langues proposees dans les parametres. Le francais est la langue source :
+# les textes du code sont ecrits en francais, les traductions vivent dans
+# locale/<code>/LC_MESSAGES/django.po (compile en .mo).
 LANGUAGE_CODE = 'fr'
+
+LANGUAGES = [
+    ('fr', 'Français'),
+    ('en', 'English'),
+    ('es', 'Español'),
+]
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 TIME_ZONE = 'Africa/Brazzaville'
 

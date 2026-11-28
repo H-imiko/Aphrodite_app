@@ -1,15 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Connexion" %} — Aphrodite{% endblock %}
 {% block content %}
 <section class="card">
-  <h1>Connexion</h1>
+  <h1>{% translate "Connexion" %}</h1>
   {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
-    <button type="submit" class="btn">Entrer</button>
+    <button type="submit" class="btn">{% translate "Entrer" %}</button>
   </form>
   <p class="muted mt-12">
-    <a href="{% url 'mot_de_passe_oublie' %}">Mot de passe oublié ?</a>
+    <a href="{% url 'mot_de_passe_oublie' %}">{% translate "Mot de passe oublié ?" %}</a>
   </p>
 </section>
 {% endblock %}

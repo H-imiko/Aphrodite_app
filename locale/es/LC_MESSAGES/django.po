@@ -1,0 +1,710 @@
+# Traducción al español de Aphrodite.
+# El idioma de origen es el francés: los msgid son los textos del código.
+msgid ""
+msgstr ""
+"Project-Id-Version: Aphrodite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-28 12:00+0000\n"
+"PO-Revision-Date: 2026-11-28 12:00+0000\n"
+"Last-Translator: Safir\n"
+"Language-Team: Español\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "%(mise)s Cubis engagés. Termine cette partie avant d'en lancer une autre."
+msgstr "%(mise)s Cubis en juego. Termina esta partida antes de empezar otra."
+
+msgid "%(n)s article"
+msgid_plural "%(n)s articles"
+msgstr[0] "%(n)s artículo"
+msgstr[1] "%(n)s artículos"
+
+msgid "%(n)s j'aime"
+msgid_plural "%(n)s j'aime"
+msgstr[0] "%(n)s me gusta"
+msgstr[1] "%(n)s me gusta"
+
+msgid "%(n)s partie restante aujourd'hui"
+msgid_plural "%(n)s parties restantes aujourd'hui"
+msgstr[0] "%(n)s partida restante hoy"
+msgstr[1] "%(n)s partidas restantes hoy"
+
+msgid "500 caractères maximum."
+msgstr "Máximo 500 caracteres."
+
+msgid "Abonnements"
+msgstr "Siguiendo"
+
+msgid "Abonné"
+msgstr "Siguiendo"
+
+msgid "Abonnés"
+msgstr "Seguidores"
+
+msgid "Aller au contenu"
+msgstr "Ir al contenido"
+
+msgid "Annuler"
+msgstr "Cancelar"
+
+msgid "Annuler, je garde mon compte"
+msgstr "Cancelar, me quedo con mi cuenta"
+
+msgid "Aperçu"
+msgstr "Vista previa"
+
+msgid "Aphrodite — le monde permanent de la communauté"
+msgstr "Aphrodite — el mundo permanente de la comunidad"
+
+msgid "Articles"
+msgstr "Artículos"
+
+msgid "Assassin"
+msgstr "Asesino"
+
+msgid "Aucun article ne correspond à ta recherche."
+msgstr "Ningún artículo coincide con tu búsqueda."
+
+msgid "Aucune notification pour l'instant."
+msgstr "No hay notificaciones por ahora."
+
+msgid "Aucune offrande pour l'instant."
+msgstr "Aún no hay ofrendas."
+
+msgid "Aucune partie pour l'instant. La mise minimale est de %(mise)s Cubis."
+msgstr "Aún no hay partidas. La apuesta mínima es de %(mise)s Cubis."
+
+msgid "Aucune sauvegarde de ton profil ne sera conservée."
+msgstr "No se conservará ninguna copia de tu perfil."
+
+msgid "Bannière"
+msgstr "Portada"
+
+msgid "Bienvenue sur Aphrodite ✨ Personnalise ton profil !"
+msgstr "¡Bienvenido a Aphrodite ✨ Personaliza tu perfil!"
+
+msgid "Biographie"
+msgstr "Biografía"
+
+msgid "Biographie RP"
+msgstr "Biografía RP"
+
+msgid "Boutique"
+msgstr "Tienda"
+
+msgid "Bulle de pensée (court)"
+msgstr "Burbuja de pensamiento (breve)"
+
+msgid "Cadeaux"
+msgstr "Regalos"
+
+msgid "Candidature en attente"
+msgstr "Candidatura pendiente"
+
+msgid "Ce lien n'est plus valide : il a déjà servi ou il a expiré."
+msgstr "Este enlace ya no es válido: ya se usó o ha caducado."
+
+msgid "Ce que les autres membres voient de toi. L'aperçu se met à jour pendant que tu écris."
+msgstr "Lo que los demás miembros ven de ti. La vista previa se actualiza mientras escribes."
+
+msgid "Ce que tu y trouves"
+msgstr "Lo que encontrarás"
+
+msgid "Ce qui disparaît"
+msgstr "Lo que desaparece"
+
+msgid "Ce qui reste"
+msgstr "Lo que permanece"
+
+msgid "Cette action est définitive."
+msgstr "Esta acción es definitiva."
+
+msgid "Changer"
+msgstr "Cambiar"
+
+msgid "Changer mon mot de passe"
+msgstr "Cambiar mi contraseña"
+
+msgid "Choisis un mot de passe pour ton compte."
+msgstr "Elige una contraseña para tu cuenta."
+
+msgid "Choisis une image : une fenêtre s'ouvre pour la recadrer avant l'envoi."
+msgstr "Elige una imagen: se abre una ventana para recortarla antes de enviarla."
+
+msgid "Commande #%(num)s"
+msgstr "Pedido #%(num)s"
+
+msgid "Commander une création"
+msgstr "Encargar una creación"
+
+msgid "Commandes, messages, modération"
+msgstr "Pedidos, mensajes, moderación"
+
+msgid "Connexion"
+msgstr "Iniciar sesión"
+
+msgid "Créateur"
+msgstr "Creador"
+
+msgid "Créateur validé"
+msgstr "Creador verificado"
+
+msgid "Créateurs du mois"
+msgstr "Creadores del mes"
+
+msgid "Créations"
+msgstr "Creaciones"
+
+msgid "Créer mon compte"
+msgstr "Crear mi cuenta"
+
+msgid "Créer mon profil"
+msgstr "Crear mi perfil"
+
+msgid "Date de naissance (facultative)"
+msgstr "Fecha de nacimiento (opcional)"
+
+msgid "Demande d'accès"
+msgstr "Solicitud de acceso"
+
+msgid "Demande enregistrée. L'équipe te contacte sur WhatsApp pour vérifier ton identité, puis te remet un mot de passe provisoire à remplacer dès ta prochaine connexion."
+msgstr "Solicitud registrada. El equipo te contactará por WhatsApp para verificar tu identidad y luego te dará una contraseña provisional que deberás cambiar en tu próximo inicio de sesión."
+
+msgid "Demander l'aide de l'équipe"
+msgstr "Pedir ayuda al equipo"
+
+msgid "Demander un nouveau lien"
+msgstr "Pedir un nuevo enlace"
+
+msgid "Dernière étape : présente tes créations pour devenir Créateur 🎨"
+msgstr "Último paso: presenta tus creaciones para ser Creador 🎨"
+
+msgid "Devenir Créateur"
+msgstr "Ser Creador"
+
+msgid "Divinité"
+msgstr "Divinidad"
+
+msgid "Déconnexion"
+msgstr "Cerrar sesión"
+
+msgid "Déesse"
+msgstr "Diosa"
+
+msgid "Déminer en cours"
+msgstr "Buscaminas en curso"
+
+msgid "Démon"
+msgstr "Demonio"
+
+msgid "Déplace et zoome l'image (pince ou molette)."
+msgstr "Mueve y amplía la imagen (pellizco o rueda)."
+
+msgid "Email"
+msgstr "Correo"
+
+msgid "Email envoyé"
+msgstr "Correo enviado"
+
+msgid "Empereur"
+msgstr "Emperador"
+
+msgid "En créant ton profil, tu acceptes <a href=\"%(url_reglement)s\">le règlement</a>."
+msgstr "Al crear tu perfil aceptas <a href=\"%(url_reglement)s\">el reglamento</a>."
+
+msgid "Enregistrer"
+msgstr "Guardar"
+
+msgid "Enregistrer le mot de passe"
+msgstr "Guardar la contraseña"
+
+msgid "Enregistrer le nouveau mot de passe"
+msgstr "Guardar la nueva contraseña"
+
+msgid "Entrer"
+msgstr "Entrar"
+
+msgid "Envoyer"
+msgstr "Enviar"
+
+msgid "Envoyer la demande"
+msgstr "Enviar la solicitud"
+
+msgid "Envoyer une offrande"
+msgstr "Enviar una ofrenda"
+
+msgid "Ex : Reine des ombres 🌙"
+msgstr "Ej.: Reina de las sombras 🌙"
+
+msgid "Fantôme"
+msgstr "Fantasma"
+
+msgid "Favoris"
+msgstr "Favoritos"
+
+msgid "Humain"
+msgstr "Humano"
+
+msgid "Identité"
+msgstr "Identidad"
+
+msgid "Image trop lourde (%(limite)s Mo maximum)."
+msgstr "Imagen demasiado pesada (%(limite)s MB como máximo)."
+
+msgid "Impératrice"
+msgstr "Emperatriz"
+
+msgid "Incube"
+msgstr "Íncubo"
+
+msgid "Indique l'adresse email de ton compte : tu recevras un lien pour choisir un nouveau mot de passe."
+msgstr "Indica el correo de tu cuenta: recibirás un enlace para elegir una nueva contraseña."
+
+msgid "Inscription"
+msgstr "Registro"
+
+msgid "Inventaire"
+msgstr "Inventario"
+
+msgid "J'accepte <a href=\"%(reglement)s\">le règlement</a> et la <a href=\"%(confidentialite)s\">confidentialité</a>"
+msgstr "Acepto <a href=\"%(reglement)s\">el reglamento</a> y la <a href=\"%(confidentialite)s\">privacidad</a>"
+
+msgid "J'accepte le règlement de la communauté"
+msgstr "Acepto el reglamento de la comunidad"
+
+msgid "J'ai déjà un compte"
+msgstr "Ya tengo una cuenta"
+
+msgid "Je comprends que mon profil et mes données personnelles seront effacés et que je ne pourrai pas les récupérer."
+msgstr "Entiendo que mi perfil y mis datos personales se borrarán y que no podré recuperarlos."
+
+msgid "Jeu de hasard : tu peux gagner ou tout perdre."
+msgstr "Juego de azar: puedes ganar o perderlo todo."
+
+msgid "Jeux"
+msgstr "Juegos"
+
+msgid "Jouer des Cubis"
+msgstr "Jugar Cubis"
+
+msgid "L'inscription prend une minute. Tu choisis ton profil, tu reçois tes premiers Cubis, et le monde est à toi."
+msgstr "El registro lleva un minuto. Eliges tu perfil, recibes tus primeros Cubis y el mundo es tuyo."
+
+msgid "La monnaie du monde. Tu en gagnes chaque jour, tu en dépenses en boutique, tu en offres aux autres membres. Aucun argent réel n'entre ici."
+msgstr "La moneda del mundo. Ganas cada día, la gastas en la tienda y la regalas a otros miembros. Aquí no entra dinero real."
+
+msgid "La vérification se fait manuellement : ta demande sera traitée dès que possible."
+msgstr "La verificación es manual: tu solicitud se atenderá lo antes posible."
+
+msgid "Langue"
+msgstr "Idioma"
+
+msgid "Langue de l'interface"
+msgstr "Idioma de la interfaz"
+
+msgid "Langue enregistrée."
+msgstr "Idioma guardado."
+
+msgid "Langue inconnue."
+msgstr "Idioma desconocido."
+
+msgid "Le changer, ou remplacer un mot de passe provisoire"
+msgstr "Cambiarla, o sustituir una contraseña provisional"
+
+msgid "Le lien est valable une heure. Pense à regarder dans les indésirables."
+msgstr "El enlace es válido una hora. Mira también en el correo no deseado."
+
+msgid "Le règlement"
+msgstr "El reglamento"
+
+msgid "Les Cubis"
+msgstr "Los Cubis"
+
+msgid "Les commandes terminées, les offrandes reçues et les transactions restent enregistrées sans ton identité : elles appartiennent aussi aux autres membres et servent de preuve en cas de litige."
+msgstr "Los pedidos terminados, las ofrendas recibidas y las transacciones se conservan sin tu identidad: también pertenecen a otros miembros y sirven de prueba en caso de disputa."
+
+msgid "Les créateurs du mois"
+msgstr "Los creadores del mes"
+
+msgid "Les pages, les boutons et les messages s'affichent dans la langue choisie. Le choix est gardé sur ton compte, sur tous tes appareils."
+msgstr "Las páginas, los botones y los mensajes aparecen en el idioma elegido. La elección se guarda en tu cuenta, en todos tus dispositivos."
+
+msgid "Les règles du monde : respect, contenus, Cubis, boutique, sanctions."
+msgstr "Las reglas del mundo: respeto, contenidos, Cubis, tienda, sanciones."
+
+msgid "Lire le règlement"
+msgstr "Leer el reglamento"
+
+msgid "Mage"
+msgstr "Mago"
+
+msgid "Membre depuis"
+msgstr "Miembro desde"
+
+msgid "Mes cadeaux"
+msgstr "Mis regalos"
+
+msgid "Mes commandes"
+msgstr "Mis pedidos"
+
+msgid "Mes dernières parties"
+msgstr "Mis últimas partidas"
+
+msgid "Mes favoris"
+msgstr "Mis favoritos"
+
+msgid "Mini-jeux"
+msgstr "Minijuegos"
+
+msgid "Mise de %(mise_min)s à %(mise_max)s Cubis"
+msgstr "Apuesta de %(mise_min)s a %(mise_max)s Cubis"
+
+msgid "Modifier"
+msgstr "Editar"
+
+msgid "Modifier mon profil"
+msgstr "Editar mi perfil"
+
+msgid "Modérer"
+msgstr "Moderar"
+
+msgid "Mon compte"
+msgstr "Mi cuenta"
+
+msgid "Mon fil"
+msgstr "Mi feed"
+
+msgid "Mon inventaire"
+msgstr "Mi inventario"
+
+msgid "Mon profil"
+msgstr "Mi perfil"
+
+msgid "Monde RP · communauté WhatsApp"
+msgstr "Mundo RP · comunidad WhatsApp"
+
+msgid "Mot de passe"
+msgstr "Contraseña"
+
+msgid "Mot de passe changé."
+msgstr "Contraseña cambiada."
+
+msgid "Mot de passe changé. Tu peux te connecter."
+msgstr "Contraseña cambiada. Ya puedes iniciar sesión."
+
+msgid "Mot de passe incorrect."
+msgstr "Contraseña incorrecta."
+
+msgid "Mot de passe oublié"
+msgstr "Contraseña olvidada"
+
+msgid "Mot de passe oublié ?"
+msgstr "¿Has olvidado la contraseña?"
+
+msgid "Neko"
+msgstr "Neko"
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "Nouveau mot de passe"
+msgstr "Nueva contraseña"
+
+msgid "Numéro WhatsApp (jamais public, visible seulement lors d'une commande)"
+msgstr "Número de WhatsApp (nunca público, solo visible al hacer un pedido)"
+
+msgid "Officiel"
+msgstr "Oficial"
+
+msgid "Offrandes reçues"
+msgstr "Ofrendas recibidas"
+
+msgid "Offrir"
+msgstr "Regalar"
+
+msgid "Offrir des Cubis"
+msgstr "Regalar Cubis"
+
+msgid "Page %(numero)s / %(total)s"
+msgstr "Página %(numero)s / %(total)s"
+
+msgid "Panel des Divinités"
+msgstr "Panel de las Divinidades"
+
+msgid "Paramètres"
+msgstr "Ajustes"
+
+msgid "Participant"
+msgstr "Participante"
+
+msgid "Pas encore de biographie."
+msgstr "Aún no hay biografía."
+
+msgid "Photo de profil"
+msgstr "Foto de perfil"
+
+msgid "Photo, bannière, bio, numéro WhatsApp"
+msgstr "Foto, portada, biografía, número de WhatsApp"
+
+msgid "Photos"
+msgstr "Fotos"
+
+msgid "Pile ou Face, Roue de la Fortune, Poker Bot, Braquage, Déminer. Jeu de hasard : tu peux gagner ou tout perdre."
+msgstr "Cara o Cruz, Ruleta de la Fortuna, Poker Bot, Atraco, Buscaminas. Juego de azar: puedes ganar o perderlo todo."
+
+msgid "Plus d'accès à cette adresse ?"
+msgstr "¿Ya no tienes acceso a esta dirección?"
+
+msgid "Possédé"
+msgstr "En posesión"
+
+msgid "Profil"
+msgstr "Perfil"
+
+msgid "Profil mis à jour ✨"
+msgstr "Perfil actualizado ✨"
+
+msgid "Précédent"
+msgstr "Anterior"
+
+msgid "Prêt à entrer"
+msgstr "Listo para entrar"
+
+msgid "Pseudo"
+msgstr "Apodo"
+
+msgid "Pseudo, espèce, bio RP, cadre, décor et musique de profil : une identité qui reste, même quand la conversation WhatsApp défile."
+msgstr "Apodo, especie, biografía RP, marco, fondo y música de perfil: una identidad que permanece, aunque la conversación de WhatsApp vuele."
+
+msgid "Recadrer"
+msgstr "Recortar"
+
+msgid "Recadrer la bannière"
+msgstr "Recortar la portada"
+
+msgid "Recadrer la photo de profil"
+msgstr "Recortar la foto de perfil"
+
+msgid "Recevoir le lien"
+msgstr "Recibir el enlace"
+
+msgid "Recevoir un lien par email"
+msgstr "Recibir un enlace por correo"
+
+msgid "Rechercher"
+msgstr "Buscar"
+
+msgid "Rechercher un article ou un créateur…"
+msgstr "Busca un artículo o un creador…"
+
+msgid "Regarder"
+msgstr "Ver"
+
+msgid "Rejoindre Aphrodite"
+msgstr "Unirse a Aphrodite"
+
+msgid "Relique"
+msgstr "Reliquia"
+
+msgid "Remplace ici ton mot de passe provisoire par un mot de passe personnel. Il ne sera connu que de toi."
+msgstr "Sustituye aquí tu contraseña provisional por una personal. Solo tú la conocerás."
+
+msgid "Reprendre la partie"
+msgstr "Reanudar la partida"
+
+msgid "Retirer le cadre"
+msgstr "Quitar el marco"
+
+msgid "Retirer le décor"
+msgstr "Quitar el fondo"
+
+msgid "Retirer ma musique"
+msgstr "Quitar mi música"
+
+msgid "Retour aux paramètres"
+msgstr "Volver a ajustes"
+
+msgid "Retour à la connexion"
+msgstr "Volver al inicio de sesión"
+
+msgid "Retour à mon profil"
+msgstr "Volver a mi perfil"
+
+msgid "Rien reçu, ou plus d'accès à cette adresse ?"
+msgstr "¿No has recibido nada, o ya no tienes acceso a esta dirección?"
+
+msgid "Règlement"
+msgstr "Reglamento"
+
+msgid "Réinitialiser"
+msgstr "Restablecer"
+
+msgid "S'abonner"
+msgstr "Seguir"
+
+msgid "Se connecter"
+msgstr "Iniciar sesión"
+
+msgid "Sert seulement à te souhaiter ton anniversaire RP. Jamais affichée."
+msgstr "Solo sirve para felicitarte el cumpleaños RP. Nunca se muestra."
+
+msgid "Si un compte existe avec cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé."
+msgstr "Si existe una cuenta con esta dirección, acaba de enviarse un correo con un enlace de restablecimiento."
+
+msgid "Signaler"
+msgstr "Reportar"
+
+msgid "Stickers, fonds d'écran, images RP, musiques : les créateurs valident leur place et vendent leurs œuvres à la communauté."
+msgstr "Stickers, fondos de pantalla, imágenes RP, músicas: los creadores validan su lugar y venden sus obras a la comunidad."
+
+msgid "Succube"
+msgstr "Súcubo"
+
+msgid "Suivant"
+msgstr "Siguiente"
+
+msgid "Suppression impossible pour l'instant"
+msgstr "No es posible eliminar la cuenta por ahora"
+
+msgid "Supprimer définitivement"
+msgstr "Eliminar definitivamente"
+
+msgid "Supprimer mon compte"
+msgstr "Eliminar mi cuenta"
+
+msgid "Série de connexion : %(n)s jour"
+msgid_plural "Série de connexion : %(n)s jours"
+msgstr[0] "Racha de conexión: %(n)s día"
+msgstr[1] "Racha de conexión: %(n)s días"
+
+msgid "Tant qu'une commande n'est pas terminée ou annulée, elle garde des Cubis bloqués (séquestre) ou une décision en attente : fermer ton compte maintenant laisserait l'acheteur sans recours et ses Cubis bloqués définitivement."
+msgstr "Mientras un pedido no esté terminado o cancelado, mantiene Cubis bloqueados (en depósito) o una decisión pendiente: cerrar tu cuenta ahora dejaría al comprador sin recurso y sus Cubis bloqueados para siempre."
+
+msgid "Termine la livraison, confirme la réception ou annule la commande, puis reviens sur cette page : la suppression sera alors possible."
+msgstr "Termina la entrega, confirma la recepción o cancela el pedido, y vuelve a esta página: entonces será posible la eliminación."
+
+msgid "Tes créations"
+msgstr "Tus creaciones"
+
+msgid "Ton adresse email"
+msgstr "Tu correo electrónico"
+
+msgid "Ton compte est supprimé. Merci d'avoir joué."
+msgstr "Tu cuenta ha sido eliminada. Gracias por jugar."
+
+msgid "Ton inventaire est vide. Visite la <a href=\"%(url_boutique)s\">boutique</a> !"
+msgstr "Tu inventario está vacío. ¡Visita la <a href=\"%(url_boutique)s\">tienda</a>!"
+
+msgid "Ton profil"
+msgstr "Tu perfil"
+
+msgid "Ton profil, tes données personnelles et tes articles disparaissent définitivement. Les commandes passées restent visibles pour les autres membres."
+msgstr "Tu perfil, tus datos personales y tus artículos desaparecen definitivamente. Los pedidos pasados siguen visibles para los demás miembros."
+
+msgid "Ton solde"
+msgstr "Tu saldo"
+
+msgid "Toutes les catégories"
+msgstr "Todas las categorías"
+
+msgid "Transactions"
+msgstr "Transacciones"
+
+msgid "Trop de demandes depuis ce réseau. Réessaie plus tard."
+msgstr "Demasiadas solicitudes desde esta red. Inténtalo más tarde."
+
+msgid "Trop de tentatives d'inscription depuis ce réseau. Réessaie dans un quart d'heure."
+msgstr "Demasiados intentos de registro desde esta red. Inténtalo de nuevo en quince minutos."
+
+msgid "Trop de tentatives de connexion. Patiente quelques minutes avant de réessayer."
+msgstr "Demasiados intentos de inicio de sesión. Espera unos minutos antes de volver a intentarlo."
+
+msgid "Tu as encore <strong>%(n)s commande en cours</strong>."
+msgid_plural "Tu as encore <strong>%(n)s commandes en cours</strong>."
+msgstr[0] "Todavía tienes <strong>%(n)s pedido en curso</strong>."
+msgstr[1] "Todavía tienes <strong>%(n)s pedidos en curso</strong>."
+
+msgid "Tu as toujours accès à ton email ?"
+msgstr "¿Sigues teniendo acceso a tu correo?"
+
+msgid "Tu te souviens de ton mot de passe ?"
+msgstr "¿Te acuerdas de tu contraseña?"
+
+msgid "Tu utilises un mot de passe provisoire remis par l'équipe. Choisis-en un nouveau dès maintenant."
+msgstr "Estás usando una contraseña provisional entregada por el equipo. Elige una nueva ahora mismo."
+
+msgid "Télécharger"
+msgstr "Descargar"
+
+msgid "Un monde permanent pour ta communauté : un profil qui te ressemble, une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes pour remercier ceux qui font vivre le RP."
+msgstr "Un mundo permanente para tu comunidad: un perfil que se te parece, una moneda de juego, una tienda donde se venden las creaciones de los miembros y ofrendas para agradecer a quienes mantienen vivo el RP."
+
+msgid "Utilise ce formulaire si tu n'as plus accès à l'adresse email de ton compte. L'équipe te répondra en privé sur WhatsApp."
+msgstr "Usa este formulario si ya no tienes acceso al correo de tu cuenta. El equipo te responderá en privado por WhatsApp."
+
+msgid "Valider"
+msgstr "Confirmar"
+
+msgid "Vampire"
+msgstr "Vampiro"
+
+msgid "Vitrine"
+msgstr "Vitrina"
+
+msgid "Voir"
+msgstr "Ver"
+
+msgid "Voir les créateurs du mois →"
+msgstr "Ver los creadores del mes →"
+
+msgid "Voir mes commandes"
+msgstr "Ver mis pedidos"
+
+msgid "Voir mes transactions"
+msgstr "Ver mis transacciones"
+
+msgid "Voir tout"
+msgstr "Ver todo"
+
+msgid "Vérifie ta boîte mail"
+msgstr "Revisa tu correo"
+
+msgid "création en vente"
+msgid_plural "créations en vente"
+msgstr[0] "creación en venta"
+msgstr[1] "creaciones en venta"
+
+msgid "membre"
+msgid_plural "membres"
+msgstr[0] "miembro"
+msgstr[1] "miembros"
+
+msgid "mise"
+msgstr "apuesta"
+
+msgid "pertes du jour"
+msgstr "pérdidas del día"
+
+msgid "ta photo de profil et ta bannière ;"
+msgstr "tu foto de perfil y tu portada;"
+
+msgid "tes Cubis restants et ta série de connexion ;"
+msgstr "tus Cubis restantes y tu racha de conexión;"
+
+msgid "tes abonnements, tes favoris et tes notifications ;"
+msgstr "tus suscripciones, tus favoritos y tus notificaciones;"
+
+msgid "tes articles, retirés de la boutique."
+msgstr "tus artículos, retirados de la tienda."
+
+msgid "ton email, ton pseudo, ta bio, ton numéro WhatsApp, ton titre ;"
+msgstr "tu correo, tu apodo, tu biografía, tu número de WhatsApp, tu título;"
+
+msgid "À la une"
+msgstr "Destacados"
+
+msgid "Équiper"
+msgstr "Equipar"

@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Rejoindre Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Rejoindre Aphrodite" %}{% endblock %}
 {% block content %}
 <section class="card">
-  <h1>Rejoindre Aphrodite</h1>
+  <h1>{% translate "Rejoindre Aphrodite" %}</h1>
   {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
-    <button type="submit" class="btn">Créer mon compte</button>
+    <button type="submit" class="btn">{% translate "Créer mon compte" %}</button>
   </form>
 </section>
 {% endblock %}

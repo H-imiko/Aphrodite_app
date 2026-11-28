@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.contrib import messages
 from django.db.models import Count
 from django.contrib.auth import (login, logout, get_user_model,
@@ -11,6 +12,8 @@ from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 from apps.commun.limites import depasse
 from apps.creators.models import Candidature
@@ -20,7 +23,7 @@ from apps.shop.models import Item
 from apps.social.models import Abonnement
 from .forms import (InscriptionForm, MotDePasseOublieForm, ProfilForm,
                     ReinitialisationMotDePasseForm, SuppressionCompteForm)
-from .models import DemandeAcces
+from .models import DemandeAcces, LANGUES
 from .services import (SuppressionRefusee, commandes_bloquantes,
                        fermer_compte)
 
@@ -70,7 +73,7 @@ class ConnexionVue(auth_views.LoginView):
                                                            request):
             return render(request, self.template_name, {
                 "form": self.get_form(),
-                "erreur_limite": (
+                "erreur_limite": _(
                     "Trop de tentatives de connexion. Patiente quelques "
                     "minutes avant de réessayer."),
             }, status=429)
@@ -83,7 +86,7 @@ def inscription(request):
     if request.method == "POST" and depasse("inscription", request):
         return render(request, "accounts/inscription.html", {
             "form": InscriptionForm(request.POST),
-            "erreur_limite": ("Trop de tentatives d'inscription depuis ce "
+            "erreur_limite": _("Trop de tentatives d'inscription depuis ce "
                               "réseau. Réessaie dans un quart d'heure."),
         }, status=429)
     form = InscriptionForm(request.POST or None)
@@ -93,10 +96,11 @@ def inscription(request):
         if user.type_compte == "createur":
             messages.info(
                 request,
-                "Dernière étape : présente tes créations pour devenir Créateur 🎨")
+                _("Dernière étape : présente tes créations pour devenir "
+                  "Créateur 🎨"))
             return redirect("postuler")
         messages.success(
-            request, "Bienvenue sur Aphrodite ✨ Personnalise ton profil !")
+            request, _("Bienvenue sur Aphrodite ✨ Personnalise ton profil !"))
         return redirect("modifier_profil")
     return render(request, "accounts/inscription.html", {"form": form})
 
@@ -126,8 +130,8 @@ class MotDePasseOublieVue(auth_views.PasswordResetView):
         if depasse("mot_de_passe_oublie", request):
             return render(request, self.template_name, {
                 "form": self.get_form(),
-                "erreur_limite": ("Trop de demandes depuis ce réseau. "
-                                  "Réessaie plus tard.")}, status=429)
+                "erreur_limite": _("Trop de demandes depuis ce réseau. "
+                                   "Réessaie plus tard.")}, status=429)
         return super().post(request, *args, **kwargs)
 
 
@@ -143,7 +147,7 @@ class ReinitialiserMotDePasseVue(auth_views.PasswordResetConfirmView):
         User.objects.filter(pk=form.user.pk).update(
             doit_changer_mot_de_passe=False)
         messages.success(self.request,
-                         "Mot de passe changé. Tu peux te connecter.")
+                         _("Mot de passe changé. Tu peux te connecter."))
         return reponse
 
 
@@ -156,8 +160,8 @@ def demande_acces(request):
     """
     if request.method == "POST" and depasse("mot_de_passe_oublie", request):
         return render(request, "accounts/mot_de_passe_demande.html", {
-            "erreur_limite": ("Trop de demandes depuis ce réseau. "
-                              "Réessaie plus tard.")}, status=429)
+            "erreur_limite": _("Trop de demandes depuis ce réseau. "
+                               "Réessaie plus tard.")}, status=429)
     form = MotDePasseOublieForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         DemandeAcces.objects.create(email=form.cleaned_data["email"])
@@ -195,6 +199,30 @@ def parametres(request):
 
 
 @login_required
+def changer_langue(request):
+    """Enregistre la langue de l'interface (profil et cookie).
+
+    Le profil garde le choix d'un appareil a l'autre ; le cookie est celui
+    que LocaleMiddleware lit, il couvre l'avant-connexion (pages publiques).
+    """
+    if request.method != "POST":
+        return redirect("parametres")
+    code = (request.POST.get("langue") or "").strip()
+    noms = dict(LANGUES)
+    if code not in noms:
+        messages.error(request, _("Langue inconnue."))
+        return redirect("parametres")
+    translation.activate(code)
+    User.objects.filter(pk=request.user.pk).update(langue=code)
+    request.user.langue = code
+    messages.success(request, _("Langue enregistrée."))
+    reponse = redirect("parametres")
+    reponse.set_cookie(settings.LANGUAGE_COOKIE_NAME, code,
+                       max_age=365 * 24 * 3600, samesite="Lax")
+    return reponse
+
+
+@login_required
 def changer_mot_de_passe(request):
     provisoire = request.user.doit_changer_mot_de_passe
     form = PasswordChangeForm(request.user, request.POST or None)
@@ -205,7 +233,7 @@ def changer_mot_de_passe(request):
         if provisoire:
             User.objects.filter(pk=request.user.pk).update(
                 doit_changer_mot_de_passe=False)
-        messages.success(request, "Mot de passe changé.")
+        messages.success(request, _("Mot de passe changé."))
         return redirect("parametres")
     return render(request, "accounts/mot_de_passe.html",
                   {"form": form, "provisoire": provisoire})
@@ -226,7 +254,8 @@ def supprimer_compte(request):
             messages.error(request, str(refus))
             return redirect("supprimer_compte")
         logout(request)
-        messages.success(request, "Ton compte est supprimé. Merci d'avoir joué.")
+        messages.success(request,
+                         _("Ton compte est supprimé. Merci d'avoir joué."))
         return redirect("accueil")
     return render(request, "accounts/supprimer_compte.html", {"form": form})
 
@@ -266,7 +295,7 @@ def modifier_profil(request):
                       instance=request.user)
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, "Profil mis à jour ✨")
+        messages.success(request, _("Profil mis à jour ✨"))
         return redirect("membre", pk=request.user.pk)
     return render(request, "accounts/modifier_profil.html", {
         "form": form, "equip": _equipement(request.user)})

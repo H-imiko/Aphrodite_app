@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
-<h1>Boutique</h1>
+<h1>{% translate "Boutique" %}</h1>
 <p class="actions-article">
-  <a class="petit" href="{% url 'fil' %}">Mon fil</a>
-  <a class="petit" href="{% url 'favoris' %}"> Mes favoris</a>
+  <a class="petit" href="{% url 'fil' %}">{% translate "Mon fil" %}</a>
+  <a class="petit" href="{% url 'favoris' %}"> {% translate "Mes favoris" %}</a>
 </p>
 
 <form method="get" class="recherche card">
-  <input type="search" name="q" value="{{ q }}" maxlength="60" placeholder="Rechercher un article ou un créateur…">
+  <input type="search" name="q" value="{{ q }}" maxlength="60" placeholder="{% translate 'Rechercher un article ou un créateur…' %}">
   <div class="recherche-ligne">
     <select name="categorie">
-      <option value="">Toutes les catégories</option>
+      <option value="">{% translate "Toutes les catégories" %}</option>
       {% for val, nom in categories %}<option value="{{ val }}"{% if val == cat %} selected{% endif %}>{{ nom }}</option>{% endfor %}
 </select>
     <select name="tri">
@@ -19,26 +19,26 @@
 </select>
 </div>
   <div class="recherche-ligne">
-    <button type="submit" class="btn">Rechercher</button>
-    {% if q or cat or tri != "recent" %}<a class="petit" href="{% url 'boutique' %}">Réinitialiser</a>{% endif %}
+    <button type="submit" class="btn">{% translate "Rechercher" %}</button>
+    {% if q or cat or tri != "recent" %}<a class="petit" href="{% url 'boutique' %}">{% translate "Réinitialiser" %}</a>{% endif %}
 </div>
 </form>
 
-<p class="muted">{{ total }} article{{ total|pluralize }}</p>
+<p class="muted">{% blocktranslate count n=total %}{{ n }} article{% plural %}{{ n }} articles{% endblocktranslate %}</p>
 
 <div class="grille">
   {% for a in page %}
       {% include "partials/carte_article.html" with a=a %}
   {% empty %}
-    <p class="muted">Aucun article ne correspond à ta recherche.</p>
+    <p class="muted">{% translate "Aucun article ne correspond à ta recherche." %}</p>
   {% endfor %}
 </div>
 
 {% if page.has_other_pages %}
 <div class="pagination">
-  {% if page.has_previous %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">← Précédent</a>{% endif %}
-  <span class="muted">Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
-  {% if page.has_next %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Suivant →</a>{% endif %}
+  {% if page.has_previous %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">← {% translate "Précédent" %}</a>{% endif %}
+  <span class="muted">{% blocktranslate with numero=page.number total=page.paginator.num_pages %}Page {{ numero }} / {{ total }}{% endblocktranslate %}</span>
+  {% if page.has_next %}<a class="petit" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">{% translate "Suivant" %} →</a>{% endif %}
 </div>
 {% endif %}
 {% endblock %}

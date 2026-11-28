@@ -1,21 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Mot de passe oublié — Aphrodite{% endblock %}
 {% block content %}
+{% load i18n %}
 <section class="card">
-  <h1>Mot de passe oublié</h1>
-  <p class="muted">Indique l'adresse email de ton compte : tu recevras un lien
-     pour choisir un nouveau mot de passe.</p>
+  <h1>{% translate "Mot de passe oublié" %}</h1>
+  <p class="muted">{% translate "Indique l'adresse email de ton compte : tu recevras un lien pour choisir un nouveau mot de passe." %}</p>
 
   {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="formulaire">{% include "partials/champs.html" %}</div>
-    <button type="submit" class="btn">Recevoir le lien</button>
+    <button type="submit" class="btn">{% translate "Recevoir le lien" %}</button>
   </form>
 
-  <p class="muted mt-12">Tu te souviens de ton mot de passe ?
-     <a href="{% url 'connexion' %}">Se connecter</a></p>
-  <p class="muted">Plus d'accès à cette adresse ?
-     <a href="{% url 'mot_de_passe_sans_email' %}">Demander l'aide de l'équipe</a></p>
+  <p class="muted mt-12">{% translate "Tu te souviens de ton mot de passe ?" %}
+     <a href="{% url 'connexion' %}">{% translate "Se connecter" %}</a></p>
+  <p class="muted">{% translate "Plus d'accès à cette adresse ?" %}
+     <a href="{% url 'mot_de_passe_sans_email' %}">{% translate "Demander l'aide de l'équipe" %}</a></p>
 </section>
 {% endblock %}

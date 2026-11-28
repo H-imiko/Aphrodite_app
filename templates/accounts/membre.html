@@ -1,60 +1,60 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
 {% include "partials/carte_profil.html" with m=membre %}
 
 {% if est_moi %}
 <div class="actions-profil">
-  <a class="petit" href="{% url 'modifier_profil' %}">️ Modifier</a>
-  <a class="petit" href="{% url 'transactions' %}"> Transactions</a>
-  <a class="petit" href="{% url 'commandes' %}"> Mes commandes</a>
-  <a class="petit" href="{% url 'cadeaux' %}"> Cadeaux</a>
-  <a class="petit" href="{% url 'favoris' %}"> Favoris</a>
-  <a class="petit" href="{% url 'fil' %}"> Mon fil</a>
-  <a class="petit" href="{% url 'createurs_du_mois' %}">Créateurs du mois</a>
+  <a class="petit" href="{% url 'modifier_profil' %}">️ {% translate "Modifier" %}</a>
+  <a class="petit" href="{% url 'transactions' %}"> {% translate "Transactions" %}</a>
+  <a class="petit" href="{% url 'commandes' %}"> {% translate "Mes commandes" %}</a>
+  <a class="petit" href="{% url 'cadeaux' %}"> {% translate "Cadeaux" %}</a>
+  <a class="petit" href="{% url 'favoris' %}"> {% translate "Favoris" %}</a>
+  <a class="petit" href="{% url 'fil' %}"> {% translate "Mon fil" %}</a>
+  <a class="petit" href="{% url 'createurs_du_mois' %}">{% translate "Créateurs du mois" %}</a>
   {% if equip and equip.musique %}
   <form method="post" action="{% url 'musique_retirer' %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit"> Retirer ma musique</button>
+    {% csrf_token %}<button type="submit" class="petit"> {% translate "Retirer ma musique" %}</button>
 </form>
   {% endif %}
   {% if not membre.createur_valide %}
     {% if candidature_en_cours %}
-      <span class="petit inactif">⏳ Candidature en attente</span>
+      <span class="petit inactif">⏳ {% translate "Candidature en attente" %}</span>
     {% else %}
-      <a class="petit" href="{% url 'postuler' %}"> Devenir Créateur</a>
+      <a class="petit" href="{% url 'postuler' %}"> {% translate "Devenir Créateur" %}</a>
     {% endif %}
   {% endif %}
   <form method="post" action="{% url 'deconnexion' %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit"> Déconnexion</button>
+    {% csrf_token %}<button type="submit" class="petit"> {% translate "Déconnexion" %}</button>
 </form>
 </div>
 {% else %}
 <div class="actions-profil">
-  {% if membre.peut_publier and not user.est_divinite %}<a class="petit" href="{% url 'commande_nouvelle' membre.pk %}"> Commander une création</a>{% endif %}
+  {% if membre.peut_publier and not user.est_divinite %}<a class="petit" href="{% url 'commande_nouvelle' membre.pk %}"> {% translate "Commander une création" %}</a>{% endif %}
   {% if membre.peut_publier %}
   <form method="post" action="{% url 'abonner' membre.pk %}" class="inline">
-    {% csrf_token %}<button type="submit" class="petit">{% if suis %} Abonné{% else %} S'abonner{% endif %}</button>
+    {% csrf_token %}<button type="submit" class="petit">{% if suis %} {% translate "Abonné" %}{% else %} {% translate "S'abonner" %}{% endif %}</button>
 </form>
   {% endif %}
-  <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}"> Signaler</a>
-  {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">️ Modérer</a>{% endif %}
+  <a class="petit" href="{% url 'signaler' 'membre' membre.pk %}"> {% translate "Signaler" %}</a>
+  {% if user.est_divinite %}<a class="petit" href="{% url 'membre_moderation' membre.pk %}">️ {% translate "Modérer" %}</a>{% endif %}
 </div>
 {% endif %}
 
 <div class="infos">
-  <div class="card"><div class="muted">Membre depuis</div><strong>{{ membre.date_inscription|date:"d/m/Y" }}</strong></div>
-  <div class="card"><div class="muted">Articles</div><strong>{{ articles|length }}</strong></div>
-  <div class="card"><div class="muted">Abonnés</div><strong>{{ nb_abonnes }}</strong></div>
-  <div class="card"><div class="muted">Abonnements</div><strong>{{ nb_abonnements }}</strong></div>
+  <div class="card"><div class="muted">{% translate "Membre depuis" %}</div><strong>{{ membre.date_inscription|date:"d/m/Y" }}</strong></div>
+  <div class="card"><div class="muted">{% translate "Articles" %}</div><strong>{{ articles|length }}</strong></div>
+  <div class="card"><div class="muted">{% translate "Abonnés" %}</div><strong>{{ nb_abonnes }}</strong></div>
+  <div class="card"><div class="muted">{% translate "Abonnements" %}</div><strong>{{ nb_abonnements }}</strong></div>
 </div>
 
 <section class="card">
-  <h2>Biographie</h2>
-  {% if membre.bio_rp %}<p>{{ membre.bio_rp|linebreaksbr }}</p>{% else %}<p class="muted">Pas encore de biographie.</p>{% endif %}
+  <h2>{% translate "Biographie" %}</h2>
+  {% if membre.bio_rp %}<p>{{ membre.bio_rp|linebreaksbr }}</p>{% else %}<p class="muted">{% translate "Pas encore de biographie." %}</p>{% endif %}
 </section>
 
 <section class="card mt-12" >
-  <h2>🌹 Offrandes reçues{% if nb_offrandes %} ({{ nb_offrandes }}){% endif %}</h2>
+  <h2>🌹 {% translate "Offrandes reçues" %}{% if nb_offrandes %} ({{ nb_offrandes }}){% endif %}</h2>
   {% if offrandes %}
     <div class="vitrine-offrandes">
       {% for o in offrandes %}
@@ -62,16 +62,16 @@
       {% endfor %}
 </div>
   {% else %}
-    <p class="muted">Aucune offrande pour l'instant.</p>
+    <p class="muted">{% translate "Aucune offrande pour l'instant." %}</p>
   {% endif %}
   <div class="actions-article">
-    <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">Voir tout</a>
-    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}">Envoyer une offrande</a>{% endif %}
-</div>
+    <a class="petit" href="{% url 'offrandes_recues' membre.pk %}">{% translate "Voir tout" %}</a>
+    {% if not est_moi %}<a class="petit" href="{% url 'offrande_envoyer' membre.pk %}">{% translate "Envoyer une offrande" %}</a>{% endif %}
+  </div>
 </section>
 
 {% if articles %}
-<h2 class="mt-20">Vitrine</h2>
+<h2 class="mt-20">{% translate "Vitrine" %}</h2>
 <div class="grille">
   {% for a in articles %}
       {% include "partials/carte_article.html" with a=a %}

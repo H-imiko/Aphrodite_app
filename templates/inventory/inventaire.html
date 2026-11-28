@@ -1,42 +1,43 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block content %}
-<h1>Mon inventaire</h1>
-<p><a class="petit" href="{% url 'cadeaux' %}"> Mes cadeaux</a></p>
+<h1>{% translate "Mon inventaire" %}</h1>
+<p><a class="petit" href="{% url 'cadeaux' %}"> {% translate "Mes cadeaux" %}</a></p>
 <div class="grille">
   {% for o in objets %}
     <div class="article">
       <a href="{% url 'article' o.item.pk %}">{% if o.item.apercu %}<img src="{{ o.item.apercu.url }}" alt="">{% endif %}</a>
       <div class="info">
         <a href="{% url 'article' o.item.pk %}"><strong>{{ o.item.titre }}</strong></a>
-        {% if o.est_relique %}<span class="tag">Relique</span>{% endif %}
+        {% if o.est_relique %}<span class="tag">{% translate "Relique" %}</span>{% endif %}
         <div class="vendeur">{% include "partials/pseudo.html" with u=o.item.createur %}</div>
 
         {% if o.item.categorie == "cadre" %}
           {% if equip and equip.cadre_id == o.item.pk %}
-            <form method="post" action="{% url 'retirer_equipement' 'cadre' %}">{% csrf_token %}<button type="submit" class="petit">Retirer le cadre</button></form>
+            <form method="post" action="{% url 'retirer_equipement' 'cadre' %}">{% csrf_token %}<button type="submit" class="petit">{% translate "Retirer le cadre" %}</button></form>
           {% else %}
-            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> Équiper</button></form>
+            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> {% translate "Équiper" %}</button></form>
           {% endif %}
         {% elif o.item.categorie == "decor" %}
           {% if equip and equip.decor_id == o.item.pk %}
-            <form method="post" action="{% url 'retirer_equipement' 'decor' %}">{% csrf_token %}<button type="submit" class="petit">Retirer le décor</button></form>
+            <form method="post" action="{% url 'retirer_equipement' 'decor' %}">{% csrf_token %}<button type="submit" class="petit">{% translate "Retirer le décor" %}</button></form>
           {% else %}
-            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> Équiper</button></form>
+            <form method="post" action="{% url 'equiper' o.item.pk %}">{% csrf_token %}<button type="submit" class="petit"> {% translate "Équiper" %}</button></form>
           {% endif %}
         {% elif o.item.categorie == "audio" %}
           <audio controls controlsList="nodownload" preload="none" src="{% url 'lire' o.item.pk %}"></audio>
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> {% translate "Télécharger" %}</a>
         {% elif o.item.categorie == "video" %}
-          <a class="petit" href="{% url 'article' o.item.pk %}">▶ Regarder</a>
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
+          <a class="petit" href="{% url 'article' o.item.pk %}">▶ {% translate "Regarder" %}</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> {% translate "Télécharger" %}</a>
         {% else %}
-          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> Télécharger</a>
+          <a class="petit" href="{% url 'telecharger' o.item.pk %}"> {% translate "Télécharger" %}</a>
         {% endif %}
-        <a class="petit" href="{% url 'offrir' o.item.pk %}"> Offrir</a>
+        <a class="petit" href="{% url 'offrir' o.item.pk %}"> {% translate "Offrir" %}</a>
 </div>
 </div>
   {% empty %}
-    <p class="muted">Ton inventaire est vide. Visite la <a href="{% url 'boutique' %}">boutique</a> !</p>
+    <p class="muted">{% url 'boutique' as url_boutique %}{% blocktranslate %}Ton inventaire est vide. Visite la <a href="{{ url_boutique }}">boutique</a> !{% endblocktranslate %}</p>
   {% endfor %}
 </div>
 {% endblock %}

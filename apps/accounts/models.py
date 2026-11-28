@@ -5,6 +5,11 @@ from django.contrib.auth.models import (
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+# Codes de langue acceptes, dans l'ordre d'affichage des parametres.
+LANGUES = (("fr", "Français"), ("en", "English"), ("es", "Español"))
+LANGUE_PAR_DEFAUT = "fr"
 
 
 def stockage_prive():
@@ -37,22 +42,22 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     class Espece(models.TextChoices):
-        NEKO = "neko", "Neko"
-        SUCCUBE = "succube", "Succube"
-        INCUBE = "incube", "Incube"
-        DEESSE = "deesse", "Déesse"
-        EMPEREUR = "empereur", "Empereur"
-        IMPERATRICE = "imperatrice", "Impératrice"
-        FANTOME = "fantome", "Fantôme"
-        ASSASSIN = "assassin", "Assassin"
-        MAGE = "mage", "Mage"
-        HUMAIN = "humain", "Humain"
-        VAMPIRE = "vampire", "Vampire"
-        DEMON = "demon", "Démon"
+        NEKO = "neko", _("Neko")
+        SUCCUBE = "succube", _("Succube")
+        INCUBE = "incube", _("Incube")
+        DEESSE = "deesse", _("Déesse")
+        EMPEREUR = "empereur", _("Empereur")
+        IMPERATRICE = "imperatrice", _("Impératrice")
+        FANTOME = "fantome", _("Fantôme")
+        ASSASSIN = "assassin", _("Assassin")
+        MAGE = "mage", _("Mage")
+        HUMAIN = "humain", _("Humain")
+        VAMPIRE = "vampire", _("Vampire")
+        DEMON = "demon", _("Démon")
 
     class TypeCompte(models.TextChoices):
-        PARTICIPANT = "participant", "Participant"
-        CREATEUR = "createur", "Créateur"
+        PARTICIPANT = "participant", _("Participant")
+        CREATEUR = "createur", _("Créateur")
 
     email = models.EmailField(unique=True)
     pseudo_whatsapp = models.CharField(max_length=50)
@@ -68,6 +73,10 @@ class User(AbstractBaseUser, PermissionsMixin):
                                  blank=True, null=True)
     titre = models.CharField(max_length=60, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
+
+    # Langue de l'interface choisie dans les parametres. Vide : celle du
+    # navigateur (LocaleMiddleware s'en charge).
+    langue = models.CharField(max_length=5, blank=True, default="")
 
     solde_cubis = models.PositiveIntegerField(default=0)
     serie_connexion = models.PositiveIntegerField(default=0)

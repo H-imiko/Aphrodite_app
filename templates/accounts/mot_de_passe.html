@@ -1,18 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Changer mon mot de passe — Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Changer mon mot de passe" %} — Aphrodite{% endblock %}
 {% block content %}
-<h1>Changer mon mot de passe</h1>
+<h1>{% translate "Changer mon mot de passe" %}</h1>
 {% if provisoire %}
-<div class="alerte">Tu utilises un mot de passe provisoire remis par l'équipe.
-   Choisis-en un nouveau dès maintenant.</div>
+<div class="alerte">{% translate "Tu utilises un mot de passe provisoire remis par l'équipe. Choisis-en un nouveau dès maintenant." %}</div>
 {% endif %}
-<p class="muted">Remplace ici ton mot de passe provisoire par un mot de passe
-   personnel. Il ne sera connu que de toi.</p>
+<p class="muted">{% translate "Remplace ici ton mot de passe provisoire par un mot de passe personnel. Il ne sera connu que de toi." %}</p>
 
 <form method="post" class="card">
   {% csrf_token %}
   <div class="formulaire">{% include "partials/champs.html" %}</div>
-  <button type="submit" class="btn">Enregistrer le nouveau mot de passe</button>
-  <p class="center mt-12"><a href="{% url 'parametres' %}">Annuler</a></p>
+  <button type="submit" class="btn">{% translate "Enregistrer le nouveau mot de passe" %}</button>
+  <p class="center mt-12"><a href="{% url 'parametres' %}">{% translate "Annuler" %}</a></p>
 </form>
 {% endblock %}

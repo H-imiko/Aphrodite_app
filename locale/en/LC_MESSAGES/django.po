@@ -1,0 +1,710 @@
+# Traduction anglaise d'Aphrodite.
+# La langue source est le français : les msgid sont les textes du code.
+msgid ""
+msgstr ""
+"Project-Id-Version: Aphrodite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-28 12:00+0000\n"
+"PO-Revision-Date: 2026-11-28 12:00+0000\n"
+"Last-Translator: Safir\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "%(mise)s Cubis engagés. Termine cette partie avant d'en lancer une autre."
+msgstr "%(mise)s Cubis at stake. Finish this game before starting another."
+
+msgid "%(n)s article"
+msgid_plural "%(n)s articles"
+msgstr[0] "%(n)s item"
+msgstr[1] "%(n)s items"
+
+msgid "%(n)s j'aime"
+msgid_plural "%(n)s j'aime"
+msgstr[0] "%(n)s like"
+msgstr[1] "%(n)s likes"
+
+msgid "%(n)s partie restante aujourd'hui"
+msgid_plural "%(n)s parties restantes aujourd'hui"
+msgstr[0] "%(n)s game left today"
+msgstr[1] "%(n)s games left today"
+
+msgid "500 caractères maximum."
+msgstr "500 characters maximum."
+
+msgid "Abonnements"
+msgstr "Following"
+
+msgid "Abonné"
+msgstr "Following"
+
+msgid "Abonnés"
+msgstr "Followers"
+
+msgid "Aller au contenu"
+msgstr "Skip to content"
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Annuler, je garde mon compte"
+msgstr "Cancel, I am keeping my account"
+
+msgid "Aperçu"
+msgstr "Preview"
+
+msgid "Aphrodite — le monde permanent de la communauté"
+msgstr "Aphrodite — the community's permanent world"
+
+msgid "Articles"
+msgstr "Items"
+
+msgid "Assassin"
+msgstr "Assassin"
+
+msgid "Aucun article ne correspond à ta recherche."
+msgstr "No item matches your search."
+
+msgid "Aucune notification pour l'instant."
+msgstr "No notifications yet."
+
+msgid "Aucune offrande pour l'instant."
+msgstr "No offerings yet."
+
+msgid "Aucune partie pour l'instant. La mise minimale est de %(mise)s Cubis."
+msgstr "No games yet. The minimum stake is %(mise)s Cubis."
+
+msgid "Aucune sauvegarde de ton profil ne sera conservée."
+msgstr "No backup of your profile will be kept."
+
+msgid "Bannière"
+msgstr "Banner"
+
+msgid "Bienvenue sur Aphrodite ✨ Personnalise ton profil !"
+msgstr "Welcome to Aphrodite ✨ Make your profile your own!"
+
+msgid "Biographie"
+msgstr "Biography"
+
+msgid "Biographie RP"
+msgstr "RP biography"
+
+msgid "Boutique"
+msgstr "Shop"
+
+msgid "Bulle de pensée (court)"
+msgstr "Thought bubble (short)"
+
+msgid "Cadeaux"
+msgstr "Gifts"
+
+msgid "Candidature en attente"
+msgstr "Application pending"
+
+msgid "Ce lien n'est plus valide : il a déjà servi ou il a expiré."
+msgstr "This link is no longer valid: it has already been used or has expired."
+
+msgid "Ce que les autres membres voient de toi. L'aperçu se met à jour pendant que tu écris."
+msgstr "What other members see of you. The preview updates as you type."
+
+msgid "Ce que tu y trouves"
+msgstr "What you will find"
+
+msgid "Ce qui disparaît"
+msgstr "What disappears"
+
+msgid "Ce qui reste"
+msgstr "What remains"
+
+msgid "Cette action est définitive."
+msgstr "This action cannot be undone."
+
+msgid "Changer"
+msgstr "Change"
+
+msgid "Changer mon mot de passe"
+msgstr "Change my password"
+
+msgid "Choisis un mot de passe pour ton compte."
+msgstr "Choose a password for your account."
+
+msgid "Choisis une image : une fenêtre s'ouvre pour la recadrer avant l'envoi."
+msgstr "Pick an image: a window opens so you can crop it before sending."
+
+msgid "Commande #%(num)s"
+msgstr "Order #%(num)s"
+
+msgid "Commander une création"
+msgstr "Order a creation"
+
+msgid "Commandes, messages, modération"
+msgstr "Orders, messages, moderation"
+
+msgid "Connexion"
+msgstr "Log in"
+
+msgid "Créateur"
+msgstr "Creator"
+
+msgid "Créateur validé"
+msgstr "Approved creator"
+
+msgid "Créateurs du mois"
+msgstr "Creators of the month"
+
+msgid "Créations"
+msgstr "Creations"
+
+msgid "Créer mon compte"
+msgstr "Create my account"
+
+msgid "Créer mon profil"
+msgstr "Create my profile"
+
+msgid "Date de naissance (facultative)"
+msgstr "Date of birth (optional)"
+
+msgid "Demande d'accès"
+msgstr "Access request"
+
+msgid "Demande enregistrée. L'équipe te contacte sur WhatsApp pour vérifier ton identité, puis te remet un mot de passe provisoire à remplacer dès ta prochaine connexion."
+msgstr "Request received. The team will contact you on WhatsApp to check your identity, then give you a temporary password to replace at your next login."
+
+msgid "Demander l'aide de l'équipe"
+msgstr "Ask the team for help"
+
+msgid "Demander un nouveau lien"
+msgstr "Request a new link"
+
+msgid "Dernière étape : présente tes créations pour devenir Créateur 🎨"
+msgstr "Last step: show your creations to become a Creator 🎨"
+
+msgid "Devenir Créateur"
+msgstr "Become a Creator"
+
+msgid "Divinité"
+msgstr "Deity"
+
+msgid "Déconnexion"
+msgstr "Log out"
+
+msgid "Déesse"
+msgstr "Goddess"
+
+msgid "Déminer en cours"
+msgstr "Minesweeper in progress"
+
+msgid "Démon"
+msgstr "Demon"
+
+msgid "Déplace et zoome l'image (pince ou molette)."
+msgstr "Move and zoom the image (pinch or wheel)."
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Email envoyé"
+msgstr "Email sent"
+
+msgid "Empereur"
+msgstr "Emperor"
+
+msgid "En créant ton profil, tu acceptes <a href=\"%(url_reglement)s\">le règlement</a>."
+msgstr "By creating your profile you accept <a href=\"%(url_reglement)s\">the rules</a>."
+
+msgid "Enregistrer"
+msgstr "Save"
+
+msgid "Enregistrer le mot de passe"
+msgstr "Save the password"
+
+msgid "Enregistrer le nouveau mot de passe"
+msgstr "Save the new password"
+
+msgid "Entrer"
+msgstr "Enter"
+
+msgid "Envoyer"
+msgstr "Send"
+
+msgid "Envoyer la demande"
+msgstr "Send the request"
+
+msgid "Envoyer une offrande"
+msgstr "Send an offering"
+
+msgid "Ex : Reine des ombres 🌙"
+msgstr "E.g. Queen of shadows 🌙"
+
+msgid "Fantôme"
+msgstr "Ghost"
+
+msgid "Favoris"
+msgstr "Favourites"
+
+msgid "Humain"
+msgstr "Human"
+
+msgid "Identité"
+msgstr "Identity"
+
+msgid "Image trop lourde (%(limite)s Mo maximum)."
+msgstr "Image too large (%(limite)s MB maximum)."
+
+msgid "Impératrice"
+msgstr "Empress"
+
+msgid "Incube"
+msgstr "Incubus"
+
+msgid "Indique l'adresse email de ton compte : tu recevras un lien pour choisir un nouveau mot de passe."
+msgstr "Enter the email address of your account: you will receive a link to choose a new password."
+
+msgid "Inscription"
+msgstr "Sign up"
+
+msgid "Inventaire"
+msgstr "Inventory"
+
+msgid "J'accepte <a href=\"%(reglement)s\">le règlement</a> et la <a href=\"%(confidentialite)s\">confidentialité</a>"
+msgstr "I accept <a href=\"%(reglement)s\">the rules</a> and the <a href=\"%(confidentialite)s\">privacy policy</a>"
+
+msgid "J'accepte le règlement de la communauté"
+msgstr "I accept the community rules"
+
+msgid "J'ai déjà un compte"
+msgstr "I already have an account"
+
+msgid "Je comprends que mon profil et mes données personnelles seront effacés et que je ne pourrai pas les récupérer."
+msgstr "I understand that my profile and personal data will be erased and that I will not be able to get them back."
+
+msgid "Jeu de hasard : tu peux gagner ou tout perdre."
+msgstr "Game of chance: you can win or lose everything."
+
+msgid "Jeux"
+msgstr "Games"
+
+msgid "Jouer des Cubis"
+msgstr "Play some Cubis"
+
+msgid "L'inscription prend une minute. Tu choisis ton profil, tu reçois tes premiers Cubis, et le monde est à toi."
+msgstr "Signing up takes a minute. You choose your profile, receive your first Cubis, and the world is yours."
+
+msgid "La monnaie du monde. Tu en gagnes chaque jour, tu en dépenses en boutique, tu en offres aux autres membres. Aucun argent réel n'entre ici."
+msgstr "The currency of the world. You earn some every day, spend it in the shop and give it to other members. No real money comes into it."
+
+msgid "La vérification se fait manuellement : ta demande sera traitée dès que possible."
+msgstr "Verification is done by hand: your request will be handled as soon as possible."
+
+msgid "Langue"
+msgstr "Language"
+
+msgid "Langue de l'interface"
+msgstr "Interface language"
+
+msgid "Langue enregistrée."
+msgstr "Language saved."
+
+msgid "Langue inconnue."
+msgstr "Unknown language."
+
+msgid "Le changer, ou remplacer un mot de passe provisoire"
+msgstr "Change it, or replace a temporary password"
+
+msgid "Le lien est valable une heure. Pense à regarder dans les indésirables."
+msgstr "The link is valid for one hour. Remember to check your spam folder."
+
+msgid "Le règlement"
+msgstr "The rules"
+
+msgid "Les Cubis"
+msgstr "The Cubis"
+
+msgid "Les commandes terminées, les offrandes reçues et les transactions restent enregistrées sans ton identité : elles appartiennent aussi aux autres membres et servent de preuve en cas de litige."
+msgstr "Completed orders, offerings received and transactions are kept without your identity: they also belong to other members and serve as evidence in a dispute."
+
+msgid "Les créateurs du mois"
+msgstr "Creators of the month"
+
+msgid "Les pages, les boutons et les messages s'affichent dans la langue choisie. Le choix est gardé sur ton compte, sur tous tes appareils."
+msgstr "Pages, buttons and messages are shown in the language you choose. The choice is kept on your account, on all your devices."
+
+msgid "Les règles du monde : respect, contenus, Cubis, boutique, sanctions."
+msgstr "The rules of the world: respect, content, Cubis, shop, sanctions."
+
+msgid "Lire le règlement"
+msgstr "Read the rules"
+
+msgid "Mage"
+msgstr "Mage"
+
+msgid "Membre depuis"
+msgstr "Member since"
+
+msgid "Mes cadeaux"
+msgstr "My gifts"
+
+msgid "Mes commandes"
+msgstr "My orders"
+
+msgid "Mes dernières parties"
+msgstr "My latest games"
+
+msgid "Mes favoris"
+msgstr "My favourites"
+
+msgid "Mini-jeux"
+msgstr "Mini-games"
+
+msgid "Mise de %(mise_min)s à %(mise_max)s Cubis"
+msgstr "Stake from %(mise_min)s to %(mise_max)s Cubis"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Modifier mon profil"
+msgstr "Edit my profile"
+
+msgid "Modérer"
+msgstr "Moderate"
+
+msgid "Mon compte"
+msgstr "My account"
+
+msgid "Mon fil"
+msgstr "My feed"
+
+msgid "Mon inventaire"
+msgstr "My inventory"
+
+msgid "Mon profil"
+msgstr "My profile"
+
+msgid "Monde RP · communauté WhatsApp"
+msgstr "RP world · WhatsApp community"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "Mot de passe changé."
+msgstr "Password changed."
+
+msgid "Mot de passe changé. Tu peux te connecter."
+msgstr "Password changed. You can log in."
+
+msgid "Mot de passe incorrect."
+msgstr "Incorrect password."
+
+msgid "Mot de passe oublié"
+msgstr "Forgotten password"
+
+msgid "Mot de passe oublié ?"
+msgstr "Forgotten your password?"
+
+msgid "Neko"
+msgstr "Neko"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Nouveau mot de passe"
+msgstr "New password"
+
+msgid "Numéro WhatsApp (jamais public, visible seulement lors d'une commande)"
+msgstr "WhatsApp number (never public, only visible when you place an order)"
+
+msgid "Officiel"
+msgstr "Official"
+
+msgid "Offrandes reçues"
+msgstr "Offerings received"
+
+msgid "Offrir"
+msgstr "Give"
+
+msgid "Offrir des Cubis"
+msgstr "Give Cubis"
+
+msgid "Page %(numero)s / %(total)s"
+msgstr "Page %(numero)s / %(total)s"
+
+msgid "Panel des Divinités"
+msgstr "Deities panel"
+
+msgid "Paramètres"
+msgstr "Settings"
+
+msgid "Participant"
+msgstr "Participant"
+
+msgid "Pas encore de biographie."
+msgstr "No biography yet."
+
+msgid "Photo de profil"
+msgstr "Profile photo"
+
+msgid "Photo, bannière, bio, numéro WhatsApp"
+msgstr "Photo, banner, bio, WhatsApp number"
+
+msgid "Photos"
+msgstr "Photos"
+
+msgid "Pile ou Face, Roue de la Fortune, Poker Bot, Braquage, Déminer. Jeu de hasard : tu peux gagner ou tout perdre."
+msgstr "Heads or Tails, Wheel of Fortune, Poker Bot, Heist, Minesweeper. Game of chance: you can win or lose everything."
+
+msgid "Plus d'accès à cette adresse ?"
+msgstr "No longer access to this address?"
+
+msgid "Possédé"
+msgstr "Owned"
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Profil mis à jour ✨"
+msgstr "Profile updated ✨"
+
+msgid "Précédent"
+msgstr "Previous"
+
+msgid "Prêt à entrer"
+msgstr "Ready to walk in"
+
+msgid "Pseudo"
+msgstr "Nickname"
+
+msgid "Pseudo, espèce, bio RP, cadre, décor et musique de profil : une identité qui reste, même quand la conversation WhatsApp défile."
+msgstr "Nickname, species, RP bio, frame, background and profile music: an identity that lasts, even when the WhatsApp conversation scrolls by."
+
+msgid "Recadrer"
+msgstr "Crop"
+
+msgid "Recadrer la bannière"
+msgstr "Crop the banner"
+
+msgid "Recadrer la photo de profil"
+msgstr "Crop the profile photo"
+
+msgid "Recevoir le lien"
+msgstr "Send me the link"
+
+msgid "Recevoir un lien par email"
+msgstr "Get a link by email"
+
+msgid "Rechercher"
+msgstr "Search"
+
+msgid "Rechercher un article ou un créateur…"
+msgstr "Search for an item or a creator…"
+
+msgid "Regarder"
+msgstr "Watch"
+
+msgid "Rejoindre Aphrodite"
+msgstr "Join Aphrodite"
+
+msgid "Relique"
+msgstr "Relic"
+
+msgid "Remplace ici ton mot de passe provisoire par un mot de passe personnel. Il ne sera connu que de toi."
+msgstr "Replace your temporary password here with a personal one. Only you will know it."
+
+msgid "Reprendre la partie"
+msgstr "Resume the game"
+
+msgid "Retirer le cadre"
+msgstr "Remove the frame"
+
+msgid "Retirer le décor"
+msgstr "Remove the background"
+
+msgid "Retirer ma musique"
+msgstr "Remove my music"
+
+msgid "Retour aux paramètres"
+msgstr "Back to settings"
+
+msgid "Retour à la connexion"
+msgstr "Back to log in"
+
+msgid "Retour à mon profil"
+msgstr "Back to my profile"
+
+msgid "Rien reçu, ou plus d'accès à cette adresse ?"
+msgstr "Nothing received, or no longer access to this address?"
+
+msgid "Règlement"
+msgstr "Rules"
+
+msgid "Réinitialiser"
+msgstr "Reset"
+
+msgid "S'abonner"
+msgstr "Follow"
+
+msgid "Se connecter"
+msgstr "Log in"
+
+msgid "Sert seulement à te souhaiter ton anniversaire RP. Jamais affichée."
+msgstr "Only used to wish you a happy RP birthday. Never displayed."
+
+msgid "Si un compte existe avec cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé."
+msgstr "If an account exists with this address, an email with a reset link has just been sent."
+
+msgid "Signaler"
+msgstr "Report"
+
+msgid "Stickers, fonds d'écran, images RP, musiques : les créateurs valident leur place et vendent leurs œuvres à la communauté."
+msgstr "Stickers, wallpapers, RP images, music: creators get approved and sell their work to the community."
+
+msgid "Succube"
+msgstr "Succubus"
+
+msgid "Suivant"
+msgstr "Next"
+
+msgid "Suppression impossible pour l'instant"
+msgstr "Deletion is not possible right now"
+
+msgid "Supprimer définitivement"
+msgstr "Delete permanently"
+
+msgid "Supprimer mon compte"
+msgstr "Delete my account"
+
+msgid "Série de connexion : %(n)s jour"
+msgid_plural "Série de connexion : %(n)s jours"
+msgstr[0] "Login streak: %(n)s day"
+msgstr[1] "Login streak: %(n)s days"
+
+msgid "Tant qu'une commande n'est pas terminée ou annulée, elle garde des Cubis bloqués (séquestre) ou une décision en attente : fermer ton compte maintenant laisserait l'acheteur sans recours et ses Cubis bloqués définitivement."
+msgstr "As long as an order is not completed or cancelled, it keeps Cubis in escrow or a decision pending: closing your account now would leave the buyer with no recourse and their Cubis blocked for good."
+
+msgid "Termine la livraison, confirme la réception ou annule la commande, puis reviens sur cette page : la suppression sera alors possible."
+msgstr "Finish the delivery, confirm receipt or cancel the order, then come back to this page: deletion will then be possible."
+
+msgid "Tes créations"
+msgstr "Your creations"
+
+msgid "Ton adresse email"
+msgstr "Your email address"
+
+msgid "Ton compte est supprimé. Merci d'avoir joué."
+msgstr "Your account has been deleted. Thanks for playing."
+
+msgid "Ton inventaire est vide. Visite la <a href=\"%(url_boutique)s\">boutique</a> !"
+msgstr "Your inventory is empty. Visit the <a href=\"%(url_boutique)s\">shop</a>!"
+
+msgid "Ton profil"
+msgstr "Your profile"
+
+msgid "Ton profil, tes données personnelles et tes articles disparaissent définitivement. Les commandes passées restent visibles pour les autres membres."
+msgstr "Your profile, your personal data and your items disappear for good. Past orders stay visible to other members."
+
+msgid "Ton solde"
+msgstr "Your balance"
+
+msgid "Toutes les catégories"
+msgstr "All categories"
+
+msgid "Transactions"
+msgstr "Transactions"
+
+msgid "Trop de demandes depuis ce réseau. Réessaie plus tard."
+msgstr "Too many requests from this network. Try again later."
+
+msgid "Trop de tentatives d'inscription depuis ce réseau. Réessaie dans un quart d'heure."
+msgstr "Too many sign-up attempts from this network. Try again in fifteen minutes."
+
+msgid "Trop de tentatives de connexion. Patiente quelques minutes avant de réessayer."
+msgstr "Too many login attempts. Wait a few minutes before trying again."
+
+msgid "Tu as encore <strong>%(n)s commande en cours</strong>."
+msgid_plural "Tu as encore <strong>%(n)s commandes en cours</strong>."
+msgstr[0] "You still have <strong>%(n)s order in progress</strong>."
+msgstr[1] "You still have <strong>%(n)s orders in progress</strong>."
+
+msgid "Tu as toujours accès à ton email ?"
+msgstr "Do you still have access to your email?"
+
+msgid "Tu te souviens de ton mot de passe ?"
+msgstr "Remembered your password?"
+
+msgid "Tu utilises un mot de passe provisoire remis par l'équipe. Choisis-en un nouveau dès maintenant."
+msgstr "You are using a temporary password given by the team. Choose a new one right now."
+
+msgid "Télécharger"
+msgstr "Download"
+
+msgid "Un monde permanent pour ta communauté : un profil qui te ressemble, une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes pour remercier ceux qui font vivre le RP."
+msgstr "A permanent world for your community: a profile that looks like you, a game currency, a shop where members' creations are sold, and offerings to thank those who keep the RP alive."
+
+msgid "Utilise ce formulaire si tu n'as plus accès à l'adresse email de ton compte. L'équipe te répondra en privé sur WhatsApp."
+msgstr "Use this form if you no longer have access to the email address of your account. The team will reply privately on WhatsApp."
+
+msgid "Valider"
+msgstr "Confirm"
+
+msgid "Vampire"
+msgstr "Vampire"
+
+msgid "Vitrine"
+msgstr "Showcase"
+
+msgid "Voir"
+msgstr "View"
+
+msgid "Voir les créateurs du mois →"
+msgstr "See the creators of the month →"
+
+msgid "Voir mes commandes"
+msgstr "See my orders"
+
+msgid "Voir mes transactions"
+msgstr "See my transactions"
+
+msgid "Voir tout"
+msgstr "See all"
+
+msgid "Vérifie ta boîte mail"
+msgstr "Check your inbox"
+
+msgid "création en vente"
+msgid_plural "créations en vente"
+msgstr[0] "creation for sale"
+msgstr[1] "creations for sale"
+
+msgid "membre"
+msgid_plural "membres"
+msgstr[0] "member"
+msgstr[1] "members"
+
+msgid "mise"
+msgstr "stake"
+
+msgid "pertes du jour"
+msgstr "losses today"
+
+msgid "ta photo de profil et ta bannière ;"
+msgstr "your profile photo and banner;"
+
+msgid "tes Cubis restants et ta série de connexion ;"
+msgstr "your remaining Cubis and your login streak;"
+
+msgid "tes abonnements, tes favoris et tes notifications ;"
+msgstr "your follows, favourites and notifications;"
+
+msgid "tes articles, retirés de la boutique."
+msgstr "your items, removed from the shop."
+
+msgid "ton email, ton pseudo, ta bio, ton numéro WhatsApp, ton titre ;"
+msgstr "your email, nickname, bio, WhatsApp number and title;"
+
+msgid "À la une"
+msgstr "Featured"
+
+msgid "Équiper"
+msgstr "Equip"

@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Email envoyé — Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Email envoyé" %} — Aphrodite{% endblock %}
 {% block content %}
 <section class="card">
-  <h1>Vérifie ta boîte mail</h1>
+  <h1>{% translate "Vérifie ta boîte mail" %}</h1>
   <div class="msg">
-    Si un compte existe avec cette adresse, un email contenant un lien de
-    réinitialisation vient d'être envoyé.
+    {% translate "Si un compte existe avec cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé." %}
   </div>
-  <p class="muted">Le lien est valable une heure. Pense à regarder dans les
-     indésirables.</p>
-  <p><a class="btn lien" href="{% url 'connexion' %}">Retour à la connexion</a></p>
-  <p class="muted mt-12">Rien reçu, ou plus d'accès à cette adresse ?
-     <a href="{% url 'mot_de_passe_sans_email' %}">Demander l'aide de l'équipe</a></p>
+  <p class="muted">{% translate "Le lien est valable une heure. Pense à regarder dans les indésirables." %}</p>
+  <p><a class="btn lien" href="{% url 'connexion' %}">{% translate "Retour à la connexion" %}</a></p>
+  <p class="muted mt-12">{% translate "Rien reçu, ou plus d'accès à cette adresse ?" %}
+     <a href="{% url 'mot_de_passe_sans_email' %}">{% translate "Demander l'aide de l'équipe" %}</a></p>
 </section>
 {% endblock %}

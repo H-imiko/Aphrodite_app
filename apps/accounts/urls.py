@@ -13,6 +13,7 @@ urlpatterns = [
     path("profil/", views.profil, name="profil"),
     path("profil/modifier/", views.modifier_profil, name="modifier_profil"),
     path("parametres/", views.parametres, name="parametres"),
+    path("parametres/langue/", views.changer_langue, name="changer_langue"),
     path("parametres/supprimer/", views.supprimer_compte, name="supprimer_compte"),
     path("parametres/mot-de-passe/", views.changer_mot_de_passe,
          name="changer_mot_de_passe"),

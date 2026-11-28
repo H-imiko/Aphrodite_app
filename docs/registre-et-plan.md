@@ -271,3 +271,29 @@ Autres points trouvés pendant le même audit :
 - La liste affiche le nombre d'envois par offrande et le total proposé ; la
   page de suppression propose « Retirer du catalogue » quand l'effacement est
   refusé. 17 tests dans l'app `offrandes`.
+
+### Langue de l'interface : français, anglais, espagnol — 28 novembre 2026
+
+- **Réglage dans les paramètres** (`/parametres/`, section « Langue ») : le
+  membre choisit français, anglais ou espagnol. Le choix est enregistré sur
+  son profil (`User.langue`, migration `0008_user_langue`) et posé aussi dans
+  le cookie de langue : il suit donc le compte d'un appareil à l'autre et
+  s'applique dès la page suivante. Un visiteur non connecté garde la langue
+  de son navigateur (`LocaleMiddleware`).
+- **Français = langue source.** Les textes du code restent écrits en français
+  et servent de `msgid` ; les traductions vivent dans
+  `locale/en/LC_MESSAGES/django.po` et `locale/es/LC_MESSAGES/`. Un texte
+  oublié s'affiche donc en français plutôt que vide, et non traduit ne casse
+  rien.
+- **Périmètre traduit** : coque (en-tête, barre du bas, titres), accueil,
+  connexion, inscription, mot de passe oublié/réinitialisation, demandes
+  d'accès, profil et modification du profil, paramètres, boutique, cartes
+  d'article, inventaire, portefeuille, hall des mini-jeux, notifications,
+  suppression de compte, libellés et messages du code de l'app `accounts`.
+  Restent en français (à traduire au prochain passage) : règlement,
+  confidentialité, page d'un article, panel des Divinités, pages de
+  modération, créateurs et commandes.
+- **Sans gettext sur la machine** : `tools/liste_msgids.py` recense les textes
+  (l'équivalent de `makemessages`) et `tools/compiler_catalogues.py` compile
+  les `.po` en `.mo` et refuse un catalogue incomplet. Les `.mo` sont
+  versionnés : le serveur n'a rien à compiler. 11 tests dans `LangueTests`.

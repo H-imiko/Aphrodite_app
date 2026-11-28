@@ -1,31 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Aphrodite — le monde permanent de la communauté{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Aphrodite — le monde permanent de la communauté" %}{% endblock %}
 {% block content %}
 <section class="hero">
-  <p class="hero-sur">Monde RP · communauté WhatsApp</p>
+  <p class="hero-sur">{% translate "Monde RP · communauté WhatsApp" %}</p>
   <h1>Aphrodite</h1>
-  <p class="hero-texte">Un monde permanent pour ta communauté : un profil qui te ressemble,
-     une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes
-     pour remercier ceux qui font vivre le RP.</p>
-  <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
-  <p class="hero-second"><a href="{% url 'connexion' %}">J'ai déjà un compte</a>
-     · <a href="{% url 'createurs_du_mois' %}">Les créateurs du mois</a></p>
+  <p class="hero-texte">{% translate "Un monde permanent pour ta communauté : un profil qui te ressemble, une monnaie de jeu, une boutique où les créations des membres se vendent, et des offrandes pour remercier ceux qui font vivre le RP." %}</p>
+  <a class="btn lien" href="{% url 'inscription' %}">{% translate "Créer mon profil" %}</a>
+  <p class="hero-second"><a href="{% url 'connexion' %}">{% translate "J'ai déjà un compte" %}</a>
+     · <a href="{% url 'createurs_du_mois' %}">{% translate "Les créateurs du mois" %}</a></p>
 </section>
 
 <section class="chiffres">
   <div class="chiffre">
     <strong>{{ nb_membres }}</strong>
-    <span class="muted">membre{{ nb_membres|pluralize }}</span>
+    <span class="muted">{% blocktranslate count n=nb_membres %}membre{% plural %}membres{% endblocktranslate %}</span>
   </div>
   <div class="chiffre">
     <strong>{{ nb_articles }}</strong>
-    <span class="muted">création{{ nb_articles|pluralize }} en vente</span>
+    <span class="muted">{% blocktranslate count n=nb_articles %}création en vente{% plural %}créations en vente{% endblocktranslate %}</span>
   </div>
 </section>
 
 {% if articles %}
 <section>
-  <h2>À la une</h2>
+  <h2>{% translate "À la une" %}</h2>
   <div class="grille">
     {% for a in articles %}
       {% include "partials/carte_article.html" with a=a %}
@@ -35,33 +34,28 @@
 {% endif %}
 
 <section>
-  <h2>Ce que tu y trouves</h2>
+  <h2>{% translate "Ce que tu y trouves" %}</h2>
   <div class="etapes">
     <div class="card etape">
-      <h3>Ton profil</h3>
-      <p class="muted">Pseudo, espèce, bio RP, cadre, décor et musique de profil :
-         une identité qui reste, même quand la conversation WhatsApp défile.</p>
+      <h3>{% translate "Ton profil" %}</h3>
+      <p class="muted">{% translate "Pseudo, espèce, bio RP, cadre, décor et musique de profil : une identité qui reste, même quand la conversation WhatsApp défile." %}</p>
     </div>
     <div class="card etape">
-      <h3>Les Cubis</h3>
-      <p class="muted">La monnaie du monde. Tu en gagnes chaque jour, tu en dépenses en
-         boutique, tu en offres aux autres membres. Aucun argent réel n'entre ici.</p>
+      <h3>{% translate "Les Cubis" %}</h3>
+      <p class="muted">{% translate "La monnaie du monde. Tu en gagnes chaque jour, tu en dépenses en boutique, tu en offres aux autres membres. Aucun argent réel n'entre ici." %}</p>
     </div>
     <div class="card etape">
-      <h3>Tes créations</h3>
-      <p class="muted">Stickers, fonds d'écran, images RP, musiques : les créateurs
-         valident leur place et vendent leurs œuvres à la communauté.</p>
-      <p><a href="{% url 'createurs_du_mois' %}">Voir les créateurs du mois →</a></p>
+      <h3>{% translate "Tes créations" %}</h3>
+      <p class="muted">{% translate "Stickers, fonds d'écran, images RP, musiques : les créateurs valident leur place et vendent leurs œuvres à la communauté." %}</p>
+      <p><a href="{% url 'createurs_du_mois' %}">{% translate "Voir les créateurs du mois →" %}</a></p>
     </div>
   </div>
 </section>
 
 <section class="card center">
-  <h2>Prêt à entrer</h2>
-  <p class="muted">L'inscription prend une minute. Tu choisis ton profil, tu reçois
-     tes premiers Cubis, et le monde est à toi.</p>
-  <a class="btn lien" href="{% url 'inscription' %}">Créer mon profil</a>
-  <p class="muted mt-12">En créant ton profil, tu acceptes
-     <a href="{% url 'reglement' %}">le règlement</a>.</p>
+  <h2>{% translate "Prêt à entrer" %}</h2>
+  <p class="muted">{% translate "L'inscription prend une minute. Tu choisis ton profil, tu reçois tes premiers Cubis, et le monde est à toi." %}</p>
+  <a class="btn lien" href="{% url 'inscription' %}">{% translate "Créer mon profil" %}</a>
+  <p class="muted mt-12">{% url 'reglement' as url_reglement %}{% blocktranslate %}En créant ton profil, tu acceptes <a href="{{ url_reglement }}">le règlement</a>.{% endblocktranslate %}</p>
 </section>
 {% endblock %}

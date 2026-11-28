@@ -1,49 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Supprimer mon compte — Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Supprimer mon compte" %} — Aphrodite{% endblock %}
 {% block content %}
-<h1>Supprimer mon compte</h1>
+<h1>{% translate "Supprimer mon compte" %}</h1>
 
 {% if commandes %}
 <section class="card danger-zone">
-  <h2>Suppression impossible pour l'instant</h2>
-  <p>Tu as encore <strong>{{ commandes|length }} commande{{ commandes|length|pluralize }}
-     en cours</strong>. Tant qu'une commande n'est pas terminée ou annulée, elle garde
-     des Cubis bloqués (séquestre) ou une décision en attente : fermer ton compte
-     maintenant laisserait l'acheteur sans recours et ses Cubis bloqués définitivement.</p>
+  <h2>{% translate "Suppression impossible pour l'instant" %}</h2>
+  <p>{% blocktranslate count n=commandes|length %}Tu as encore <strong>{{ n }} commande en cours</strong>.{% plural %}Tu as encore <strong>{{ n }} commandes en cours</strong>.{% endblocktranslate %}
+     {% translate "Tant qu'une commande n'est pas terminée ou annulée, elle garde des Cubis bloqués (séquestre) ou une décision en attente : fermer ton compte maintenant laisserait l'acheteur sans recours et ses Cubis bloqués définitivement." %}</p>
   <ul class="muted">
     {% for c in commandes %}
-    <li><a href="{% url 'commande' c.pk %}">Commande #{{ c.pk }} — {{ c.titre }}</a>
+    <li><a href="{% url 'commande' c.pk %}">{% blocktranslate with num=c.pk %}Commande #{{ num }}{% endblocktranslate %} — {{ c.titre }}</a>
         : {{ c.get_statut_display }}, {{ c.prix_cubis }} Cubis</li>
     {% endfor %}
   </ul>
-  <p class="muted">Termine la livraison, confirme la réception ou annule la commande,
-     puis reviens sur cette page : la suppression sera alors possible.</p>
-  <a class="btn lien" href="{% url 'commandes' %}">Voir mes commandes</a>
-  <p class="center mt-12"><a href="{% url 'parametres' %}">← Retour aux paramètres</a></p>
+  <p class="muted">{% translate "Termine la livraison, confirme la réception ou annule la commande, puis reviens sur cette page : la suppression sera alors possible." %}</p>
+  <a class="btn lien" href="{% url 'commandes' %}">{% translate "Voir mes commandes" %}</a>
+  <p class="center mt-12"><a href="{% url 'parametres' %}">← {% translate "Retour aux paramètres" %}</a></p>
 </section>
 {% else %}
 <section class="card danger-zone">
-  <p><strong>Cette action est définitive.</strong> Aucune sauvegarde de ton profil ne
-     sera conservée.</p>
-  <h2>Ce qui disparaît</h2>
+  <p><strong>{% translate "Cette action est définitive." %}</strong> {% translate "Aucune sauvegarde de ton profil ne sera conservée." %}</p>
+  <h2>{% translate "Ce qui disparaît" %}</h2>
   <ul class="muted">
-    <li>ton email, ton pseudo, ta bio, ton numéro WhatsApp, ton titre ;</li>
-    <li>ta photo de profil et ta bannière ;</li>
-    <li>tes Cubis restants et ta série de connexion ;</li>
-    <li>tes abonnements, tes favoris et tes notifications ;</li>
-    <li>tes articles, retirés de la boutique.</li>
+    <li>{% translate "ton email, ton pseudo, ta bio, ton numéro WhatsApp, ton titre ;" %}</li>
+    <li>{% translate "ta photo de profil et ta bannière ;" %}</li>
+    <li>{% translate "tes Cubis restants et ta série de connexion ;" %}</li>
+    <li>{% translate "tes abonnements, tes favoris et tes notifications ;" %}</li>
+    <li>{% translate "tes articles, retirés de la boutique." %}</li>
   </ul>
-  <h2>Ce qui reste</h2>
-  <p class="muted">Les commandes terminées, les offrandes reçues et les transactions
-     restent enregistrées sans ton identité : elles appartiennent aussi aux autres
-     membres et servent de preuve en cas de litige.</p>
+  <h2>{% translate "Ce qui reste" %}</h2>
+  <p class="muted">{% translate "Les commandes terminées, les offrandes reçues et les transactions restent enregistrées sans ton identité : elles appartiennent aussi aux autres membres et servent de preuve en cas de litige." %}</p>
 </section>
 
 <form method="post" class="card mt-16">
   {% csrf_token %}
   <div class="formulaire">{% include "partials/champs.html" %}</div>
-  <button type="submit" class="btn danger">Supprimer définitivement</button>
-  <p class="center mt-12"><a href="{% url 'parametres' %}">Annuler, je garde mon compte</a></p>
+  <button type="submit" class="btn danger">{% translate "Supprimer définitivement" %}</button>
+  <p class="center mt-12"><a href="{% url 'parametres' %}">{% translate "Annuler, je garde mon compte" %}</a></p>
 </form>
 {% endif %}
 {% endblock %}

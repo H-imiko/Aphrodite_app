@@ -1,4 +1,4 @@
-{% load static l10n %}
+{% load static l10n i18n %}
 <section class="profil-pub">
   {% if equip and equip.decor %}<img class="decor-profil" src="{% url 'cosmetique_image' equip.decor.pk %}" alt="">{% endif %}
   <div class="banniere" id="pv-banniere"{% if m.banniere %} style="background-image:url('{% url 'photo_membre' m.pk 'banniere' %}')"{% endif %}></div>
@@ -12,8 +12,8 @@
     <div class="bulle" id="pv-bulle"{% if not m.titre %} hidden{% endif %}><span id="pv-bulle-texte">{{ m.titre }}</span></div>
 </div>
   <div class="identite">
-    <h1><span id="pv-pseudo">{{ m.pseudo_whatsapp }}</span>{% if m.createur_valide %}<img class="badge-inline grand-badge" src="{% static 'images/badge_createur_mini.png' %}" alt="Créateur validé" title="Créateur validé">{% endif %}</h1>
-    <p class="espece">{{ m.get_espece_display }}{% if m.est_divinite %} · Divinité{% endif %}</p>
+    <h1><span id="pv-pseudo">{{ m.pseudo_whatsapp }}</span>{% if m.createur_valide %}<img class="badge-inline grand-badge" src="{% static 'images/badge_createur_mini.png' %}" alt="{% translate 'Créateur validé' %}" title="{% translate 'Créateur validé' %}">{% endif %}</h1>
+    <p class="espece">{{ m.get_espece_display }}{% if m.est_divinite %} · {% translate "Divinité" %}{% endif %}</p>
 </div>
   {% if equip and equip.musique %}
   <div class="musique-profil">

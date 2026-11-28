@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Notifications" %} — Aphrodite{% endblock %}
 {% block content %}
 <section class="card">
-  <h1>Notifications 🔔</h1>
+  <h1>{% translate "Notifications" %} 🔔</h1>
   {% for n in notifs %}
     <div class="notif{% if not n.lu %} non-lue{% endif %}">
       {% if n.lien %}<a href="{{ n.lien }}"><strong>{{ n.titre }}</strong></a>{% else %}<strong>{{ n.titre }}</strong>{% endif %}
@@ -9,7 +11,7 @@
       <div class="muted petit-texte">{{ n.date|date:"d/m/Y H:i" }}</div>
 </div>
   {% empty %}
-    <p class="muted">Aucune notification pour l'instant.</p>
+    <p class="muted">{% translate "Aucune notification pour l'instant." %}</p>
   {% endfor %}
 </section>
 {% endblock %}

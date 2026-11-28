@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -28,6 +29,99 @@ def donnees_inscription(**extra):
     }
     data.update(extra)
     return data
+
+
+class LangueTests(TestCase):
+    """Le choix de la langue, fait dans les parametres, s'applique partout."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="langue@test.cg", password=MDP, pseudo_whatsapp="Polyglotte")
+
+    def test_parametres_proposent_les_trois_langues(self):
+        self.client.force_login(self.user)
+
+        reponse = self.client.get(reverse("parametres"))
+
+        for code in ("fr", "en", "es"):
+            self.assertContains(reponse, 'value="%s"' % code)
+
+    def test_changement_de_langue_est_enregistre_sur_le_profil(self):
+        self.client.force_login(self.user)
+
+        reponse = self.client.post(reverse("changer_langue"),
+                                   {"langue": "es"})
+
+        self.assertRedirects(reponse, reverse("parametres"))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.langue, "es")
+
+    def test_la_page_suit_la_langue_du_profil(self):
+        self.user.langue = "en"
+        self.user.save()
+        self.client.force_login(self.user)
+
+        reponse = self.client.get(reverse("parametres"))
+
+        self.assertContains(reponse, "Interface language")
+        self.assertNotContains(reponse, "Langue de l'interface")
+
+    def test_retour_au_francais(self):
+        self.user.langue = "es"
+        self.user.save()
+        self.client.force_login(self.user)
+
+        self.client.post(reverse("changer_langue"), {"langue": "fr"})
+
+        reponse = self.client.get(reverse("parametres"))
+        self.assertContains(reponse, "Langue de l'interface")
+
+    def test_le_choix_est_garde_dans_un_cookie(self):
+        self.client.force_login(self.user)
+
+        reponse = self.client.post(reverse("changer_langue"),
+                                   {"langue": "es"})
+
+        self.assertEqual(
+            reponse.cookies[settings.LANGUAGE_COOKIE_NAME].value, "es")
+
+    def test_accueil_en_espagnol(self):
+        self.client.cookies[settings.LANGUAGE_COOKIE_NAME] = "es"
+
+        reponse = self.client.get(reverse("accueil"))
+
+        self.assertContains(reponse, "Crear mi perfil")
+
+    def test_accueil_en_anglais(self):
+        self.client.cookies[settings.LANGUAGE_COOKIE_NAME] = "en"
+
+        reponse = self.client.get(reverse("accueil"))
+
+        self.assertContains(reponse, "Create my profile")
+        self.assertContains(reponse, '<html lang="en">')
+
+    def test_langue_inconnue_refusee(self):
+        self.client.force_login(self.user)
+
+        reponse = self.client.post(reverse("changer_langue"),
+                                   {"langue": "de"}, follow=True)
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.langue, "")
+        self.assertContains(reponse, "Langue inconnue")
+
+    def test_changement_par_lien_get_refuse(self):
+        self.client.force_login(self.user)
+
+        reponse = self.client.get(reverse("changer_langue"))
+
+        self.assertRedirects(reponse, reverse("parametres"))
+
+    def test_changement_reserve_aux_membres_connectes(self):
+        reponse = self.client.post(reverse("changer_langue"),
+                                   {"langue": "en"})
+
+        self.assertIn(reverse("connexion"), reponse["Location"])
 
 
 class InscriptionTests(TestCase):

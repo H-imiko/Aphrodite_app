@@ -1,44 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Paramètres — Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Paramètres" %} — Aphrodite{% endblock %}
 {% block content %}
-<h1>Paramètres</h1>
+<h1>{% translate "Paramètres" %}</h1>
 
 <section class="card">
-  <h2>Mon compte</h2>
+  <h2>{% translate "Mon compte" %}</h2>
   <div class="parametres">
     <div class="param-ligne">
-      <div><strong>Email</strong><span class="muted">{{ user.email }}</span></div>
+      <div><strong>{% translate "Email" %}</strong><span class="muted">{{ user.email }}</span></div>
     </div>
     <div class="param-ligne">
-      <div><strong>Pseudo</strong><span class="muted">{{ user.pseudo_whatsapp }}</span></div>
+      <div><strong>{% translate "Pseudo" %}</strong><span class="muted">{{ user.pseudo_whatsapp }}</span></div>
     </div>
     <div class="param-ligne">
-      <div><strong>Profil</strong><span class="muted">Photo, bannière, bio, numéro WhatsApp</span></div>
-      <a class="petit" href="{% url 'modifier_profil' %}">Modifier</a>
+      <div><strong>{% translate "Profil" %}</strong><span class="muted">{% translate "Photo, bannière, bio, numéro WhatsApp" %}</span></div>
+      <a class="petit" href="{% url 'modifier_profil' %}">{% translate "Modifier" %}</a>
     </div>
     <div class="param-ligne">
-      <div><strong>Mot de passe</strong><span class="muted">Le changer, ou remplacer un mot de passe provisoire</span></div>
-      <a class="petit" href="{% url 'changer_mot_de_passe' %}">Changer</a>
+      <div><strong>{% translate "Mot de passe" %}</strong><span class="muted">{% translate "Le changer, ou remplacer un mot de passe provisoire" %}</span></div>
+      <a class="petit" href="{% url 'changer_mot_de_passe' %}">{% translate "Changer" %}</a>
     </div>
     <div class="param-ligne">
-      <div><strong>Notifications</strong><span class="muted">Commandes, messages, modération</span></div>
-      <a class="petit" href="{% url 'notifications' %}">Voir</a>
+      <div><strong>{% translate "Notifications" %}</strong><span class="muted">{% translate "Commandes, messages, modération" %}</span></div>
+      <a class="petit" href="{% url 'notifications' %}">{% translate "Voir" %}</a>
     </div>
   </div>
 </section>
 
 <section class="card mt-16">
-  <h2>Le règlement</h2>
-  <p class="muted">Les règles du monde : respect, contenus, Cubis, boutique, sanctions.</p>
-  <a class="petit" href="{% url 'reglement' %}">Lire le règlement</a>
+  <h2>{% translate "Langue" %}</h2>
+  <p class="muted">{% translate "Les pages, les boutons et les messages s'affichent dans la langue choisie. Le choix est gardé sur ton compte, sur tous tes appareils." %}</p>
+  <form method="post" action="{% url 'changer_langue' %}" class="param-ligne">
+    {% csrf_token %}
+    <label class="champ-langue" for="id_langue">{% translate "Langue de l'interface" %}
+      {% get_current_language as LANGUE_ACTIVE %}
+      <select name="langue" id="id_langue">
+        {% for code, nom in LANGUAGES %}<option value="{{ code }}"{% if code == LANGUE_ACTIVE %} selected{% endif %}>{{ nom }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="petit">{% translate "Enregistrer" %}</button>
+  </form>
+</section>
+
+<section class="card mt-16">
+  <h2>{% translate "Le règlement" %}</h2>
+  <p class="muted">{% translate "Les règles du monde : respect, contenus, Cubis, boutique, sanctions." %}</p>
+  <a class="petit" href="{% url 'reglement' %}">{% translate "Lire le règlement" %}</a>
 </section>
 
 <section class="card mt-16 danger-zone">
-  <h2>Supprimer mon compte</h2>
-  <p class="muted">Ton profil, tes données personnelles et tes articles disparaissent
-     définitivement. Les commandes passées restent visibles pour les autres membres.</p>
-  <a class="btn danger lien" href="{% url 'supprimer_compte' %}">Supprimer mon compte</a>
+  <h2>{% translate "Supprimer mon compte" %}</h2>
+  <p class="muted">{% translate "Ton profil, tes données personnelles et tes articles disparaissent définitivement. Les commandes passées restent visibles pour les autres membres." %}</p>
+  <a class="btn danger lien" href="{% url 'supprimer_compte' %}">{% translate "Supprimer mon compte" %}</a>
 </section>
 
-<p><a href="{% url 'profil' %}">← Retour à mon profil</a></p>
+<p><a href="{% url 'profil' %}">← {% translate "Retour à mon profil" %}</a></p>
 {% endblock %}

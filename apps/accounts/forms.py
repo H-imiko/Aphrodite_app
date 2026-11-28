@@ -3,19 +3,21 @@ from django.contrib.auth.forms import (PasswordResetForm, UserCreationForm)
 from django.core.files.uploadedfile import UploadedFile
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
+
 from .models import User
 
 
 class InscriptionForm(UserCreationForm):
     date_naissance = forms.DateField(
-        label="Date de naissance (facultative)",
+        label=_("Date de naissance (facultative)"),
         required=False,
-        help_text="Sert seulement à te souhaiter ton anniversaire RP. "
-                  "Jamais affichée.",
+        help_text=_("Sert seulement à te souhaiter ton anniversaire RP. "
+                    "Jamais affichée."),
         widget=forms.DateInput(attrs={"type": "date"}),
     )
     accepte_cgu = forms.BooleanField(
-        label="J'accepte le règlement de la communauté"
+        label=_("J'accepte le règlement de la communauté")
     )
 
     def __init__(self, *args, **kwargs):
@@ -24,9 +26,10 @@ class InscriptionForm(UserCreationForm):
         # Django échappe les libellés, mark_safe n'est utilisé que pour ce
         # texte constant, avec une URL produite par reverse().
         self.fields["accepte_cgu"].label = mark_safe(
-            'J\'accepte <a href="%s">le règlement</a> et la '
-            '<a href="%s">confidentialité</a>'
-            % (reverse("reglement"), reverse("confidentialite")))
+            _("J'accepte <a href=\"%(reglement)s\">le règlement</a> et la "
+              "<a href=\"%(confidentialite)s\">confidentialité</a>")
+            % {"reglement": reverse("reglement"),
+               "confidentialite": reverse("confidentialite")})
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -36,7 +39,7 @@ class InscriptionForm(UserCreationForm):
 
 class MotDePasseOublieForm(forms.Form):
     email = forms.EmailField(
-        label="Ton adresse email",
+        label=_("Ton adresse email"),
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
 
@@ -45,7 +48,7 @@ class ReinitialisationMotDePasseForm(PasswordResetForm):
     """Formulaire du lien envoye par email (Django gere l'envoi)."""
 
     email = forms.EmailField(
-        label="Ton adresse email",
+        label=_("Ton adresse email"),
         max_length=254,
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
@@ -53,12 +56,12 @@ class ReinitialisationMotDePasseForm(PasswordResetForm):
 
 class SuppressionCompteForm(forms.Form):
     mot_de_passe = forms.CharField(
-        label="Mot de passe",
+        label=_("Mot de passe"),
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
     )
     confirmer = forms.BooleanField(
-        label="Je comprends que mon profil et mes données personnelles "
-              "seront effacés et que je ne pourrai pas les récupérer.",
+        label=_("Je comprends que mon profil et mes données personnelles "
+                "seront effacés et que je ne pourrai pas les récupérer."),
     )
 
     def __init__(self, *args, user=None, **kwargs):
@@ -68,7 +71,7 @@ class SuppressionCompteForm(forms.Form):
     def clean_mot_de_passe(self):
         mot_de_passe = self.cleaned_data["mot_de_passe"]
         if not self.user or not self.user.check_password(mot_de_passe):
-            raise forms.ValidationError("Mot de passe incorrect.")
+            raise forms.ValidationError(_("Mot de passe incorrect."))
         return mot_de_passe
 
 
@@ -78,19 +81,20 @@ class ProfilForm(forms.ModelForm):
         fields = ("avatar", "banniere", "pseudo_whatsapp", "titre",
                   "bio_rp", "numero_whatsapp")
         labels = {
-            "avatar": "Photo de profil",
-            "banniere": "Bannière",
-            "pseudo_whatsapp": "Pseudo",
-            "titre": "Bulle de pensée (court)",
-            "bio_rp": "Biographie RP",
-            "numero_whatsapp": "Numéro WhatsApp (jamais public, visible "
-                               "seulement lors d'une commande)",
+            "avatar": _("Photo de profil"),
+            "banniere": _("Bannière"),
+            "pseudo_whatsapp": _("Pseudo"),
+            "titre": _("Bulle de pensée (court)"),
+            "bio_rp": _("Biographie RP"),
+            "numero_whatsapp": _("Numéro WhatsApp (jamais public, visible "
+                                 "seulement lors d'une commande)"),
         }
         widgets = {
             "avatar": forms.FileInput(attrs={"accept": "image/*"}),
             "banniere": forms.FileInput(attrs={"accept": "image/*"}),
             "titre": forms.TextInput(attrs={
-                "maxlength": 60, "placeholder": "Ex : Reine des ombres 🌙"}),
+                "maxlength": 60,
+                "placeholder": _("Ex : Reine des ombres 🌙")}),
             "bio_rp": forms.Textarea(attrs={"rows": 4, "maxlength": 500}),
         }
 
@@ -98,7 +102,8 @@ class ProfilForm(forms.ModelForm):
         image = self.cleaned_data.get(nom)
         if isinstance(image, UploadedFile) and image.size > limite_mo * 1024 * 1024:
             raise forms.ValidationError(
-                f"Image trop lourde ({limite_mo} Mo maximum).")
+                _("Image trop lourde (%(limite)s Mo maximum).")
+                % {"limite": limite_mo})
         return image
 
     def clean_avatar(self):
@@ -110,5 +115,5 @@ class ProfilForm(forms.ModelForm):
     def clean_bio_rp(self):
         bio = self.cleaned_data.get("bio_rp", "")
         if len(bio) > 500:
-            raise forms.ValidationError("500 caractères maximum.")
+            raise forms.ValidationError(_("500 caractères maximum."))
         return bio

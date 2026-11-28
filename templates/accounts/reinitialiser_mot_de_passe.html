@@ -1,20 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Nouveau mot de passe — Aphrodite{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Nouveau mot de passe" %} — Aphrodite{% endblock %}
 {% block content %}
 <section class="card">
-  <h1>Nouveau mot de passe</h1>
+  <h1>{% translate "Nouveau mot de passe" %}</h1>
 
   {% if validlink %}
-    <p class="muted">Choisis un mot de passe pour ton compte.</p>
+    <p class="muted">{% translate "Choisis un mot de passe pour ton compte." %}</p>
     <form method="post">
       {% csrf_token %}
       <div class="formulaire">{% include "partials/champs.html" %}</div>
-      <button type="submit" class="btn">Enregistrer le mot de passe</button>
+      <button type="submit" class="btn">{% translate "Enregistrer le mot de passe" %}</button>
     </form>
   {% else %}
-    <div class="alerte">Ce lien n'est plus valide : il a déjà servi ou il a
-       expiré.</div>
-    <p><a class="btn lien" href="{% url 'mot_de_passe_oublie' %}">Demander un nouveau lien</a></p>
+    <div class="alerte">{% translate "Ce lien n'est plus valide : il a déjà servi ou il a expiré." %}</div>
+    <p><a class="btn lien" href="{% url 'mot_de_passe_oublie' %}">{% translate "Demander un nouveau lien" %}</a></p>
   {% endif %}
 </section>
 {% endblock %}
