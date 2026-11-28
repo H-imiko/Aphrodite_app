@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -116,8 +117,10 @@ def admin_catalogue(request):
         form.save()
         messages.success(request, "Offrande ajoutée au catalogue ✨")
         return redirect("offrandes_admin")
+    offrandes = list(Offrande.objects.annotate(nb_dons=Count("dons")))
     return render(request, "offrandes/admin_catalogue.html", {
-        "form": form, "offrandes": Offrande.objects.all()})
+        "form": form, "offrandes": offrandes,
+        "nb_actives": sum(1 for o in offrandes if o.est_actif)})
 
 
 @login_required
@@ -135,12 +138,37 @@ def admin_modifier(request, pk):
 
 
 @login_required
+def admin_supprimer(request, pk):
+    """Supprime une offrande jamais envoyée. Sinon, il faut la retirer."""
+    _divinite(request.user)
+    offrande = get_object_or_404(Offrande, pk=pk)
+    nb_dons = offrande.dons.count()
+    if request.method == "POST":
+        if nb_dons:
+            messages.error(
+                request,
+                "Cette offrande a déjà été envoyée : elle doit rester dans "
+                "l'historique. Retire-la du catalogue à la place.")
+            return redirect("offrandes_admin")
+        image = offrande.image
+        nom = image.name
+        offrande.delete()
+        if nom:
+            image.storage.delete(nom)
+        messages.success(request, "Offrande supprimée.")
+        return redirect("offrandes_admin")
+    return render(request, "offrandes/admin_supprimer.html",
+                  {"offrande": offrande, "nb_dons": nb_dons})
+
+
+@login_required
 @require_POST
 def admin_basculer(request, pk):
     _divinite(request.user)
     offrande = get_object_or_404(Offrande, pk=pk)
     offrande.est_actif = not offrande.est_actif
     offrande.save(update_fields=["est_actif"])
-    messages.success(request, "Offrande disponible." if offrande.est_actif
+    messages.success(request, "Offrande de nouveau proposée."
+                     if offrande.est_actif
                      else "Offrande retirée du catalogue.")
     return redirect("offrandes_admin")

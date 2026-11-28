@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Supprimer « {{ offrande.nom }} » ?</h1>
+  {% if nb_dons %}
+    <div class="alerte">Cette offrande a déjà été envoyée {{ nb_dons }} fois : les membres qui l'ont reçue doivent pouvoir la revoir. Tu ne peux pas la supprimer, seulement la retirer du catalogue.</div>
+    <form method="post" action="{% url 'offrande_admin_basculer' offrande.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">Retirer du catalogue</button>
+    </form>
+  {% else %}
+    <p>Elle n'a jamais été envoyée. La suppression est définitive et l'image sera effacée.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn danger">Supprimer définitivement</button>
+    </form>
+  {% endif %}
+  <p><a href="{% url 'offrandes_admin' %}">← Retour au catalogue</a></p>
+</section>
+{% endblock %}

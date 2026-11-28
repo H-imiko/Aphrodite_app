@@ -16,4 +16,6 @@ urlpatterns = [
          name="offrande_admin_modifier"),
     path("divinites/offrandes/<int:pk>/basculer/", views.admin_basculer,
          name="offrande_admin_basculer"),
+    path("divinites/offrandes/<int:pk>/supprimer/", views.admin_supprimer,
+         name="offrande_admin_supprimer"),
 ]

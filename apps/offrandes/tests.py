@@ -1,8 +1,9 @@
 from io import BytesIO
 
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from apps.accounts.models import User
 from apps.economy.models import Transaction
@@ -97,3 +98,119 @@ class OffrandeTests(TestCase):
         don = OffrandeEnvoyee.objects.get()
         self.assertEqual(don.prix_paye, 0)
         self.assertFalse(Transaction.objects.exists())
+
+
+def image_transparente(nom="fleur.png"):
+    """Un PNG avec de vrais pixels transparents, comme en attend le formulaire."""
+    img = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    ImageDraw.Draw(img).ellipse((64, 64, 192, 192), fill=(255, 46, 147, 255))
+    tampon = BytesIO()
+    img.save(tampon, "PNG")
+    return SimpleUploadedFile(nom, tampon.getvalue(), content_type="image/png")
+
+
+class CatalogueDivinitesTests(TestCase):
+    """Les Divinités gèrent seules le catalogue : ajouter, retirer, supprimer."""
+
+    def setUp(self):
+        self.divinite = compte("divinite@test.cg", est_divinite=True)
+        self.membre = compte("simple@test.cg", solde=500)
+        self.client.force_login(self.divinite)
+
+    def test_catalogue_reserve_aux_divinites(self):
+        self.client.force_login(self.membre)
+
+        reponse = self.client.get("/divinites/offrandes/")
+
+        self.assertEqual(reponse.status_code, 403)
+
+    def test_la_page_liste_les_offrandes_du_catalogue(self):
+        offrande("Rose", 20)
+
+        reponse = self.client.get("/divinites/offrandes/")
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "Rose")
+        self.assertContains(reponse, "Ajouter une offrande")
+
+    def test_divinite_ajoute_une_offrande(self):
+        reponse = self.client.post("/divinites/offrandes/", {
+            "nom": "Fleur de lune",
+            "prix_cubis": 90,
+            "image": image_transparente(),
+            "ordre": 11,
+            "est_actif": "on",
+        })
+
+        self.assertEqual(reponse.status_code, 302)
+        fleur = Offrande.objects.get(nom="Fleur de lune")
+        self.assertEqual(fleur.prix_cubis, 90)
+        self.assertTrue(fleur.est_actif)
+        self.assertTrue(fleur.image.name.endswith(".png"))
+
+    def test_image_sans_transparence_refusee(self):
+        opaque = Image.new("RGB", (256, 256), (255, 46, 147))
+        tampon = BytesIO()
+        opaque.save(tampon, "PNG")
+
+        reponse = self.client.post("/divinites/offrandes/", {
+            "nom": "Faux PNG",
+            "prix_cubis": 10,
+            "image": SimpleUploadedFile("faux.png", tampon.getvalue(),
+                                        content_type="image/png"),
+            "ordre": 1,
+        })
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertFalse(Offrande.objects.filter(nom="Faux PNG").exists())
+
+    def test_divinite_retire_puis_remet_une_offrande(self):
+        rose = offrande("Rose", 20)
+
+        self.client.post(f"/divinites/offrandes/{rose.pk}/basculer/")
+        rose.refresh_from_db()
+        self.assertFalse(rose.est_actif)
+
+        self.client.post(f"/divinites/offrandes/{rose.pk}/basculer/")
+        rose.refresh_from_db()
+        self.assertTrue(rose.est_actif)
+
+    def test_offrande_retiree_disparait_du_catalogue_des_membres(self):
+        rose = offrande("Rose", 20)
+        self.client.post(f"/divinites/offrandes/{rose.pk}/basculer/")
+
+        reponse = self.client.get(f"/offrandes/envoyer/{self.membre.pk}/")
+
+        self.assertNotContains(reponse, "Rose")
+
+    def test_divinite_supprime_une_offrande_jamais_envoyee(self):
+        rose = offrande("Rose", 20)
+        nom_fichier = rose.image.name
+
+        reponse = self.client.post(
+            f"/divinites/offrandes/{rose.pk}/supprimer/")
+
+        self.assertRedirects(reponse, "/divinites/offrandes/")
+        self.assertFalse(Offrande.objects.filter(pk=rose.pk).exists())
+        self.assertFalse(rose.image.storage.exists(nom_fichier))
+
+    def test_suppression_refusee_si_offrande_deja_envoyee(self):
+        rose = offrande("Rose", 20)
+        envoyer(self.membre, self.divinite.pk, rose.pk)
+
+        reponse = self.client.get(f"/divinites/offrandes/{rose.pk}/supprimer/",
+                                  follow=True)
+        self.assertContains(reponse, "déjà été envoyée")
+
+        self.client.post(f"/divinites/offrandes/{rose.pk}/supprimer/")
+        self.assertTrue(Offrande.objects.filter(pk=rose.pk).exists())
+
+    def test_membre_simple_ne_peut_pas_supprimer(self):
+        rose = offrande("Rose", 20)
+        self.client.force_login(self.membre)
+
+        reponse = self.client.post(
+            f"/divinites/offrandes/{rose.pk}/supprimer/")
+
+        self.assertEqual(reponse.status_code, 403)
+        self.assertTrue(Offrande.objects.filter(pk=rose.pk).exists())

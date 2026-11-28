@@ -256,3 +256,18 @@ Autres points trouvés pendant le même audit :
   Roue jusqu'à x10, Braquage jusqu'à x5, Pile ou Face et Poker à x1.9.
 - Le résultat s'affiche à la fin de l'animation et distingue le gain rendu du
   bénéfice net. 39 tests dans l'app `jeux`.
+
+### Catalogue des offrandes tenu par les Divinités — 28 novembre 2026
+
+- **Ajouter, modifier, retirer, supprimer** depuis `/divinites/offrandes/`
+  (lien « Catalogue des offrandes » du panel). Les actions sont désormais
+  écrites en toutes lettres : « Modifier », « Retirer »/« Remettre »,
+  « Supprimer » (l'ancien bouton de modification n'affichait qu'un caractère
+  invisible, donc introuvable sur téléphone).
+- **Retirer ≠ supprimer** : « Retirer » garde l'offrande en base mais la cache
+  aux membres ; « Supprimer » efface la ligne et son image, et seulement si
+  l'offrande n'a jamais été envoyée (sinon `OffrandeEnvoyee` la protège :
+  l'historique des dons doit rester lisible).
+- La liste affiche le nombre d'envois par offrande et le total proposé ; la
+  page de suppression propose « Retirer du catalogue » quand l'effacement est
+  refusé. 17 tests dans l'app `offrandes`.
