@@ -708,3 +708,18 @@ msgstr "Featured"
 
 msgid "Équiper"
 msgstr "Equip"
+
+msgid "Changer de langue"
+msgstr "Change language"
+
+msgid "Choisir ma langue"
+msgstr "Choose my language"
+
+msgid "Choisis la langue de l'application"
+msgstr "Choose the app language"
+
+msgid "Continuer"
+msgstr "Continue"
+
+msgid "Tout le site s'affichera dans cette langue : les pages, les boutons, les messages. Tu pourras la changer quand tu veux depuis les paramètres."
+msgstr "The whole site will be shown in this language: pages, buttons and messages. You can change it at any time in the settings."

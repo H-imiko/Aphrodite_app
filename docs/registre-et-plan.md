@@ -280,6 +280,12 @@ Autres points trouvés pendant le même audit :
   le cookie de langue : il suit donc le compte d'un appareil à l'autre et
   s'applique dès la page suivante. Un visiteur non connecté garde la langue
   de son navigateur (`LocaleMiddleware`).
+- **Demandée dès l'inscription** (`/inscription/langue/`) : la première visite
+  de `/inscription/` ouvre le choix de langue (français, anglais, espagnol),
+  puis le formulaire s'affiche dans cette langue. Le compte créé garde ce
+  choix (`User.langue`), donc le membre retrouve son interface partout ; le
+  formulaire rappelle la langue retenue et permet d'en changer avant de
+  s'inscrire.
 - **Français = langue source.** Les textes du code restent écrits en français
   et servent de `msgid` ; les traductions vivent dans
   `locale/en/LC_MESSAGES/django.po` et `locale/es/LC_MESSAGES/`. Un texte

@@ -124,8 +124,59 @@ class LangueTests(TestCase):
         self.assertIn(reverse("connexion"), reponse["Location"])
 
 
+class InscriptionLangueTests(TestCase):
+    """La langue est demandee avant le formulaire d'inscription."""
+
+    def test_premiere_visite_demande_la_langue(self):
+        reponse = self.client.get(reverse("inscription"))
+
+        self.assertRedirects(reponse, reverse("langue_inscription"))
+
+    def test_l_etape_propose_les_trois_langues(self):
+        reponse = self.client.get(reverse("langue_inscription"))
+
+        for code in ("fr", "en", "es"):
+            self.assertContains(reponse, 'value="%s"' % code)
+
+    def test_le_choix_ouvre_le_formulaire_dans_cette_langue(self):
+        reponse = self.client.post(reverse("langue_inscription"),
+                                   {"langue": "en"})
+
+        self.assertRedirects(reponse, reverse("inscription"))
+        self.assertEqual(
+            reponse.cookies[settings.LANGUAGE_COOKIE_NAME].value, "en")
+        formulaire = self.client.get(reverse("inscription"))
+        self.assertContains(formulaire, "Create my account")
+
+    def test_langue_inconnue_refusee(self):
+        reponse = self.client.post(reverse("langue_inscription"),
+                                   {"langue": "de"}, follow=True)
+
+        self.assertContains(reponse, "Langue inconnue")
+        self.assertNotIn(settings.LANGUAGE_COOKIE_NAME, reponse.cookies)
+
+    def test_compte_cree_dans_la_langue_choisie(self):
+        self.client.cookies[settings.LANGUAGE_COOKIE_NAME] = "es"
+        data = donnees_inscription(email="espagnol@test.cg")
+
+        reponse = self.client.post(reverse("inscription"), data)
+
+        self.assertRedirects(reponse, reverse("modifier_profil"))
+        self.assertEqual(User.objects.get(email="espagnol@test.cg").langue,
+                         "es")
+
+    def test_formulaire_direct_si_la_langue_est_deja_choisie(self):
+        self.client.cookies[settings.LANGUAGE_COOKIE_NAME] = "fr"
+
+        reponse = self.client.get(reverse("inscription"))
+
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "Changer de langue")
+
+
 class InscriptionTests(TestCase):
     def test_case_reglement_contient_un_lien(self):
+        self.client.cookies[settings.LANGUAGE_COOKIE_NAME] = "fr"
         reponse = self.client.get(reverse("inscription"))
 
         self.assertContains(reponse, '<a href="/reglement/">le règlement</a>')

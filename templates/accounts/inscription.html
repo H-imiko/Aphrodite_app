@@ -4,6 +4,8 @@
 {% block content %}
 <section class="card">
   <h1>{% translate "Rejoindre Aphrodite" %}</h1>
+  <p class="muted">{% get_current_language as LANGUE_ACTIVE %}{% for code, nom in LANGUAGES %}{% if code == LANGUE_ACTIVE %}{% translate "Langue" %} : {{ nom }}{% endif %}{% endfor %}
+     · <a class="petit" href="{% url 'langue_inscription' %}">{% translate "Changer de langue" %}</a></p>
   {% if erreur_limite %}<div class="alerte">{{ erreur_limite }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}

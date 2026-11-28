@@ -80,9 +80,33 @@ class ConnexionVue(auth_views.LoginView):
         return super().post(request, *args, **kwargs)
 
 
+def langue_inscription(request):
+    """Premiere etape de l'inscription : la langue de l'application.
+
+    Elle est demandee avant le formulaire pour que tout le reste de
+    l'inscription (et le compte cree) soit dans la langue du membre. Le choix
+    est pose dans le cookie que LocaleMiddleware lit.
+    """
+    if request.method == "POST":
+        code = (request.POST.get("langue") or "").strip()
+        if code not in dict(LANGUES):
+            messages.error(request, _("Langue inconnue."))
+            return redirect("langue_inscription")
+        translation.activate(code)
+        reponse = redirect("inscription")
+        reponse.set_cookie(settings.LANGUAGE_COOKIE_NAME, code,
+                           max_age=365 * 24 * 3600, samesite="Lax")
+        return reponse
+    return render(request, "accounts/langue_inscription.html")
+
+
 def inscription(request):
     if request.user.is_authenticated:
         return redirect("boutique")
+    # Premiere visite : la langue avant toute chose.
+    if (request.method == "GET"
+            and settings.LANGUAGE_COOKIE_NAME not in request.COOKIES):
+        return redirect("langue_inscription")
     if request.method == "POST" and depasse("inscription", request):
         return render(request, "accounts/inscription.html", {
             "form": InscriptionForm(request.POST),
@@ -92,6 +116,12 @@ def inscription(request):
     form = InscriptionForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
+        # Le compte parle la langue choisie avant l'inscription.
+        code = (request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+                or translation.get_language())
+        if code in dict(LANGUES):
+            User.objects.filter(pk=user.pk).update(langue=code)
+            user.langue = code
         login(request, user)
         if user.type_compte == "createur":
             messages.info(

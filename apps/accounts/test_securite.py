@@ -1,6 +1,7 @@
 import re
 from io import BytesIO
 
+from django.conf import settings
 from django.core import mail
 from django.core.cache import cache
 from django.core.files.base import ContentFile
@@ -299,6 +300,9 @@ class PagesPubliquesTests(TestCase):
         self.assertContains(reponse, reverse("confidentialite"))
 
     def test_lien_confidentialite_dans_l_inscription(self):
-        reponse = Client().get(reverse("inscription"))
+        client = Client()
+        # Premiere visite : la langue est demandee avant le formulaire.
+        client.cookies[settings.LANGUAGE_COOKIE_NAME] = "fr"
+        reponse = client.get(reverse("inscription"))
 
         self.assertContains(reponse, reverse("confidentialite"))

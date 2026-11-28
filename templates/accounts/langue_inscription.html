@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Choisir ma langue" %} — Aphrodite{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>{% translate "Choisis la langue de l'application" %}</h1>
+  <p class="muted">{% translate "Tout le site s'affichera dans cette langue : les pages, les boutons, les messages. Tu pourras la changer quand tu veux depuis les paramètres." %}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {% get_current_language as LANGUE_ACTIVE %}
+    <div class="parametres">
+      {% for code, nom in LANGUAGES %}
+      <label class="champ-case">
+        <input type="radio" name="langue" value="{{ code }}"{% if code == LANGUE_ACTIVE %} checked{% endif %}>
+        <span>{{ nom }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn">{% translate "Continuer" %}</button>
+  </form>
+
+  <p class="muted mt-12"><a href="{% url 'connexion' %}">{% translate "J'ai déjà un compte" %}</a></p>
+</section>
+{% endblock %}

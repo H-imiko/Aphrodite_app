@@ -7,6 +7,8 @@ from . import views
 urlpatterns = [
     path("", views.accueil, name="accueil"),
     path("inscription/", views.inscription, name="inscription"),
+    path("inscription/langue/", views.langue_inscription,
+         name="langue_inscription"),
     path("connexion/", views.ConnexionVue.as_view(), name="connexion"),
     path("deconnexion/", auth_views.LogoutView.as_view(),
          name="deconnexion"),

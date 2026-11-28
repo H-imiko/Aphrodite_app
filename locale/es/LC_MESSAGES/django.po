@@ -708,3 +708,18 @@ msgstr "Destacados"
 
 msgid "Équiper"
 msgstr "Equipar"
+
+msgid "Changer de langue"
+msgstr "Cambiar de idioma"
+
+msgid "Choisir ma langue"
+msgstr "Elegir mi idioma"
+
+msgid "Choisis la langue de l'application"
+msgstr "Elige el idioma de la aplicación"
+
+msgid "Continuer"
+msgstr "Continuar"
+
+msgid "Tout le site s'affichera dans cette langue : les pages, les boutons, les messages. Tu pourras la changer quand tu veux depuis les paramètres."
+msgstr "Todo el sitio se mostrará en este idioma: páginas, botones y mensajes. Podrás cambiarlo cuando quieras desde los ajustes."
