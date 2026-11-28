@@ -237,3 +237,22 @@ Autres points trouvés pendant le même audit :
   `JEU_MISE_MIN`, `JEU_MISE_MAX`, `JEU_PARTIES_PAR_JOUR`, `JEU_PERTE_JOUR_MAX`.
 - Nouveau type de transaction `jeu` (`Transaction.Type.JEU`) : chaque partie
   laisse une ligne dans l'historique des Cubis. 24 tests.
+
+### Mini-jeux animés — 28 novembre 2026
+
+- **Roue, pièce, cartes, coffre** : la roue de la Fortune est une vraie roue
+  de six segments qui tourne et s'arrête sous le pointeur ; la pièce de Pile
+  ou Face tourne sur elle-même ; le Poker Bot retourne deux cartes ; le
+  Braquage ouvre le coffre ou déclenche l'alarme. Le serveur n'envoie que
+  l'angle, la face ou les cartes de la partie déjà enregistrée (`data-*`) :
+  le navigateur anime l'affichage, il ne décide jamais du résultat.
+  `prefers-reduced-motion` est respecté.
+- **Pile ou Face jouable au choix** : deux boutons Pile / Face ; la pièce est
+  tirée à 50/50 et le gain ne tombe que si la face annoncée sort.
+- **Poker Bot honnête** : une carte chacun, la plus haute gagne, égalité au
+  bot (x1.9). Les cartes affichées sont celles qui ont décidé du résultat.
+- **Gains relevés, espérance toujours sous 1** : mise de 5 à 100 Cubis,
+  10 parties par jour, perte du jour plafonnée à 300, consolation de 10 à 25.
+  Roue jusqu'à x10, Braquage jusqu'à x5, Pile ou Face et Poker à x1.9.
+- Le résultat s'affiche à la fin de l'animation et distingue le gain rendu du
+  bénéfice net. 39 tests dans l'app `jeux`.

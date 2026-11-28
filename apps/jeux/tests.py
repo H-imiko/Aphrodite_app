@@ -68,6 +68,52 @@ class MiseTests(TestCase):
         with self.assertRaises(ErreurEconomie):
             services.jouer(self.joueur, "machine_a_sous", 10)
 
+    def test_pile_ou_face_sans_choix_refuse(self):
+        with self.assertRaises(ErreurEconomie):
+            services.jouer(self.joueur, "pile_ou_face", 10)
+
+        self.joueur.refresh_from_db()
+        self.assertFalse(Partie.objects.exists())
+        self.assertEqual(self.joueur.solde_cubis, 100)
+
+    def test_pile_ou_face_gagne_avec_la_bonne_face(self):
+        with patch("apps.jeux.services.random.random", return_value=0.2):
+            partie, _ = services.jouer(self.joueur, "pile_ou_face", 10,
+                                       choix="face")
+
+        self.joueur.refresh_from_db()
+        self.assertTrue(partie.gagne)
+        self.assertEqual(partie.detail, "Face")
+        self.assertEqual(partie.gain, 19)
+        self.assertEqual(self.joueur.solde_cubis, 109)
+
+    def test_pile_ou_face_perd_avec_l_autre_face(self):
+        with patch("apps.jeux.services.random.random", return_value=0.2):
+            partie, _ = services.jouer(self.joueur, "pile_ou_face", 10,
+                                       choix="pile")
+
+        self.joueur.refresh_from_db()
+        self.assertFalse(partie.gagne)
+        self.assertEqual(partie.detail, "Face")
+        self.assertEqual(self.joueur.solde_cubis, 90)
+
+    def test_poker_garde_l_egalite_pour_le_bot(self):
+        # Deux As de couleurs différentes : le bot garde la mise.
+        with patch("apps.jeux.services.random.sample", return_value=[12, 25]):
+            partie, _ = services.jouer(self.joueur, "poker", 10)
+
+        self.assertFalse(partie.gagne)
+        self.assertEqual(partie.detail, "Toi A♠ · bot A♥")
+
+    def test_poker_la_plus_haute_carte_gagne(self):
+        with patch("apps.jeux.services.random.sample", return_value=[12, 0]):
+            partie, _ = services.jouer(self.joueur, "poker", 10)
+
+        self.joueur.refresh_from_db()
+        self.assertTrue(partie.gagne)
+        self.assertEqual(partie.detail, "Toi A♠ · bot 2♠")
+        self.assertEqual(partie.gain, 19)
+
 
 class ReglementTests(TestCase):
     def setUp(self):
@@ -111,17 +157,20 @@ class ReglementTests(TestCase):
         self.assertEqual(Partie.objects.count(), services.parties_max())
 
     def test_plafond_de_perte_journalier(self):
-        riche = compte("riche@test.cg", solde=500)
+        riche = compte("riche@test.cg", solde=1000)
+        mise = 100
+        nombre = services.perte_max() // mise
         with patch("apps.jeux.services.braquage", return_value=PERDU):
-            for _ in range(4):
-                services.jouer(riche, "braquage", 30, "difficile")
+            for _ in range(nombre):
+                services.jouer(riche, "braquage", mise, "difficile")
 
-            self.assertEqual(services.pertes_du_jour(riche), 120)
+            self.assertEqual(services.pertes_du_jour(riche),
+                             services.perte_max())
             with self.assertRaises(ErreurEconomie) as capture:
-                services.jouer(riche, "braquage", 30, "difficile")
+                services.jouer(riche, "braquage", mise, "difficile")
 
         self.assertIn("perdu", str(capture.exception))
-        self.assertEqual(Partie.objects.count(), 4)
+        self.assertEqual(Partie.objects.count(), nombre)
 
     def test_consolation_apres_trois_pertes(self):
         with patch("apps.jeux.services.roue", return_value=PERDU):
@@ -156,6 +205,53 @@ class ReglementTests(TestCase):
             _, consolation = services.jouer(self.joueur, "roue", 10)
 
         self.assertEqual(consolation, 0)
+
+
+class HabillageTests(TestCase):
+    """Données d'affichage envoyées au navigateur pour les animations."""
+
+    def setUp(self):
+        cache.clear()
+        self.joueur = compte()
+
+    def test_chaque_segment_de_roue_a_son_angle(self):
+        for index, (_multiplicateur, _poids, libelle) in enumerate(
+                services.ROUE):
+            angle = services.angle_roue(libelle)
+            self.assertEqual(angle % 360, (360 - (index * 60 + 30)) % 360)
+
+    def test_angle_de_roue_inconnu_sans_animation(self):
+        self.assertIsNone(services.angle_roue("x42"))
+
+    def test_animation_de_la_roue_suit_le_segment_tire(self):
+        partie = Partie.objects.create(
+            user=self.joueur, jeu=Partie.Jeu.ROUE, mise=10, gagne=True,
+            gain=30, detail="x3")
+
+        self.assertEqual(services.animation(partie),
+                         {"angle": services.angle_roue("x3")})
+
+    def test_animation_de_la_piece_donne_le_cote_tombe(self):
+        partie = Partie.objects.create(
+            user=self.joueur, jeu=Partie.Jeu.PILE_OU_FACE, mise=10,
+            detail="Pile")
+
+        self.assertEqual(services.animation(partie), {"cote": "pile"})
+
+    def test_animation_du_poker_relit_les_deux_cartes(self):
+        partie = Partie.objects.create(
+            user=self.joueur, jeu=Partie.Jeu.POKER, mise=10,
+            detail="Toi A♠ · bot 7♦")
+
+        self.assertEqual(services.animation(partie),
+                         {"joueur": "A♠", "bot": "7♦"})
+
+    def test_benefice_net_deduit_la_mise(self):
+        partie = Partie.objects.create(
+            user=self.joueur, jeu=Partie.Jeu.ROUE, mise=10, gagne=True,
+            gain=19)
+
+        self.assertEqual(partie.benefice, 9)
 
 
 class DemineurTests(TestCase):
@@ -266,6 +362,36 @@ class VuesTests(TestCase):
         self.assertEqual(Partie.objects.count(), 1)
         self.joueur.refresh_from_db()
         self.assertEqual(self.joueur.solde_cubis, avant - 10 + 18)
+
+    def test_page_roue_affiche_la_roue_et_l_angle_du_tirage(self):
+        self.client.force_login(self.joueur)
+        with patch("apps.jeux.services.roue", return_value=(
+                True, Decimal("3.0"), "x3")):
+            self.client.post(reverse("jeu", args=["roue"]), {"mise": "10"})
+        partie = Partie.objects.get()
+
+        reponse = self.client.get(reverse("jeu", args=["roue"]),
+                                  {"r": partie.pk})
+
+        self.assertContains(reponse, "roue-disque")
+        self.assertEqual(reponse.context["animation"],
+                         {"angle": services.angle_roue("x3")})
+
+    def test_page_pile_ou_face_propose_les_deux_faces(self):
+        self.client.force_login(self.joueur)
+
+        reponse = self.client.get(reverse("jeu", args=["pile_ou_face"]))
+
+        self.assertContains(reponse, 'name="choix" value="pile"')
+        self.assertContains(reponse, 'name="choix" value="face"')
+        self.assertContains(reponse, "piece-zone")
+
+    def test_page_braquage_affiche_le_coffre(self):
+        self.client.force_login(self.joueur)
+
+        reponse = self.client.get(reverse("jeu", args=["braquage"]))
+
+        self.assertContains(reponse, "coffre-zone")
 
     def test_resultat_d_un_autre_membre_invisible(self):
         autre = compte("autre@test.cg")

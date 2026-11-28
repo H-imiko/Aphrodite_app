@@ -64,7 +64,8 @@ def jeu(request, jeu):
         try:
             partie, consolation = services.jouer(
                 request.user, jeu, _mise(request),
-                request.POST.get("niveau", ""))
+                request.POST.get("niveau", ""),
+                request.POST.get("choix", ""))
         except ErreurEconomie as erreur:
             messages.error(request, str(erreur))
             return redirect("jeu", jeu=jeu)
@@ -73,11 +74,14 @@ def jeu(request, jeu):
                                    "Cubis de consolation 💗")
         return redirect(f"{reverse('jeu', args=[jeu])}?r={partie.pk}")
 
+    resultat = _resultat(request)
     return render(request, "jeux/jeu.html", {
         "jeu": jeu,
         "infos": services.JEUX[jeu],
         "niveaux": services.NIVEAUX_BRAQUAGE,
-        "resultat": _resultat(request),
+        "roue_parts": services.roue_parts(),
+        "resultat": resultat,
+        "animation": services.animation(resultat),
         **_contexte_partie(),
     })
 

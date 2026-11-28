@@ -1,0 +1,20 @@
+{% load static %}
+<section class="card mt-16 center">
+  <div class="poker-zone"{% if animation.joueur %} data-tire="1"{% endif %}>
+    <div class="carte" data-carte="joueur">
+      <div class="carte-interieur">
+        <div class="carte-face carte-dos" aria-hidden="true">?</div>
+        <div class="carte-face carte-avant{% if animation.joueur|slice:'-1:' == '♥' or animation.joueur|slice:'-1:' == '♦' %} rouge{% endif %}">{{ animation.joueur|default:"?" }}</div>
+      </div>
+      <span class="carte-nom">Toi</span>
+    </div>
+    <div class="carte" data-carte="bot">
+      <div class="carte-interieur">
+        <div class="carte-face carte-dos" aria-hidden="true">?</div>
+        <div class="carte-face carte-avant{% if animation.bot|slice:'-1:' == '♥' or animation.bot|slice:'-1:' == '♦' %} rouge{% endif %}">{{ animation.bot|default:"?" }}</div>
+      </div>
+      <span class="carte-nom">Bot</span>
+    </div>
+  </div>
+  <p class="muted">Une carte chacun, la plus haute l'emporte. À égalité, le bot garde la mise.</p>
+</section>

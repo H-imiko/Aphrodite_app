@@ -1,0 +1,179 @@
+/* ===== Mini-jeux : habillage animé ===== */
+
+/* ---- Roue de la Fortune ---- */
+.roue-zone {
+  position: relative; width: 232px; height: 232px; margin: 14px auto 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 46, 147, .3), rgba(0, 0, 0, 0) 68%);
+}
+.roue-disque {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, .16);
+  box-shadow: 0 0 0 7px rgba(255, 46, 147, .12),
+    0 12px 30px rgba(0, 0, 0, .45), inset 0 0 30px rgba(0, 0, 0, .35);
+  background: conic-gradient(
+    #5b1f96 0deg 60deg, #d1257f 60deg 120deg, #40176f 120deg 180deg,
+    #ff2e93 180deg 240deg, #6d2bb0 240deg 300deg, #a91f6f 300deg 360deg);
+  transition: transform 4.2s cubic-bezier(.17, .67, .12, 1);
+}
+.roue-case {
+  position: absolute; top: 50%; left: 50%; width: 52px;
+  margin: -9px 0 0 -26px; text-align: center;
+  font-family: var(--titre); font-size: .76em; letter-spacing: .02em;
+  color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+  pointer-events: none;
+}
+.roue-moyeu {
+  position: absolute; top: 50%; left: 50%; width: 48px; height: 48px;
+  margin: -24px 0 0 -24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 35% 30%, #3a1259, #14060f 75%);
+  border: 2px solid rgba(255, 255, 255, .22);
+  box-shadow: 0 0 18px rgba(255, 46, 147, .55);
+}
+.roue-moyeu .cb { height: 22px; width: 22px; }
+.roue-pointeur {
+  position: absolute; top: -9px; left: 50%; z-index: 2;
+  transform: translateX(-50%);
+  width: 0; height: 0; border-left: 11px solid transparent;
+  border-right: 11px solid transparent; border-top: 20px solid #fff;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .65));
+}
+
+/* ---- Pièce Pile ou Face ---- */
+.piece-zone {
+  perspective: 700px; width: 132px; height: 132px;
+  margin: 16px auto 6px;
+}
+.piece {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 2.6s cubic-bezier(.2, .75, .25, 1);
+}
+.piece-face {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--titre); font-size: 1.25em; letter-spacing: .08em;
+  backface-visibility: hidden;
+}
+.piece-pile {
+  color: #43102f;
+  background: radial-gradient(circle at 34% 28%, #ffe9f6, #ff9ad0 45%, #c3237c 100%);
+  border: 4px solid rgba(255, 255, 255, .55);
+  box-shadow: 0 0 26px rgba(255, 46, 147, .5),
+    inset 0 0 18px rgba(120, 10, 70, .35);
+}
+.piece-face2 {
+  transform: rotateY(180deg); color: #fff;
+  background: radial-gradient(circle at 34% 28%, #b76cff, #7b2ec2 50%, #3c0f68 100%);
+  border: 4px solid rgba(255, 255, 255, .45);
+  box-shadow: 0 0 26px rgba(183, 108, 255, .55),
+    inset 0 0 18px rgba(20, 0, 40, .45);
+}
+
+/* ---- Poker Bot : duel de cartes ---- */
+.poker-zone {
+  display: flex; justify-content: center; gap: 24px; margin: 16px 0 6px;
+}
+.carte { width: 78px; }
+.carte-interieur {
+  position: relative; width: 100%; height: 112px;
+  transform-style: preserve-3d;
+  transition: transform .75s cubic-bezier(.2, .8, .2, 1);
+}
+.carte.retournee .carte-interieur { transform: rotateY(180deg); }
+.carte-face {
+  position: absolute; inset: 0; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--titre); font-size: 1.55em;
+  backface-visibility: hidden;
+}
+.carte-dos {
+  background: repeating-linear-gradient(45deg,
+    #4a1266 0 6px, #6d1c93 6px 12px);
+  border: 2px solid rgba(255, 255, 255, .18);
+  color: rgba(255, 255, 255, .55);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .4);
+}
+.carte-avant {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, #fff, #f4e6f5);
+  color: #2a0a2c; border: 2px solid #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+}
+.carte-avant.rouge { color: #c81e4a; }
+.carte-nom {
+  display: block; margin-top: 8px; font-size: .72em;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+}
+
+/* ---- Braquage : le coffre ---- */
+.coffre-zone { display: flex; justify-content: center; margin: 18px 0 8px; }
+.coffre {
+  position: relative; width: 118px; height: 118px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #2a1236, #150a1c);
+  border: 2px solid rgba(255, 46, 147, .35);
+  box-shadow: 0 0 26px rgba(255, 46, 147, .25),
+    inset 0 0 22px rgba(0, 0, 0, .6);
+}
+.coffre span { position: absolute; font-size: 2.4em; line-height: 1; }
+.coffre-butin, .coffre-alarme { opacity: 0; transform: scale(.4); }
+.coffre-porte { opacity: 1; }
+.coffre-gagne .coffre { border-color: rgba(120, 255, 190, .5); }
+.coffre-gagne .coffre-porte { animation: coffre-part .3s .9s both; }
+.coffre-gagne .coffre-butin { animation: coffre-arrive .5s 1s both; }
+.coffre-rate .coffre {
+  border-color: rgba(255, 80, 80, .6);
+  animation: coffre-secousse .16s 4, coffre-rouge 1.2s .9s both;
+}
+.coffre-rate .coffre-porte { animation: coffre-part .3s 1s both; }
+.coffre-rate .coffre-alarme { animation: coffre-arrive .4s .9s both; }
+
+@keyframes coffre-part {
+  to { opacity: 0; transform: scale(.6) rotate(-18deg); }
+}
+@keyframes coffre-arrive {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes coffre-secousse {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-4px); }
+}
+@keyframes coffre-rouge {
+  0%, 100% { box-shadow: 0 0 18px rgba(255, 60, 60, .3); }
+  50% { box-shadow: 0 0 34px rgba(255, 60, 60, .7); }
+}
+
+/* ---- Choix Pile / Face ---- */
+.choix-piece {
+  border: 0; padding: 0; margin: 0;
+}
+.jeu-form .choix-piece { display: block; flex: 1 0 100%; }
+.choix-piece legend {
+  padding: 0; margin-bottom: 6px;
+  font-weight: 600; font-size: var(--t-md);
+}
+.choix-piece label {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-right: 10px; padding: 9px 16px; border-radius: 999px;
+  cursor: pointer; border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .04); font-weight: 600;
+}
+.choix-piece input { accent-color: var(--rose); margin: 0; }
+.choix-piece label:has(input:checked) {
+  border-color: var(--rose); background: rgba(255, 46, 147, .16);
+}
+
+/* Le résultat n'apparaît qu'à la fin de l'animation (sauf si le système
+   demande moins de mouvement). */
+@keyframes apparait {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .resultat--roue { animation: apparait .4s ease-out 4.1s both; }
+  .resultat--pile_ou_face { animation: apparait .4s ease-out 2.5s both; }
+  .resultat--poker { animation: apparait .4s ease-out 1.7s both; }
+  .resultat--braquage { animation: apparait .4s ease-out 1.5s both; }
+}

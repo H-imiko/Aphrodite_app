@@ -1,0 +1,10 @@
+{% load static %}
+<section class="card mt-16 center">
+  <div class="piece-zone"{% if animation.cote %} data-cote="{{ animation.cote }}"{% endif %}>
+    <div class="piece">
+      <div class="piece-face piece-pile"><span>PILE</span></div>
+      <div class="piece-face piece-face2"><span>FACE</span></div>
+    </div>
+  </div>
+  <p class="muted">La pièce tourne sur elle-même et retombe sur la face annoncée.</p>
+</section>

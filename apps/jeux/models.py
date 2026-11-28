@@ -47,6 +47,11 @@ class Partie(models.Model):
         return [int(v) for v in valeur.split(",") if v.strip()]
 
     @property
+    def benefice(self):
+        """Bénéfice net : le gain rendu, mise récupérée déduite."""
+        return max(0, self.gain - self.mise)
+
+    @property
     def cases_liste(self):
         return self._lire(self.cases_ouvertes)
 

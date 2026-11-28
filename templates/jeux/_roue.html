@@ -1,0 +1,13 @@
+{% load static %}
+<section class="card mt-16 center">
+  <div class="roue-zone"{% if animation.angle %} data-angle="{{ animation.angle }}"{% endif %}>
+    <div class="roue-pointeur" aria-hidden="true"></div>
+    <div class="roue-disque">
+      {% for part in roue_parts %}
+      <span class="roue-case" style="transform: rotate({{ part.angle }}deg) translateY(-70px) rotate(-{{ part.angle }}deg)">{{ part.libelle }}</span>
+      {% endfor %}
+      <span class="roue-moyeu" aria-hidden="true"><img class="cb" src="{% static 'images/cube_cubis.svg' %}" alt=""></span>
+    </div>
+  </div>
+  <p class="muted">La roue tourne et s'arrête sous le pointeur. Chaque cran a sa chance.</p>
+</section>

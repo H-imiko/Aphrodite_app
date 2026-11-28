@@ -19,63 +19,64 @@ from .models import Partie
 
 # Valeurs par défaut, surchargeables dans config/settings.py.
 MISE_MIN_DEFAUT = 5
-MISE_MAX_DEFAUT = 30
-PARTIES_JOUR_DEFAUT = 8
-PERTE_JOUR_DEFAUT = 100
-CONSOLATION_MIN = 5
-CONSOLATION_MAX = 10
+MISE_MAX_DEFAUT = 100
+PARTIES_JOUR_DEFAUT = 10
+PERTE_JOUR_DEFAUT = 300
+CONSOLATION_MIN = 10
+CONSOLATION_MAX = 25
 
 # Déminer : 9 cases, 2 mines, gain plafonné à x2.
 CASES = 9
 MINES = 2
 PALIERS_MINES = {1: Decimal("1.3"), 2: Decimal("1.6"), 3: Decimal("2.0")}
 
-# Chance de gagner et multiplicateur, réglés pour que l'espérance reste sous
-# 1 : le Trésor ne se vide pas, les Cubis perdus sont détruits.
-PILE_OU_FACE_CHANCE = 0.47
-PILE_OU_FACE_GAIN = Decimal("1.8")
+# Gains réglés pour que l'espérance reste sous 1 (le Trésor ne se vide pas,
+# les Cubis perdus sont détruits) tout en restant lisibles face aux prix de la
+# boutique : une mise de 100 peut rapporter jusqu'à 1000 sur la roue.
+PILE_OU_FACE_GAIN = Decimal("1.9")
+POKER_GAIN = Decimal("1.9")
 
+# Segments de la roue, dans l'ordre d'affichage : (multiplicateur, poids, nom).
+# Six segments de 60°, le pointeur en haut.
 ROUE = (
-    (Decimal("0"), 55, "Perdu"),
-    (Decimal("1.5"), 25, "x1.5"),
-    (Decimal("2.0"), 12, "x2"),
+    (Decimal("0"), 60, "Perdu"),
+    (Decimal("1.5"), 20, "x1.5"),
+    (Decimal("2.0"), 10, "x2"),
     (Decimal("3.0"), 6, "x3"),
-    (Decimal("5.0"), 2, "x5"),
+    (Decimal("5.0"), 3, "x5"),
+    (Decimal("10.0"), 1, "x10"),
 )
+ROUE_TOURS = 6
 
-POKER = (
-    (Decimal("0"), 60, "Le bot te bat"),
-    (Decimal("2.0"), 28, "x2"),
-    (Decimal("2.5"), 9, "x2.5"),
-    (Decimal("3.0"), 3, "x3"),
-)
+RANGS = ("2", "3", "4", "5", "6", "7", "8", "9", "10", "V", "D", "R", "A")
+COULEURS = ("♠", "♥", "♦", "♣")
 
 NIVEAUX_BRAQUAGE = {
-    "facile": {"nom": "Facile", "multiplicateur": Decimal("2.0"),
-               "chance": 0.46},
-    "moyen": {"nom": "Moyen", "multiplicateur": Decimal("2.8"),
-              "chance": 0.33},
-    "difficile": {"nom": "Difficile", "multiplicateur": Decimal("4.0"),
-                  "chance": 0.22},
+    "facile": {"nom": "Facile", "multiplicateur": Decimal("2.2"),
+               "chance": 0.44},
+    "moyen": {"nom": "Moyen", "multiplicateur": Decimal("3.0"),
+              "chance": 0.32},
+    "difficile": {"nom": "Difficile", "multiplicateur": Decimal("5.0"),
+                  "chance": 0.19},
 }
 
 JEUX = {
     "pile_ou_face": {
-        "nom": "Pile ou Face", "risque": "Faible", "gain_max": "x1.8",
-        "resume": "Un lancer, une pièce, et c'est réglé.",
+        "nom": "Pile ou Face", "risque": "Faible", "gain_max": "x1.9",
+        "resume": "Tu choisis ta face, la pièce tourne, elle tombe.",
     },
     "roue": {
         "nom": "Roue de la Fortune", "risque": "Faible à moyen",
-        "gain_max": "x5",
-        "resume": "Une roue, plusieurs crans : x1.5 à x5.",
+        "gain_max": "x10",
+        "resume": "Une vraie roue qui tourne : x1.5 à x10.",
     },
     "poker": {
-        "nom": "Poker Bot", "risque": "Moyen", "gain_max": "x3",
-        "resume": "Le bot abat ses cartes. Tu tiens ou tu tombes.",
+        "nom": "Poker Bot", "risque": "Moyen", "gain_max": "x1.9",
+        "resume": "Une carte chacun. La plus haute gagne.",
     },
     "braquage": {
-        "nom": "Braquage", "risque": "Élevé", "gain_max": "x4",
-        "resume": "Choisis ton risque : plus gros gain, plus grosse chute.",
+        "nom": "Braquage", "risque": "Élevé", "gain_max": "x5",
+        "resume": "Trois risques, un coffre : x2.2 à x5.",
     },
     "demineur": {
         "nom": "Déminer", "risque": "Moyen", "gain_max": "x2",
@@ -141,25 +142,40 @@ def verifier(user, mise):
 
 # ---------- Tirages ----------
 
-def pile_ou_face(_niveau=""):
-    face = random.random() < PILE_OU_FACE_CHANCE
-    return face, (PILE_OU_FACE_GAIN if face else Decimal("0")), (
-        "Face" if face else "Pile")
+def pile_ou_face(_niveau="", choix=""):
+    """La pièce tombe sur Pile ou Face ; le membre doit l'avoir annoncé."""
+    choix = (choix or "").strip().lower()
+    if choix not in ("pile", "face"):
+        raise ErreurEconomie("Choisis Pile ou Face avant de lancer la pièce.")
+    cote = "Face" if random.random() < 0.5 else "Pile"
+    gagne = cote.lower() == choix
+    return gagne, (PILE_OU_FACE_GAIN if gagne else Decimal("0")), cote
 
 
-def roue(_niveau=""):
+def roue(_niveau="", _choix=""):
     multiplicateur, _, libelle = random.choices(
         ROUE, weights=[ligne[1] for ligne in ROUE])[0]
     return multiplicateur > 0, multiplicateur, libelle
 
 
-def poker(_niveau=""):
-    multiplicateur, _, libelle = random.choices(
-        POKER, weights=[ligne[1] for ligne in POKER])[0]
-    return multiplicateur > 0, multiplicateur, libelle
+def _nom_carte(index):
+    return f"{RANGS[index % 13]}{COULEURS[index // 13]}"
 
 
-def braquage(niveau):
+def poker(_niveau="", _choix=""):
+    """Duel de cartes honnête : la carte la plus haute gagne.
+
+    Deux cartes distinctes du même jeu de 52. Une égalité (même rang, autre
+    couleur) tourne à l'avantage du bot, ce qui garde l'espérance sous 1.
+    """
+    joueur, bot = random.sample(range(52), 2)
+    gagne = joueur % 13 > bot % 13
+    multiplicateur = POKER_GAIN if gagne else Decimal("0")
+    detail = f"Toi {_nom_carte(joueur)} · bot {_nom_carte(bot)}"
+    return gagne, multiplicateur, detail
+
+
+def braquage(niveau, _choix=""):
     reglage = NIVEAUX_BRAQUAGE.get(niveau)
     if reglage is None:
         raise ErreurEconomie("Choisis un niveau de risque.")
@@ -182,6 +198,57 @@ def tirages():
         "poker": poker,
         "braquage": braquage,
     }
+
+
+# ---------- Habillage des animations ----------
+# Le navigateur ne décide jamais du résultat ; il reçoit seulement l'angle ou
+# la carte à afficher, calculés à partir de la partie enregistrée.
+
+def roue_parts():
+    """Les six segments de la roue, positionnés pour l'affichage."""
+    return [
+        {"index": index, "libelle": libelle,
+         "angle": index * 60 + 30}
+        for index, (_multiplicateur, _poids, libelle) in enumerate(ROUE)
+    ]
+
+
+def angle_roue(libelle):
+    """Angle final qui amène le segment tiré sous le pointeur du haut."""
+    for index, (_multiplicateur, _poids, nom) in enumerate(ROUE):
+        if nom == libelle:
+            return 360 * ROUE_TOURS - (index * 60 + 30)
+    return None
+
+
+def cartes_du_detail(detail):
+    """Relit « Toi A♠ · bot 7♦ » en (carte du joueur, carte du bot)."""
+    morceaux = (detail or "").split(" · ")
+    if len(morceaux) != 2:
+        return None
+    cartes = [morceau.split(" ")[-1] for morceau in morceaux]
+    if any(len(carte) < 2 for carte in cartes):
+        return None
+    return cartes[0], cartes[1]
+
+
+def animation(partie):
+    """Données d'affichage de la dernière partie, pour les animations."""
+    if partie is None:
+        return {}
+    if partie.jeu == Partie.Jeu.ROUE:
+        angle = angle_roue(partie.detail)
+        return {"angle": angle} if angle is not None else {}
+    if partie.jeu == Partie.Jeu.PILE_OU_FACE:
+        return {"cote": (partie.detail or "").lower()}
+    if partie.jeu == Partie.Jeu.POKER:
+        cartes = cartes_du_detail(partie.detail)
+        if cartes:
+            return {"joueur": cartes[0], "bot": cartes[1]}
+        return {}
+    if partie.jeu == Partie.Jeu.BRAQUAGE:
+        return {"reussi": partie.gagne}
+    return {}
 
 
 # ---------- Règlement ----------
@@ -207,13 +274,13 @@ def _consolation(user):
     return montant
 
 
-def jouer(user, jeu, mise, niveau=""):
+def jouer(user, jeu, mise, niveau="", choix=""):
     """Joue une partie instantanée. Renvoie (partie, consolation)."""
     tirage = tirages().get(jeu)
     if tirage is None:
         raise ErreurEconomie("Jeu inconnu.")
     verifier(user, mise)
-    gagne, multiplicateur, detail = tirage(niveau)
+    gagne, multiplicateur, detail = tirage(niveau, choix)
 
     with transaction.atomic():
         if not debiter(user.pk, mise):

@@ -1,0 +1,11 @@
+{% load static %}
+<section class="card mt-16 center">
+  <div class="coffre-zone{% if resultat %} {% if resultat.gagne %}coffre-gagne{% else %}coffre-rate{% endif %}{% endif %}">
+    <div class="coffre">
+      <span class="coffre-porte" aria-hidden="true">🔒</span>
+      <span class="coffre-butin" aria-hidden="true">💰</span>
+      <span class="coffre-alarme" aria-hidden="true">🚨</span>
+    </div>
+  </div>
+  <p class="muted">Le coffre s'ouvre ou l'alarme se déclenche. Plus le risque est haut, plus la porte est lourde.</p>
+</section>
